@@ -1,0 +1,72 @@
+import 'package:clinic/screens/admin/add_secretary.dart';
+import 'package:clinic/screens/admin/branches.dart';
+import 'package:clinic/screens/admin/secretaries.dart';
+import 'package:clinic/screens/admin/appointments_admin.dart';
+import 'package:clinic/screens/client/book_appointment.dart';
+import 'package:clinic/screens/client/client_home.dart';
+import 'package:clinic/screens/client/client_info.dart';
+import 'package:clinic/screens/client/doctor_info.dart';
+import 'package:clinic/screens/secretary/addClient.dart';
+import 'package:clinic/screens/secretary/addDoctor.dart';
+import 'package:clinic/screens/secretary/appointments_secretary.dart';
+import 'package:clinic/screens/secretary/booking_step1.dart';
+import 'package:clinic/screens/secretary/booking_step2.dart';
+import 'package:clinic/screens/secretary/booking_step3.dart';
+import 'package:clinic/screens/secretary/clients.dart';
+import 'package:clinic/screens/secretary/doctorSchedule.dart';
+import 'package:clinic/screens/secretary/doctors.dart';
+import 'package:clinic/screens/secretary/secretaryHome.dart';
+import 'package:clinic/screens/secretary/secretary_navigation.dart';
+import 'package:clinic/screens/shared/wrapper.dart';
+import 'package:clinic/services/auth.dart';
+import 'package:clinic/services/database.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+
+import 'models/user.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        StreamProvider<MyUser>.value(value: AuthService().user),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(fontFamily: 'Roboto'),
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Wrapper(),
+          '/clientHomeScreen': (context) => ClientHome(),
+          '/secretaryHomeScreen': (context) => SecretaryHome(),
+          '/clientsScreen': (context) => Clients(),
+          '/doctorsScreen': (context) => Doctors(),
+          '/doctorScheduleScreen': (context) => DoctorSchedule(),
+          '/secretaryAddClientScreen': (context) => AddClient(),
+          '/secretaryAddDoctorScreen': (context) => AddDoctor(),
+          '/bookingScreen': (context) => BookAppointment(),
+          '/doctorInfoScreen': (context) => DoctorInfo(),
+          '/appointmentsScreenAdmin': (context) => AppointmentsAdmin(),
+          '/appointmentsScreenSecretary': (context) => AppointmentsSecretary(),
+          '/branchesScreen': (context) => Branches(),
+          '/secretariesScreen': (context) => Secretaries(),
+          '/secretaryNavigation': (context) => SecretaryNavigation(),
+          '/addSecretaryScreen': (context) => AddSecretary(),
+          '/clientInfoScreen': (context) => ClientInfo(),
+          '/bookingStep1': (context) => BookingStep1(),
+          '/bookingStep2': (context) => BookingStep2(),
+          '/bookingStep3': (context) => BookingStep3(),
+        },
+      ),
+    );
+  }
+}

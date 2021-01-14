@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "539900605852",
+    "firebase_url": "https://clinic-aa535.firebaseio.com",
+    "project_id": "clinic-aa535",
+    "storage_bucket": "clinic-aa535.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539900605852:android:7f5e04a493109a4faf8459",
+        "android_client_info": {
+          "package_name": "com.ahmedashour.clinic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "539900605852-9umc795fvccubftic13bdh21pd2ep32r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6kvbhyCiZEdmBsg78OL7Rq7oX2YUdWbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "539900605852-9umc795fvccubftic13bdh21pd2ep32r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
