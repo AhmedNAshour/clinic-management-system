@@ -6,6 +6,7 @@ import 'package:clinic/models/secretary.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/models/workDay.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
 
 class DatabaseService {
@@ -65,6 +66,22 @@ class DatabaseService {
       'password': password,
       'email': email,
     });
+  }
+
+  Future editToken(String token, role) async {
+    if (role == 'doctor') {
+      return await doctorsCollection.doc(uid).set({
+        'token': token,
+      });
+    } else if (role == 'client') {
+      return await clientsCollection.doc(uid).set({
+        'token': token,
+      });
+    } else if (role == 'secretary') {
+      return await secretariesCollection.doc(uid).set({
+        'token': token,
+      });
+    }
   }
 
   Future updateSecretaryData(String fName, String lName, String phoneNumber,
@@ -178,6 +195,7 @@ class DatabaseService {
     String clientGender,
     String doctorFName,
     String doctorLName,
+    String doctorToken,
   }) async {
     return await appointmentsCollection.doc().set({
       'startTime': startTime,
@@ -191,6 +209,7 @@ class DatabaseService {
       'clientPhoneNumber': clientPhoneNumber,
       'doctorFName': doctorFName,
       'doctorLName': doctorLName,
+      'doctorToken': doctorToken,
     });
   }
 
@@ -277,6 +296,7 @@ class DatabaseService {
         phoneNumber: doc.data()['phoneNumber'] ?? '',
         gender: doc.data()['gender'] ?? '',
         branch: doc.data()['branch'] ?? '',
+        uid: doc.id,
       );
     }).toList();
   }
@@ -299,6 +319,7 @@ class DatabaseService {
         level: doc.data()['about'] ?? 'level',
         branch: doc.data()['branch'] ?? 0,
         gender: doc.data()['gender'] ?? '',
+        token: doc.data()['token'] ?? '',
       );
     }).toList();
   }
@@ -417,9 +438,26 @@ class DatabaseService {
   }
 
   // get user role
-  Future<String> getUserRole() async {
+  Future<String> getUserRoleAndSetToken() async {
     DocumentSnapshot s =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    FirebaseMessaging _messaging = FirebaseMessaging();
+    String deviceToken = await _messaging.getToken();
+
+    String role = s.data()['role'];
+    if (role == 'doctor') {
+      await doctorsCollection.doc(uid).update({
+        'token': deviceToken,
+      });
+    } else if (role == 'client') {
+      await clientsCollection.doc(uid).update({
+        'token': deviceToken,
+      });
+    } else if (role == 'secretary') {
+      await secretariesCollection.doc(uid).update({
+        'token': deviceToken,
+      });
+    }
     return s.data()['role'];
   }
 
@@ -463,6 +501,24 @@ class DatabaseService {
   Future deleteAppointment(String id) async {
     try {
       await appointmentsCollection.doc(id).delete();
+      return 1;
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
+  Future deleteUser(String id, String role) async {
+    try {
+      await usersCollection.doc(id).delete();
+      if (role == 'client') {
+        await clientsCollection.doc(id).delete();
+        // await appointmentsCollection.doc(where('doctorID', isEqualTo: doctorID)).delete()
+      } else if (role == 'secretary') {
+        await secretariesCollection.doc(id).delete();
+      } else {
+        await doctorsCollection.doc(id).delete();
+      }
       return 1;
     } catch (error) {
       print(error.toString());

@@ -1,20 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/client.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class SecretaryCard extends StatelessWidget {
-  const SecretaryCard({
+class ClientCardAdmin extends StatelessWidget {
+  const ClientCardAdmin({
     Key key,
-    @required this.secretary,
+    @required this.client,
   }) : super(key: key);
 
-  final Secretary secretary;
+  final Client client;
 
   @override
   Widget build(BuildContext context) {
@@ -25,36 +26,67 @@ class SecretaryCard extends StatelessWidget {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      child: Container(
-        height: 100,
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.only(bottom: 10),
-        width: size.width * 0.8,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(11), color: Colors.white),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage:
-                  AssetImage('assets/images/doctorPortraitCenter.jpg'),
-              radius: (80 / 100 * size.width) * 0.1,
-            ),
-            SizedBox(
-              width: size.width * 0.04,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${secretary.fName} ${secretary.lName}',
-                  style: TextStyle(
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, '/clientInfoScreen', arguments: {
+            'fName': client.fName,
+            'lName': client.lName,
+            'age': client.age,
+            'gender': client.gender,
+            'numAppointments': client.numAppointments,
+            'phoneNumber': client.phoneNumber,
+            'uid': client.uid,
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.all(25),
+          margin: EdgeInsets.only(bottom: 10),
+          width: size.width * 0.8,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28), color: Colors.white),
+          child: Row(
+            children: [
+              // CircleAvatar(
+              //   backgroundImage:
+              //       AssetImage('assets/images/doctorPortraitCenter.jpg'),
+              //   radius: (80 / 100 * size.width) * 0.1,
+              // ),
+              // SizedBox(
+              //   width: size.width * 0.04,
+              // ),
+              Expanded(
+                flex: 3,
+                child: AutoSizeText(
+                  client.gender == 'male'
+                      ? 'Mr. ${client.fName} ${client.lName}'
+                      : 'Mrs. ${client.fName} ${client.lName}',
+                  style: TextStyle(color: kPrimaryColor, fontSize: 20),
+                  minFontSize: 15,
+                  maxLines: 1,
                 ),
-              ],
-            ),
-          ],
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Container(
+                    child: IconButton(
+                      icon: FaIcon(
+                        FontAwesomeIcons.mobileAlt,
+                        size: 30,
+                        color: kPrimaryColor,
+                      ),
+                      onPressed: () {
+                        launch("tel://${client.phoneNumber}");
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       secondaryActions: <Widget>[
@@ -90,17 +122,17 @@ class SecretaryCard extends StatelessWidget {
               headerAnimationLoop: false,
               dialogType: DialogType.WARNING,
               animType: AnimType.BOTTOMSLIDE,
-              title: "Remove Employee",
-              desc: 'Are you sure you want to remove this employee ?',
+              title: "Remove Client",
+              desc: 'Are you sure you want to remove this client ?',
               btnCancelOnPress: () {},
               btnOkOnPress: () async {
-                print('Sectetary id: ${secretary.uid}');
+                print('Client id: ${client.uid}');
                 dynamic result =
                     await deleteUserFunction.call(<String, dynamic>{
-                  'uid': secretary.uid,
+                  'uid': client.uid,
                 });
 
-                DatabaseService().deleteUser(secretary.uid, 'secretary');
+                DatabaseService().deleteUser(client.uid, 'client');
 
                 if (result == null) {
                   AwesomeDialog(
@@ -112,7 +144,7 @@ class SecretaryCard extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Center(
                           child: Text(
-                            'COULD NOT REMOVE EMPLOYEE..',
+                            'COULD NOT REMOVE CLIENT..',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                             textAlign: TextAlign.center,
@@ -131,7 +163,7 @@ class SecretaryCard extends StatelessWidget {
                       animType: AnimType.BOTTOMSLIDE,
                       body: Center(
                         child: Text(
-                          'Employee Removed Successfully',
+                          'Client Removed Successfully',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                           textAlign: TextAlign.center,

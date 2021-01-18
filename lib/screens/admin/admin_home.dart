@@ -78,7 +78,8 @@ class _AdminHomeState extends State<AdminHome> {
                             borderRadius: BorderRadius.circular(20),
                             child: FlatButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/clientsScreen');
+                                Navigator.pushNamed(
+                                    context, '/clientsScreenAdmin');
                               },
                               color: Colors.white,
                               child: Text(
@@ -105,7 +106,8 @@ class _AdminHomeState extends State<AdminHome> {
                             borderRadius: BorderRadius.circular(20),
                             child: FlatButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/doctorsScreen');
+                                Navigator.pushNamed(
+                                    context, '/doctorsScreenAdmin');
                               },
                               color: Colors.white,
                               child: Text(

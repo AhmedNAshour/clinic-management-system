@@ -1,19 +1,20 @@
 import 'package:clinic/components/lists_cards/client_card.dart';
+import 'package:clinic/components/lists_cards/client_card_admin.dart';
 import 'package:clinic/models/client.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ClientList extends StatefulWidget {
+class ClientListAdmin extends StatefulWidget {
   @override
-  _ClientListState createState() => _ClientListState();
+  _ClientListAdminState createState() => _ClientListAdminState();
   List<Client> searchList = <Client>[];
   String search = '';
-  ClientList(String search) {
+  ClientListAdmin(String search) {
     this.search = search;
   }
 }
 
-class _ClientListState extends State<ClientList> {
+class _ClientListAdminState extends State<ClientListAdmin> {
   @override
   Widget build(BuildContext context) {
     final clients = Provider.of<List<Client>>(context) ?? [];
@@ -46,7 +47,7 @@ class _ClientListState extends State<ClientList> {
       return ListView.builder(
         itemCount: widget.searchList.length,
         itemBuilder: (context, index) {
-          return ClientCard(client: widget.searchList[index]);
+          return ClientCardAdmin(client: widget.searchList[index]);
         },
       );
     }

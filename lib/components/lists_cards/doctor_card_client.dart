@@ -75,6 +75,7 @@ class DoctorCardCli extends StatelessWidget {
                       'fName': doctor.fName,
                       'lName': doctor.lName,
                       'profession': doctor.proffesion,
+                      'token': doctor.token,
                     },
                   );
                 },

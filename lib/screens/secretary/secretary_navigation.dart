@@ -1,6 +1,7 @@
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
+import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/appointments_secretary.dart';
 import 'package:clinic/screens/secretary/booking_step1.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
@@ -28,7 +29,8 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final AuthService _auth = AuthService();
+    final user = Provider.of<MyUser>(context);
+
     return MultiProvider(
       providers: [
         StreamProvider<List<Doctor>>.value(

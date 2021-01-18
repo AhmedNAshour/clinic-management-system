@@ -25,7 +25,6 @@ class _BookAppointmentState extends State<BookAppointment> {
 
   Map doctorData = {};
 
-  int _currentIndex = 0;
   List offDays = [];
   List<DateTime> startTimes = [];
   List<DateTime> reserved = [];
@@ -357,6 +356,8 @@ class _BookAppointmentState extends State<BookAppointment> {
                                                           doctorData['fName'],
                                                       doctorLName:
                                                           doctorData['lName'],
+                                                      doctorToken:
+                                                          doctorData['token'],
                                                       clientFName:
                                                           clientData.fName,
                                                       clientLName:

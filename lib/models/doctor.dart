@@ -8,6 +8,7 @@ class Doctor {
   final String level;
   final String gender;
   final String branch;
+  final String token;
 
   Doctor({
     this.uid,
@@ -19,5 +20,6 @@ class Doctor {
     this.level,
     this.branch,
     this.gender,
+    this.token,
   });
 }

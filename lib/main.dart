@@ -1,5 +1,6 @@
 import 'package:clinic/screens/admin/add_secretary.dart';
 import 'package:clinic/screens/admin/branches.dart';
+import 'package:clinic/screens/admin/clients_admin.dart';
 import 'package:clinic/screens/admin/secretaries.dart';
 import 'package:clinic/screens/admin/appointments_admin.dart';
 import 'package:clinic/screens/client/book_appointment.dart';
@@ -15,11 +16,11 @@ import 'package:clinic/screens/secretary/booking_step3.dart';
 import 'package:clinic/screens/secretary/clients.dart';
 import 'package:clinic/screens/secretary/doctorSchedule.dart';
 import 'package:clinic/screens/secretary/doctors.dart';
+import 'package:clinic/screens/secretary/doctors_admin.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
 import 'package:clinic/screens/secretary/secretary_navigation.dart';
 import 'package:clinic/screens/shared/wrapper.dart';
 import 'package:clinic/services/auth.dart';
-import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +50,9 @@ class MyApp extends StatelessWidget {
           '/clientHomeScreen': (context) => ClientHome(),
           '/secretaryHomeScreen': (context) => SecretaryHome(),
           '/clientsScreen': (context) => Clients(),
+          '/clientsScreenAdmin': (context) => ClientsAdmin(),
           '/doctorsScreen': (context) => Doctors(),
+          '/doctorsScreenAdmin': (context) => DoctorsAdmin(),
           '/doctorScheduleScreen': (context) => DoctorSchedule(),
           '/secretaryAddClientScreen': (context) => AddClient(),
           '/secretaryAddDoctorScreen': (context) => AddDoctor(),

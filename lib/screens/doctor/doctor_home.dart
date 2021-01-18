@@ -1,10 +1,10 @@
 import 'package:clinic/components/lists_cards/appointments_list_doctor.dart';
-import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
@@ -108,4 +108,6 @@ class _DoctorHomeState extends State<DoctorHome> {
           )
         : Loading();
   }
+
+  void getDeviceToken() async {}
 }

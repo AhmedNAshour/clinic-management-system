@@ -2,6 +2,7 @@ import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 
@@ -23,9 +24,15 @@ class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
+  final FirebaseMessaging messaging = FirebaseMessaging();
+
+  @override
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
+    configureCallbacks();
+
     Size size = MediaQuery.of(context).size;
     return loading
         ? Loading()
@@ -122,5 +129,13 @@ class _LoginState extends State<Login> {
               ),
             ),
           );
+  }
+
+  void configureCallbacks() {
+    messaging.configure(
+      onMessage: (message) async {
+        print('onMessage: $message');
+      },
+    );
   }
 }
