@@ -13,7 +13,7 @@ class DoctorListClient extends StatefulWidget {
 
   String branchId;
   String search = '';
-  List<Doctor> searchList = List<Doctor>();
+  List<Doctor> searchList = <Doctor>[];
   DoctorListClient(String search, branch) {
     this.branchId = branch;
     this.search = search;
@@ -32,9 +32,11 @@ class _DoctorListClientState extends State<DoctorListClient> {
             return ListView.builder(
               itemCount: doctors.length,
               itemBuilder: (context, index) {
-                return userData.role == 'client'
-                    ? DoctorCardCli(doctor: doctors[index])
-                    : DoctorCardSec(doctor: doctors[index]);
+                if (doctors[index].status != 0) {
+                  return userData.role == 'client'
+                      ? DoctorCardCli(doctor: doctors[index])
+                      : DoctorCardSec(doctor: doctors[index]);
+                }
               },
             );
           } else {

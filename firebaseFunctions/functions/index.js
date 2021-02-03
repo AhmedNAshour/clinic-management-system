@@ -34,3 +34,21 @@ exports.doctorCancellingTrigger = functions.firestore.document('appointments/{ap
         const response = await admin.messaging().sendToDevice(tokens , payload)
     }
 )
+
+exports.secretaryBookingTrigger = functions.firestore.document('appointments/{appointmentId}').onCreate
+(
+    async (snapshot , context) =>
+    {
+        var payload = {notification: {title: 'New Appointment', body: 'Appointment added in ' + snapshot.data().branch}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
+        const response = await admin.messaging().sendToTopic('reservationIn' + snapshot.data().branch + 'Branch',payload)
+    }
+)
+
+exports.secretaryCancellingTrigger = functions.firestore.document('appointments/{appointmentId}').onDelete
+(
+    async (snapshot , context) =>
+    {
+        var payload = {notification: {title: 'Appointment Cancelled', body: 'Appointment cancelled in ' + snapshot.data().branch}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
+        const response = await admin.messaging().sendToTopic('reservationIn' + snapshot.data().branch + 'Branch',payload)
+    }
+)

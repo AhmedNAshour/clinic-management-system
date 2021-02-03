@@ -8,7 +8,7 @@ class AppointmentsListSecretary extends StatefulWidget {
   @override
   _AppointmentsListSecretaryState createState() =>
       _AppointmentsListSecretaryState();
-  List<Appointment> searchList = List<Appointment>();
+  List<Appointment> searchList = <Appointment>[];
   String search = '';
   AppointmentsListSecretary(String search) {
     this.search = search;

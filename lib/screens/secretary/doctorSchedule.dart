@@ -5,6 +5,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 class DoctorSchedule extends StatefulWidget {
   @override
@@ -16,11 +17,10 @@ class _DoctorScheduleState extends State<DoctorSchedule> {
   List<bool> values = List.filled(7, false);
   List<WorkDay> workDays = [];
   bool status = true;
-
   @override
   Widget build(BuildContext context) {
     doctorData = ModalRoute.of(context).settings.arguments;
-    Size size = MediaQuery.of(context).size;
+    // bool status = doctorData['status'];
     return StreamProvider<List<WorkDay>>.value(
       value: DatabaseService().getWorkDays(doctorData['docId']),
       child: Scaffold(
@@ -84,6 +84,33 @@ class _DoctorScheduleState extends State<DoctorSchedule> {
                     ],
                   ),
                 ),
+              ),
+            ),
+            Container(
+              child: FlutterSwitch(
+                width: 125.0,
+                height: 55.0,
+                valueFontSize: 15,
+                toggleSize: 30,
+                value: status,
+                borderRadius: 30.0,
+                padding: 8.0,
+                showOnOff: true,
+                activeText: 'on',
+                activeColor: kPrimaryLightColor,
+                inactiveText: 'off',
+                onToggle: (val) async {
+                  if (status) {
+                    await DatabaseService().updateDoctorStatus(
+                        doctorID: doctorData['docId'], working: 1);
+                  } else {
+                    await DatabaseService().updateDoctorStatus(
+                        doctorID: doctorData['docId'], working: 0);
+                  }
+                  setState(() {
+                    status = val;
+                  });
+                },
               ),
             ),
             Expanded(

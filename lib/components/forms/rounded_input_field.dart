@@ -10,6 +10,7 @@ class RoundedInputField extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.obsecureText,
+    this.labelText,
   }) : super(key: key);
 
   final String hintText;
@@ -17,6 +18,8 @@ class RoundedInputField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final FormFieldValidator validator;
   final bool obsecureText;
+  final String labelText;
+
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
@@ -25,12 +28,17 @@ class RoundedInputField extends StatelessWidget {
         validator: validator,
         onChanged: onChanged,
         decoration: InputDecoration(
-            icon: Icon(
-              icon,
-              color: kPrimaryColor,
-            ),
-            hintText: hintText,
-            border: InputBorder.none),
+          labelText: labelText,
+          labelStyle: TextStyle(
+            color: kPrimaryColor,
+          ),
+          icon: Icon(
+            icon,
+            color: kPrimaryTextColor,
+          ),
+          hintText: hintText,
+          focusColor: kPrimaryColor,
+        ),
       ),
     );
   }

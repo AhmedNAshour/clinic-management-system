@@ -9,8 +9,11 @@ class Doctor {
   final String gender;
   final String branch;
   final String token;
+  final String picURL;
+  final int status;
 
   Doctor({
+    this.picURL,
     this.uid,
     this.fName,
     this.lName,
@@ -21,5 +24,6 @@ class Doctor {
     this.branch,
     this.gender,
     this.token,
+    this.status,
   });
 }

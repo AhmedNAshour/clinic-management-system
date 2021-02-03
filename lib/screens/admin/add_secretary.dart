@@ -244,15 +244,17 @@ class _AddSecretaryState extends State<AddSecretary> {
 
                                                   MyUser result = await _auth
                                                       .registerWithEmailAndPasword(
-                                                          email,
-                                                          password,
-                                                          fName,
-                                                          lName,
-                                                          phoneNumber,
-                                                          gender == 0
-                                                              ? 'male'
-                                                              : 'female',
-                                                          'secretary');
+                                                    email,
+                                                    password,
+                                                    fName,
+                                                    lName,
+                                                    phoneNumber,
+                                                    gender == 0
+                                                        ? 'male'
+                                                        : 'female',
+                                                    'secretary',
+                                                    '',
+                                                  );
                                                   if (result == null) {
                                                     setState(() {
                                                       error =
@@ -265,13 +267,14 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                         DatabaseService(
                                                             uid: result.uid);
                                                     db.updateSecretaryData(
-                                                      fName,
-                                                      lName,
-                                                      phoneNumber,
-                                                      gender == 0
+                                                      fName: fName,
+                                                      lName: lName,
+                                                      phoneNumber: phoneNumber,
+                                                      gender: gender == 0
                                                           ? 'male'
                                                           : 'female',
-                                                      branch,
+                                                      branch: branch,
+                                                      picURL: '',
                                                     );
 
                                                     await _auth.signOut();

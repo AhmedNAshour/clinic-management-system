@@ -239,15 +239,15 @@ class _AddClientState extends State<AddClient> {
                                           }
                                           MyUser result = await _auth
                                               .registerWithEmailAndPasword(
-                                                  email,
-                                                  password,
-                                                  fName,
-                                                  lName,
-                                                  phoneNumber,
-                                                  gender == 0
-                                                      ? 'male'
-                                                      : 'female',
-                                                  'client');
+                                            email,
+                                            password,
+                                            fName,
+                                            lName,
+                                            phoneNumber,
+                                            gender == 0 ? 'male' : 'female',
+                                            'client',
+                                            '',
+                                          );
                                           if (result == null) {
                                             setState(() {
                                               error = 'invalid credentials';
@@ -259,12 +259,15 @@ class _AddClientState extends State<AddClient> {
                                                 DatabaseService(
                                                     uid: result.uid);
                                             db.updateClientData(
-                                              fName,
-                                              lName,
-                                              phoneNumber,
-                                              gender == 0 ? 'male' : 'female',
-                                              numAppointments,
-                                              age,
+                                              fName: fName,
+                                              lName: lName,
+                                              phoneNumber: phoneNumber,
+                                              gender: gender == 0
+                                                  ? 'male'
+                                                  : 'female',
+                                              numAppointments: numAppointments,
+                                              age: age,
+                                              picURL: '',
                                             );
                                             await _auth.signOut();
                                             await _auth

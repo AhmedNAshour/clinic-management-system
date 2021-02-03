@@ -16,13 +16,18 @@ class DoctorCardCli extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/doctorInfoScreen', arguments: {
-          'docId': doctor.uid,
-          'fName': doctor.fName,
-          'lName': doctor.lName,
-          'profession': doctor.proffesion,
-          'about': doctor.about
-        });
+        Navigator.pushNamed(
+          context,
+          '/doctorInfoScreen',
+          arguments: {
+            'docId': doctor.uid,
+            'fName': doctor.fName,
+            'lName': doctor.lName,
+            'profession': doctor.proffesion,
+            'about': doctor.about,
+            'branch': doctor.branch,
+          },
+        );
       },
       child: Container(
         padding: EdgeInsets.all(10),
@@ -76,6 +81,8 @@ class DoctorCardCli extends StatelessWidget {
                       'lName': doctor.lName,
                       'profession': doctor.proffesion,
                       'token': doctor.token,
+                      'branch': doctor.branch,
+                      'picURL': doctor.picURL,
                     },
                   );
                 },

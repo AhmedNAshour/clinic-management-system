@@ -2,6 +2,7 @@ import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
+import 'package:clinic/models/note.dart';
 import 'package:clinic/models/secretary.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/models/workDay.dart';
@@ -33,6 +34,8 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('secretaries');
   final CollectionReference appointmentsCollection =
       FirebaseFirestore.instance.collection('appointments');
+  final CollectionReference notesCollection =
+      FirebaseFirestore.instance.collection('notes');
   final CollectionReference branchesCollection =
       FirebaseFirestore.instance.collection('branches');
 
@@ -47,6 +50,7 @@ class DatabaseService {
       phoneNumber: data['phoneNumber'],
       password: data['password'],
       email: data['email'],
+      picURL: data['picURL'],
     );
   }
 
@@ -55,8 +59,16 @@ class DatabaseService {
   }
 
   // create or update user
-  Future updateUserData(String fName, String lName, String phoneNumber,
-      String gender, String role, String password, String email) async {
+  Future updateUserData(
+    String fName,
+    String lName,
+    String phoneNumber,
+    String gender,
+    String role,
+    String password,
+    String email,
+    String picURL,
+  ) async {
     return await usersCollection.doc(uid).set({
       'fName': fName,
       'lName': lName,
@@ -65,7 +77,27 @@ class DatabaseService {
       'role': role,
       'password': password,
       'email': email,
+      'picURL': picURL,
     });
+  }
+
+  Future updateUserProfilePicture(String picURL, role) async {
+    await usersCollection.doc(uid).update({
+      'picURL': picURL,
+    });
+    if (role == 'secretary') {
+      await secretariesCollection.doc(uid).update({
+        'picURL': picURL,
+      });
+    } else if (role == 'client') {
+      await clientsCollection.doc(uid).update({
+        'picURL': picURL,
+      });
+    } else if (role == 'doctor') {
+      await doctorsCollection.doc(uid).update({
+        'picURL': picURL,
+      });
+    }
   }
 
   Future editToken(String token, role) async {
@@ -84,19 +116,35 @@ class DatabaseService {
     }
   }
 
-  Future updateSecretaryData(String fName, String lName, String phoneNumber,
-      String gender, String branch) async {
+  Future updateSecretaryData({
+    String fName,
+    String lName,
+    String phoneNumber,
+    String gender,
+    String branch,
+    String picURL,
+  }) async {
     return await secretariesCollection.doc(uid).set({
       'fName': fName,
       'lName': lName,
       'phoneNumber': phoneNumber,
       'gender': gender,
       'branch': branch,
+      'picURL': picURL,
     });
   }
 
-  Future updateDoctorData(String fName, lName, phoneNumber, gender, about,
-      profession, String branch) async {
+  Future updateDoctorData({
+    String fName,
+    lName,
+    phoneNumber,
+    gender,
+    about,
+    profession,
+    branch,
+    picURL,
+    int status,
+  }) async {
     return await doctorsCollection.doc(uid).set({
       'fName': fName,
       'lName': lName,
@@ -105,6 +153,8 @@ class DatabaseService {
       'about': about,
       'profession': profession,
       'branch': branch,
+      'status': status,
+      'picURL': picURL,
     });
   }
 
@@ -145,7 +195,10 @@ class DatabaseService {
         clientPhoneNumber: doc.data()['clientPhoneNumber'] ?? '',
         doctorFName: doc.data()['doctorFName'] ?? '',
         doctorLName: doc.data()['doctorLName'] ?? '',
+        status: doc.data()['status'] ?? '',
         docID: doc.id,
+        doctorPicURL: doc.data()['doctorPicURL'] ?? '',
+        clientPicURL: doc.data()['clientPicURL'] ?? '',
       );
     }).toList();
   }
@@ -193,9 +246,12 @@ class DatabaseService {
     String clientLName,
     String clientPhoneNumber,
     String clientGender,
+    String clientPicURL,
+    String doctorPicURL,
     String doctorFName,
     String doctorLName,
     String doctorToken,
+    String branch,
   }) async {
     return await appointmentsCollection.doc().set({
       'startTime': startTime,
@@ -210,6 +266,56 @@ class DatabaseService {
       'doctorFName': doctorFName,
       'doctorLName': doctorLName,
       'doctorToken': doctorToken,
+      'branch': branch,
+      'clientPicURL': clientPicURL,
+      'doctorPicURL': doctorPicURL,
+    });
+  }
+
+  List<Note> _notesListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Note(
+        submissionTime: doc.data()['submissionTime'] ?? '',
+        clientID: doc.data()['clientID'] ?? '',
+        doctorID: doc.data()['doctorID'] ?? '',
+        clientFName: doc.data()['clientFName'] ?? '',
+        clientLName: doc.data()['clientLName'] ?? '',
+        doctorFName: doc.data()['doctorFName'] ?? '',
+        doctorLName: doc.data()['doctorLName'] ?? '',
+      );
+    }).toList();
+  }
+
+  Stream<List<Note>> get notes {
+    return appointmentsCollection.snapshots().map(_notesListFromSnapshot);
+  }
+
+  // get doctors stream
+  Stream<List<Note>> getClientNotes(String clientId) {
+    return notesCollection
+        .where('clientID', isEqualTo: clientId)
+        .snapshots()
+        .map(_notesListFromSnapshot);
+  }
+
+  Future addNote({
+    // DateTime submissionTime,
+    String doctorID,
+    String clientID,
+    String doctorFName,
+    String clientFName,
+    String doctorLName,
+    String clientLName,
+    String note,
+  }) async {
+    return await notesCollection.doc().set({
+      'submissionTime': DateFormat("yyyy-MM-dd").format(DateTime.now()),
+      'clientID': clientID,
+      'doctorID': doctorID,
+      'clientFName': clientFName,
+      'doctorFName': doctorFName,
+      'clientLName': clientLName,
+      'doctorLName': doctorLName,
     });
   }
 
@@ -236,6 +342,7 @@ class DatabaseService {
       'clientPhoneNumber': clientPhoneNumber,
       'doctorFName': doctorFName,
       'doctorLName': doctorLName,
+      'status': 'pending',
     });
   }
 
@@ -255,8 +362,15 @@ class DatabaseService {
     });
   }
 
-  Future updateClientData(String fName, lName, phoneNumber, gender,
-      int numAppointments, int age) async {
+  Future updateClientData({
+    String fName,
+    lName,
+    phoneNumber,
+    gender,
+    picURL,
+    int numAppointments,
+    age,
+  }) async {
     return await clientsCollection.doc(uid).set({
       'fName': fName,
       'lName': lName,
@@ -264,6 +378,7 @@ class DatabaseService {
       'gender': gender,
       'numAppointments': numAppointments,
       'age': age,
+      'picURL': picURL,
     });
   }
 
@@ -278,6 +393,7 @@ class DatabaseService {
         gender: doc.data()['gender'] ?? '',
         age: doc.data()['age'] ?? '',
         uid: doc.id,
+        picURL: doc.data()['picURL'] ?? '',
       );
     }).toList();
   }
@@ -297,6 +413,7 @@ class DatabaseService {
         gender: doc.data()['gender'] ?? '',
         branch: doc.data()['branch'] ?? '',
         uid: doc.id,
+        picURL: doc.data()['picURL'] ?? '',
       );
     }).toList();
   }
@@ -317,9 +434,11 @@ class DatabaseService {
         about: doc.data()['about'] ?? '',
         proffesion: doc.data()['profession'] ?? '',
         level: doc.data()['about'] ?? 'level',
-        branch: doc.data()['branch'] ?? 0,
+        branch: doc.data()['branch'] ?? '',
         gender: doc.data()['gender'] ?? '',
         token: doc.data()['token'] ?? '',
+        status: doc.data()['status'] ?? 0,
+        picURL: doc.data()['picURL'] ?? '',
       );
     }).toList();
   }
@@ -404,6 +523,21 @@ class DatabaseService {
     }
   }
 
+  Future updateDoctorStatus({
+    int working,
+    String doctorID,
+  }) async {
+    try {
+      await doctorsCollection.doc(doctorID).update({
+        'status': working,
+      });
+      return 1;
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
   Future updateClientRemainingSessions({
     int numAppointments,
     String documentID,
@@ -421,7 +555,7 @@ class DatabaseService {
 
   static Future updateNumAppointments({
     int numAppointments,
-    documentID,
+    String documentID,
   }) async {
     try {
       await FirebaseFirestore.instance
@@ -498,9 +632,26 @@ class DatabaseService {
     return client;
   }
 
-  Future deleteAppointment(String id) async {
+  Future cancelAppointment(String id) async {
     try {
-      await appointmentsCollection.doc(id).delete();
+      await appointmentsCollection.doc(id).update({
+        'status': 'canceled',
+      });
+      return 1;
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
+  Future updateAppointmentStatus({
+    String id,
+    String status,
+  }) async {
+    try {
+      await appointmentsCollection.doc(id).update({
+        'status': status,
+      });
       return 1;
     } catch (error) {
       print(error.toString());

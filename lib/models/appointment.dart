@@ -11,8 +11,14 @@ class Appointment {
   final String doctorFName;
   final String doctorLName;
   final String docID;
+  final String branch;
+  final String status;
+  final String doctorPicURL;
+  final String clientPicURL;
 
   Appointment({
+    this.clientPicURL,
+    this.doctorPicURL,
     this.docID,
     this.startTime,
     this.endTime,
@@ -25,5 +31,7 @@ class Appointment {
     this.clientGender,
     this.doctorFName,
     this.doctorLName,
+    this.branch,
+    this.status,
   });
 }

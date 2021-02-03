@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
-import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
@@ -12,12 +11,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-class AddDoctor extends StatefulWidget {
+class AddDoctorSecreatry extends StatefulWidget {
   @override
-  _AddDoctorState createState() => _AddDoctorState();
+  _AddDoctorSecreatryState createState() => _AddDoctorSecreatryState();
 }
 
-class _AddDoctorState extends State<AddDoctor> {
+class _AddDoctorSecreatryState extends State<AddDoctorSecreatry> {
   AuthService _auth = AuthService();
 
   // text field state
@@ -49,15 +48,11 @@ class _AddDoctorState extends State<AddDoctor> {
               value: DatabaseService(uid: user.uid).userData,
               builder: (context, child) {
                 final userData = Provider.of<UserData>(context);
-                return StreamBuilder<List<Branch>>(
-                    stream: DatabaseService().branches,
+                return FutureBuilder(
+                    future: DatabaseService(uid: user.uid).getSecretaryBranch(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        List<Branch> branches = snapshot.data;
-                        if (branches.length != 0) {
-                          dummyBranchName = branches[0].name;
-                          branch = branches[0].docID;
-                        }
+                        branch = snapshot.data;
                         return Scaffold(
                           backgroundColor: kPrimaryLightColor,
                           body: Column(
@@ -170,44 +165,6 @@ class _AddDoctorState extends State<AddDoctor> {
                                             SizedBox(
                                               height: 15,
                                             ),
-                                            Container(
-                                              height: 60,
-                                              width: double.infinity,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 20, vertical: 5),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(29),
-                                              ),
-                                              child: DropdownButtonFormField(
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                icon: Icon(
-                                                  Icons.pin_drop,
-                                                  color: kPrimaryColor,
-                                                ),
-                                                hint: Text(
-                                                  'Choose branch',
-                                                ),
-
-                                                // value: selectedName ??
-                                                //     branches[0],
-                                                items: branches.map((branch) {
-                                                  return DropdownMenuItem(
-                                                    value: branch.docID,
-                                                    child:
-                                                        Text('${branch.name}'),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (val) => setState(
-                                                    () => branch = val),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 15,
-                                            ),
                                             RoundedInputField(
                                               obsecureText: false,
                                               icon: Icons.person_add_alt,
@@ -300,15 +257,17 @@ class _AddDoctorState extends State<AddDoctor> {
                                                   }
                                                   MyUser result = await _auth
                                                       .registerWithEmailAndPasword(
-                                                          email,
-                                                          password,
-                                                          fName,
-                                                          lName,
-                                                          phoneNumber,
-                                                          gender == 0
-                                                              ? 'male'
-                                                              : 'female',
-                                                          'doctor');
+                                                    email,
+                                                    password,
+                                                    fName,
+                                                    lName,
+                                                    phoneNumber,
+                                                    gender == 0
+                                                        ? 'male'
+                                                        : 'female',
+                                                    'doctor',
+                                                    '',
+                                                  );
                                                   if (result == null) {
                                                     setState(() {
                                                       error =
@@ -321,15 +280,17 @@ class _AddDoctorState extends State<AddDoctor> {
                                                         DatabaseService(
                                                             uid: result.uid);
                                                     await db.updateDoctorData(
-                                                      fName,
-                                                      lName,
-                                                      phoneNumber,
-                                                      gender == 0
+                                                      fName: fName,
+                                                      lName: lName,
+                                                      phoneNumber: phoneNumber,
+                                                      gender: gender == 0
                                                           ? 'male'
                                                           : 'female',
-                                                      about,
-                                                      profession,
-                                                      branch,
+                                                      about: about,
+                                                      profession: profession,
+                                                      branch: branch,
+                                                      status: 0,
+                                                      picURL: '',
                                                     );
                                                     await db
                                                         .updateDoctorWorkDays();

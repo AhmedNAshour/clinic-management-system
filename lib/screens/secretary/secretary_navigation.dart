@@ -5,12 +5,12 @@ import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/appointments_secretary.dart';
 import 'package:clinic/screens/secretary/booking_step1.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +20,11 @@ class SecretaryNavigation extends StatefulWidget {
 }
 
 class _SecretaryNavigationState extends State<SecretaryNavigation> {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
   List<Widget> screens = [
-    AppointmentsSecretary(),
     SecretaryHome(),
+    AppointmentsSecretary(),
+    BookingStep1(),
     BookingStep1(),
   ];
   @override
@@ -45,27 +46,37 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
       ],
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Color(0xFFF0F0F0),
           body: screens[_currentIndex],
           bottomNavigationBar: CurvedNavigationBar(
-            backgroundColor: kPrimaryLightColor,
+            backgroundColor: Colors.transparent,
             animationDuration: Duration(milliseconds: 300),
             height: 60,
-            index: 1,
+            index: 0,
             items: [
-              FaIcon(
-                FontAwesomeIcons.calendarAlt,
-                size: 30,
+              SvgPicture.asset(
+                'assets/images/home.svg',
                 color: kPrimaryColor,
+                height: size.width * 0.07,
+                width: size.width * 0.07,
               ),
-              FaIcon(
-                FontAwesomeIcons.home,
-                size: 30,
+              SvgPicture.asset(
+                'assets/images/message.svg',
                 color: kPrimaryColor,
+                height: size.width * 0.07,
+                width: size.width * 0.07,
               ),
-              FaIcon(
-                FontAwesomeIcons.plusCircle,
-                size: 30,
+              SvgPicture.asset(
+                'assets/images/notification.svg',
                 color: kPrimaryColor,
+                height: size.width * 0.07,
+                width: size.width * 0.07,
+              ),
+              SvgPicture.asset(
+                'assets/images/account.svg',
+                color: kPrimaryColor,
+                height: size.width * 0.07,
+                width: size.width * 0.07,
               ),
             ],
             onTap: (index) {

@@ -104,7 +104,7 @@ class _DoctorsAdminState extends State<DoctorsAdmin> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/secretaryAddDoctorScreen');
+              Navigator.pushNamed(context, '/adminAddDoctorScreen');
             },
             child: Icon(
               Icons.add,

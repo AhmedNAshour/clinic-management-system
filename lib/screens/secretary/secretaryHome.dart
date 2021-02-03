@@ -1,12 +1,16 @@
+import 'dart:io';
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:date_picker_timeline/date_picker_widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -18,198 +22,207 @@ class SecretaryHome extends StatefulWidget {
 class _SecretaryHomeState extends State<SecretaryHome> {
   String day = DateFormat("yyyy-MM-dd").format(DateTime.now());
   var textController = new TextEditingController();
-  String search = '';
+  String search = DateFormat('dd-MM-yyyy').format(DateTime.now());
   bool showCancel = false;
+  int selectedTab = 0;
+  var todaysDate = DateTime.now();
+
+  List<String> tabs = [
+    'Appointments',
+    'Clients',
+    'Doctors',
+  ];
+  DateTime _selectedValue = DateTime.now();
+  DatePickerController _controller = DatePickerController();
+  File newProfilePic;
+
+  //TODO: Change profile pic
+
+  Future getImage() async {
+    var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
+    setState(() {
+      newProfilePic = File(tempImage.path);
+    });
+  }
+
+  uploadImage(String uid) async {
+    final Reference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('profilePics/${uid}.jpg');
+    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
+    TaskSnapshot taskSnapshot = await task;
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) => DatabaseService(uid: uid)
+              .updateUserProfilePicture(value.toString(), 'secretary'),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
     Size size = MediaQuery.of(context).size;
-    final AuthService _auth = AuthService();
+    double screenHeight = size.height;
+    double screenWidth = size.width;
     return user != null
         ? StreamProvider<List<Appointment>>.value(
-            value: DatabaseService().getAppointmentsForSelectedDay(day),
-            child: Container(
-              width: double.infinity,
-              color: kPrimaryColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: size.height * 0.1, left: 30, right: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            await _auth.signOut();
-                          },
-                          child: Text(
-                            'Sign out',
-                            style: TextStyle(
-                                color: kPrimaryLightColor, fontSize: 14),
-                          ),
-                        ),
-                        Text(
-                          'Hello, ${user.fName}',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 38,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                                height: size.height * 0.1,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, '/clientsScreen');
-                                    },
-                                    color: Colors.white,
-                                    child: Text(
-                                      'Clients',
-                                      style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                                height: size.height * 0.1,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, '/doctorsScreen');
-                                    },
-                                    color: Colors.white,
-                                    child: Text(
-                                      'Doctors',
-                                      style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
+            value: DatabaseService().appointments,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      height: screenHeight * 0.3,
                       width: double.infinity,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      decoration: BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(53),
-                            topRight: Radius.circular(53)),
-                      ),
-                      child: Column(
+                      color: kPrimaryColor,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Form(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                              child: Row(
-                                // mainAxisAlignment:
-                                //     MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Container(
-                                      width: size.width * 0.5,
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 10),
-                                      child: TextFormField(
-                                        controller: textController,
-                                        decoration: InputDecoration(
-                                          icon: Icon(
-                                            Icons.search,
-                                            color: kPrimaryColor,
-                                          ),
-                                          hintText: "Search Appointments",
-                                          border: InputBorder.none,
-                                        ),
-                                        onChanged: (val) {
-                                          setState(() => search = val);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.cancel,
-                                      color: kPrimaryColor,
-                                    ),
-                                    enableFeedback: showCancel,
-                                    onPressed: () {
-                                      setState(() {
-                                        search = '';
-                                        textController.text = '';
-                                        showCancel = false;
-                                      });
-                                    },
-                                    // DateFormat('dd-MM-yyyy').format(value))
-                                  ),
-                                ],
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: GestureDetector(
+                              onTap: () async {
+                                await getImage();
+                                uploadImage(user.uid);
+                              },
+                              child: CircleAvatar(
+                                radius: screenWidth * 0.12,
+                                backgroundImage:
+                                    NetworkImage(user.picURL ?? ''),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Today's Appointments",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Welcome ${user.fName}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: screenWidth * 0.07,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'Heliopolis Branch',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: screenWidth * 0.05,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Expanded(
-                            child: AppointmentsListSecretary(search),
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(
+                      height: screenHeight * 0.08,
+                    ),
+                    DatePicker(
+                      DateTime(todaysDate.year, todaysDate.month - 1,
+                          todaysDate.day),
+                      width: 60,
+                      height: 80,
+                      controller: _controller,
+                      initialSelectedDate: DateTime.now(),
+                      selectionColor: kPrimaryColor,
+                      selectedTextColor: Colors.white,
+                      dateTextStyle: TextStyle(color: Color(0xFF707070)),
+                      dayTextStyle: TextStyle(color: Color(0xFF707070)),
+                      monthTextStyle: TextStyle(color: Color(0xFF707070)),
+                      onDateChange: (date) {
+                        // New date selected
+                        setState(() {
+                          _selectedValue = date;
+                          search =
+                              DateFormat('dd-MM-yyyy').format(_selectedValue);
+                          print(search);
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.04,
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: screenWidth * 0.9,
+                        child: AppointmentsListSecretary(search),
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: screenHeight * 0.245,
+                  left: -5,
+                  child: Container(
+                    height: screenWidth * 0.2,
+                    width: screenWidth * 0.2,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(45),
+                          bottomRight: Radius.circular(45),
+                          bottomLeft: Radius.circular(40),
+                        )),
                   ),
-                ],
-              ),
+                ),
+                Positioned(
+                  top: screenHeight * 0.27,
+                  left: screenWidth * 0.055,
+                  child: SvgPicture.asset(
+                    'assets/images/search.svg',
+                    color: kPrimaryColor,
+                    height: screenWidth * 0.08,
+                    width: screenWidth * 0.08,
+                  ),
+                ),
+                Positioned(
+                  top: screenHeight * 0.245,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(screenWidth * 0.02),
+                    height: screenWidth * 0.2,
+                    width: screenWidth * 0.75,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(45),
+                        bottomLeft: Radius.circular(45),
+                      ),
+                    ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: tabs.length,
+                      itemBuilder: (context, index) {
+                        return Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedTab = index;
+                              });
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              child: Text(
+                                tabs[index],
+                                style: TextStyle(
+                                  color: selectedTab == index
+                                      ? kPrimaryColor
+                                      : Color(0xFF707070),
+                                  fontSize: screenWidth * 0.06,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         : Loading();

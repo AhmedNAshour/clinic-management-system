@@ -8,7 +8,7 @@ class DoctorListSecretaryBooking extends StatefulWidget {
   @override
   _DoctorListSecretaryBookingState createState() =>
       _DoctorListSecretaryBookingState();
-  List<Doctor> searchList = List<Doctor>();
+  List<Doctor> searchList = <Doctor>[];
   String search = '';
   String branch;
   Client client;

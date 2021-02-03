@@ -2,7 +2,8 @@ class MyUser {
   final String uid;
   final String email;
   final String role;
-  MyUser({this.uid, this.email, this.role});
+  final String picURL;
+  MyUser({this.uid, this.email, this.role, this.picURL});
 }
 
 class UserData {
@@ -14,6 +15,7 @@ class UserData {
   final String role;
   final String password;
   final String email;
+  final String picURL;
 
   UserData({
     this.email,
@@ -24,5 +26,6 @@ class UserData {
     this.phoneNumber,
     this.role,
     this.gender,
+    this.picURL,
   });
 }

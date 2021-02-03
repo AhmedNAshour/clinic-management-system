@@ -121,7 +121,7 @@ class AppointmentCardClient extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () {
+          onTap: () async {
             AwesomeDialog(
               context: context,
               headerAnimationLoop: false,
@@ -138,29 +138,29 @@ class AppointmentCardClient extends StatelessWidget {
                 print('Old : $old');
                 await DatabaseService().updateClientRemainingSessions(
                     numAppointments: old + 1, documentID: appointment.clientID);
-                result = await DatabaseService()
-                    .deleteAppointment(appointment.docID);
+                result = await DatabaseService().updateAppointmentStatus(
+                    id: appointment.docID, status: 'canceled');
 
                 if (result == null) {
                   AwesomeDialog(
-                      context: context,
-                      headerAnimationLoop: false,
-                      dialogType: DialogType.ERROR,
-                      animType: AnimType.BOTTOMSLIDE,
-                      body: Align(
-                        alignment: Alignment.center,
-                        child: Center(
-                          child: Text(
-                            'COULD NOT CANCEL APPOINTMENT..',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                            textAlign: TextAlign.center,
-                          ),
+                    context: context,
+                    headerAnimationLoop: false,
+                    dialogType: DialogType.ERROR,
+                    animType: AnimType.BOTTOMSLIDE,
+                    body: Align(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Text(
+                          'COULD NOT CANCEL APPOINTMENT..',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      onDissmissCallback: () {},
-                      btnOkOnPress: () {})
-                    ..show();
+                    ),
+                    onDissmissCallback: () {},
+                    btnOkOnPress: () {},
+                  )..show();
                 } else {
                   //Navigator.pop(context);
                   AwesomeDialog(

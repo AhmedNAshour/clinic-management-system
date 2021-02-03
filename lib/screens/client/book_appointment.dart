@@ -367,6 +367,14 @@ class _BookAppointmentState extends State<BookAppointment> {
                                                               .phoneNumber,
                                                       clientGender:
                                                           clientData.gender,
+                                                      branch:
+                                                          doctorData['branch'],
+                                                      clientPicURL:
+                                                          clientData.picURL ??
+                                                              '',
+                                                      doctorPicURL: doctorData[
+                                                              'picURL'] ??
+                                                          '',
                                                     );
                                                     DatabaseService
                                                         .updateNumAppointments(
