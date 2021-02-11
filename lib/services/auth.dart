@@ -1,6 +1,7 @@
 import 'package:clinic/models/user.dart';
 import 'package:clinic/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -43,6 +44,26 @@ class AuthService {
           fName, lName, phoneNumber, gender, role, password, email, picURL);
 
       return _userFromFirbaseUser(user);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future createUserWithEmailAndPasword(String email, password, fName, lName,
+      phoneNumber, gender, role, picURL) async {
+    FirebaseApp tempApp = await Firebase.initializeApp(
+        name: 'temporaryregister', options: Firebase.app().options);
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instanceFor(app: tempApp)
+              .createUserWithEmailAndPassword(email: email, password: password);
+      User user = userCredential.user;
+      await user.updateProfile(photoURL: picURL);
+      // create new document for the user with the uid
+      await DatabaseService(uid: user.uid).updateUserData(
+          fName, lName, phoneNumber, gender, role, password, email, picURL);
+      await tempApp.delete();
+      return Future.sync(() => _userFromFirbaseUser(user));
     } catch (e) {
       return null;
     }

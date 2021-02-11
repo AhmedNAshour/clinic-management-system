@@ -6,8 +6,10 @@ class Secretary {
   final String gender;
   final String branch;
   final String picURL;
+  final String token;
 
   Secretary({
+    this.token,
     this.picURL,
     this.uid,
     this.fName,

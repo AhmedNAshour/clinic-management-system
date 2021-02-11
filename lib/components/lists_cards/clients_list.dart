@@ -35,7 +35,7 @@ class _ClientListState extends State<ClientList> {
             bdate); //to get the order other way just switch `adate & bdate`
       });
     });
-    if (widget.search == null) {
+    if (widget.search == '') {
       return ListView.builder(
         itemCount: clients.length,
         itemBuilder: (context, index) {

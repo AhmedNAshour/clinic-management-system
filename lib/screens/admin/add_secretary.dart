@@ -266,7 +266,8 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                     DatabaseService db =
                                                         DatabaseService(
                                                             uid: result.uid);
-                                                    db.updateSecretaryData(
+                                                    await db
+                                                        .updateSecretaryData(
                                                       fName: fName,
                                                       lName: lName,
                                                       phoneNumber: phoneNumber,
@@ -276,7 +277,6 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                       branch: branch,
                                                       picURL: '',
                                                     );
-
                                                     await _auth.signOut();
                                                     await _auth
                                                         .signInWithEmailAndPassword(

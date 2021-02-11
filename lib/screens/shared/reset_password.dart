@@ -42,41 +42,41 @@ class _ResetPasswordState extends State<ResetPassword> {
             child: Scaffold(
               // resizeToAvoidBottomInset: false,
               // resizeToAvoidBottomPadding: false,
-              body: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(size.width * 0.04),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(Icons.arrow_back_ios),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.08,
-                        ),
-                        Center(
-                          child: Container(
-                            padding: EdgeInsets.all(size.width * 0.04),
-                            child: Text(
-                              'Reset Password',
-                              style: TextStyle(
-                                fontSize: size.width * 0.06,
-                                color: kPrimaryTextColor,
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(size.width * 0.04),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.arrow_back_ios),
+                          ),
+                          SizedBox(
+                            width: size.width * 0.08,
+                          ),
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.all(size.width * 0.04),
+                              child: Text(
+                                'Reset Password',
+                                style: TextStyle(
+                                  fontSize: size.width * 0.06,
+                                  color: kPrimaryTextColor,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.15,
-                  ),
-                  Center(
-                    child: SingleChildScrollView(
+                    SizedBox(
+                      height: size.height * 0.15,
+                    ),
+                    Center(
                       child: Column(
                         children: [
                           SvgPicture.asset('assets/images/ResetPassword.svg'),
@@ -125,7 +125,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                 BorderRadius.circular(10),
                                           ),
                                           content: Container(
-                                            height: size.height * 0.45,
+                                            height: size.height * 0.5,
                                             width: size.width * 0.8,
                                             child: Column(
                                               mainAxisAlignment:
@@ -133,13 +133,13 @@ class _ResetPasswordState extends State<ResetPassword> {
                                               children: [
                                                 Container(
                                                   child: SvgPicture.asset(
-                                                    'assets/images/check.svg',
+                                                    'assets/images/check2.svg',
                                                     fit: BoxFit.none,
                                                     color: Colors.white,
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  height: size.height * 0.1,
+                                                  height: size.height * 0.05,
                                                 ),
                                                 Text(
                                                   'Password Sent',
@@ -237,8 +237,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

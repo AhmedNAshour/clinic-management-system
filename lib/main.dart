@@ -9,6 +9,7 @@ import 'package:clinic/screens/client/client_info.dart';
 import 'package:clinic/screens/client/doctor_info.dart';
 import 'package:clinic/screens/secretary/addClient.dart';
 import 'package:clinic/screens/secretary/addDoctorSecretary.dart';
+import 'package:clinic/screens/secretary/appLanguage.dart';
 import 'package:clinic/screens/secretary/appointments_secretary.dart';
 import 'package:clinic/screens/secretary/booking_step1.dart';
 import 'package:clinic/screens/secretary/booking_step2.dart';
@@ -17,6 +18,7 @@ import 'package:clinic/screens/secretary/clients.dart';
 import 'package:clinic/screens/secretary/doctorSchedule.dart';
 import 'package:clinic/screens/secretary/doctors.dart';
 import 'package:clinic/screens/secretary/doctors_admin.dart';
+import 'package:clinic/screens/secretary/notificationSettings.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
 import 'package:clinic/screens/secretary/secretary_navigation.dart';
 import 'package:clinic/screens/shared/reset_password.dart';
@@ -26,7 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:clinic/screens/admin/addDoctorAdmin.dart';
-
+import 'package:clinic/screens/secretary/changePassword.dart';
 import 'models/user.dart';
 
 void main() async {
@@ -46,7 +48,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         // locale: DevicePreview.of(context).locale,
         // builder: DevicePreview.appBuilder,
-        theme: ThemeData(fontFamily: 'Roboto'),
+        theme: ThemeData(
+          fontFamily: 'Roboto',
+        ),
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
@@ -59,21 +63,24 @@ class MyApp extends StatelessWidget {
           '/doctorsScreenAdmin': (context) => DoctorsAdmin(),
           '/doctorScheduleScreen': (context) => DoctorSchedule(),
           '/secretaryAddClientScreen': (context) => AddClient(),
-          '/secretaryAddDoctorScreen': (context) => AddDoctorSecreatry(),
+          AddDoctorSec.id: (context) => AddDoctorSec(),
           '/adminAddDoctorScreen': (context) => AddDoctorAdmin(),
           '/bookingScreen': (context) => BookAppointment(),
-          '/doctorInfoScreen': (context) => DoctorInfo(),
+          DoctorProfileSec.id: (context) => DoctorProfileSec(),
           '/appointmentsScreenAdmin': (context) => AppointmentsAdmin(),
           '/appointmentsScreenSecretary': (context) => AppointmentsSecretary(),
           '/branchesScreen': (context) => Branches(),
           '/secretariesScreen': (context) => Secretaries(),
           '/secretaryNavigation': (context) => SecretaryNavigation(),
           '/addSecretaryScreen': (context) => AddSecretary(),
-          '/clientInfoScreen': (context) => ClientInfo(),
+          ClientProfile.id: (context) => ClientProfile(),
           '/bookingStep1': (context) => BookingStep1(),
           '/bookingStep2': (context) => BookingStep2(),
           '/bookingStep3': (context) => BookingStep3(),
           ResetPassword.id: (context) => ResetPassword(),
+          ChangePassword.id: (context) => ChangePassword(),
+          NotificationSettings.id: (context) => NotificationSettings(),
+          AppLanguage.id: (context) => AppLanguage(),
         },
       ),
     );

@@ -1,11 +1,11 @@
 import 'package:clinic/components/lists_cards/doctor_card_client.dart';
-import 'package:clinic/components/lists_cards/doctor_card_secretary.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'doctor_card_secretary.dart';
 
 class DoctorListClient extends StatefulWidget {
   @override

@@ -3,7 +3,6 @@ import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/appointments_secretary.dart';
-import 'package:clinic/screens/secretary/booking_step1.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
 import 'package:clinic/services/database.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -11,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../models/secretary.dart';
+import 'notifications_secretary.dart';
+import 'profile_secretary.dart';
 
 class SecretaryNavigation extends StatefulWidget {
   @override
@@ -24,8 +25,9 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
   List<Widget> screens = [
     SecretaryHome(),
     AppointmentsSecretary(),
-    BookingStep1(),
-    BookingStep1(),
+    AppointmentsSecretary(),
+    NotificationsSecretary(),
+    ProfileSecretary(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,9 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
         StreamProvider<List<Client>>.value(
           value: DatabaseService().clients,
         ),
+        StreamProvider<Secretary>.value(
+          value: DatabaseService(uid: user.uid).secretary,
+        ),
       ],
       child: SafeArea(
         child: Scaffold(
@@ -56,6 +61,12 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
             items: [
               SvgPicture.asset(
                 'assets/images/home.svg',
+                color: kPrimaryColor,
+                height: size.width * 0.07,
+                width: size.width * 0.07,
+              ),
+              SvgPicture.asset(
+                'assets/images/appointments.svg',
                 color: kPrimaryColor,
                 height: size.width * 0.07,
                 width: size.width * 0.07,

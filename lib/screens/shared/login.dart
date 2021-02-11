@@ -6,7 +6,6 @@ import 'package:clinic/services/auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;

@@ -1,6 +1,7 @@
 import 'package:clinic/components/forms/text_field_container.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class RoundedInputField extends StatelessWidget {
   const RoundedInputField({
@@ -22,6 +23,7 @@ class RoundedInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return TextFieldContainer(
       child: TextFormField(
         obscureText: obsecureText,

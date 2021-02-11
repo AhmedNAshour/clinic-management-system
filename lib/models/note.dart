@@ -6,7 +6,11 @@ class Note {
   final String clientLName;
   final String doctorFName;
   final String doctorLName;
+  final String doctorPicUrl;
+  final String body;
   Note({
+    this.body,
+    this.doctorPicUrl,
     this.submissionTime,
     this.doctorID,
     this.clientID,

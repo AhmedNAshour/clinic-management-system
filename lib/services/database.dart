@@ -54,6 +54,27 @@ class DatabaseService {
     );
   }
 
+  Secretary _secretaryFromSnapshot(DocumentSnapshot snapshot) {
+    Map data = snapshot.data();
+    return Secretary(
+      uid: uid,
+      fName: data['fName'],
+      lName: data['lName'],
+      gender: data['gender'],
+      phoneNumber: data['phoneNumber'],
+      picURL: data['picURL'],
+      token: data['token'],
+      branch: data['branch'],
+    );
+  }
+
+  Stream<Secretary> get secretary {
+    return secretariesCollection
+        .doc(uid)
+        .snapshots()
+        .map(_secretaryFromSnapshot);
+  }
+
   Stream<UserData> get userData {
     return usersCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
@@ -203,6 +224,21 @@ class DatabaseService {
     }).toList();
   }
 
+  // uploadImage(String uid) async {
+  //   var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
+  //   setState(() {
+  //     newProfilePic = File(tempImage.path);
+  //   });
+  //   final Reference firebaseStorageRef =
+  //       FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
+  //   UploadTask task = firebaseStorageRef.putFile(newProfilePic);
+  //   TaskSnapshot taskSnapshot = await task;
+  //   taskSnapshot.ref.getDownloadURL().then(
+  //         (value) => DatabaseService(uid: uid)
+  //             .updateUserProfilePicture(value.toString(), 'secretary'),
+  //       );
+  // }
+
   Stream<List<Appointment>> getDoctorAppointmentsForSelectedDay(
       String doctorID, day) {
     return appointmentsCollection
@@ -282,6 +318,8 @@ class DatabaseService {
         clientLName: doc.data()['clientLName'] ?? '',
         doctorFName: doc.data()['doctorFName'] ?? '',
         doctorLName: doc.data()['doctorLName'] ?? '',
+        doctorPicUrl: doc.data()['doctorPicUrl'] ?? '',
+        body: doc.data()['body'] ?? '',
       );
     }).toList();
   }
@@ -298,6 +336,13 @@ class DatabaseService {
         .map(_notesListFromSnapshot);
   }
 
+  Stream<List<Note>> getDoctorNotes(String doctorID) {
+    return notesCollection
+        .where('doctorID', isEqualTo: doctorID)
+        .snapshots()
+        .map(_notesListFromSnapshot);
+  }
+
   Future addNote({
     // DateTime submissionTime,
     String doctorID,
@@ -306,7 +351,8 @@ class DatabaseService {
     String clientFName,
     String doctorLName,
     String clientLName,
-    String note,
+    String body,
+    String doctorPicUrl,
   }) async {
     return await notesCollection.doc().set({
       'submissionTime': DateFormat("yyyy-MM-dd").format(DateTime.now()),
@@ -316,6 +362,8 @@ class DatabaseService {
       'doctorFName': doctorFName,
       'clientLName': clientLName,
       'doctorLName': doctorLName,
+      'body': body,
+      'doctorPicUrl': doctorPicUrl,
     });
   }
 
@@ -367,7 +415,7 @@ class DatabaseService {
     lName,
     phoneNumber,
     gender,
-    picURL,
+    email,
     int numAppointments,
     age,
   }) async {
@@ -378,7 +426,7 @@ class DatabaseService {
       'gender': gender,
       'numAppointments': numAppointments,
       'age': age,
-      'picURL': picURL,
+      'email': email,
     });
   }
 
@@ -394,6 +442,7 @@ class DatabaseService {
         age: doc.data()['age'] ?? '',
         uid: doc.id,
         picURL: doc.data()['picURL'] ?? '',
+        email: doc.data()['email'] ?? '',
       );
     }).toList();
   }

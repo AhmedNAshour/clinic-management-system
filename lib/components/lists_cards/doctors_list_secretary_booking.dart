@@ -1,8 +1,8 @@
-import 'package:clinic/components/lists_cards/doctor_card_secretary_booking.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'doctor_card_secretary.dart';
 
 class DoctorListSecretaryBooking extends StatefulWidget {
   @override
@@ -41,16 +41,14 @@ class _DoctorListSecretaryBookingState
       return ListView.builder(
         itemCount: doctors.length,
         itemBuilder: (context, index) {
-          return DoctorCardSecretaryBooking(
-              doctor: doctors[index], client: widget.client);
+          return DoctorCardSec(doctor: doctors[index]);
         },
       );
     } else {
       return ListView.builder(
         itemCount: widget.searchList.length,
         itemBuilder: (context, index) {
-          return DoctorCardSecretaryBooking(
-              doctor: widget.searchList[index], client: widget.client);
+          return DoctorCardSec(doctor: widget.searchList[index]);
         },
       );
     }

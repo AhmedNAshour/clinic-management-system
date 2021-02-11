@@ -1,19 +1,21 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:clinic/components/forms/rounded_button..dart';
-import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/components/info_card.dart';
+import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-class ClientInfo extends StatefulWidget {
+class ClientProfile extends StatefulWidget {
+  static const id = 'ClientProfile';
   @override
-  _ClientInfoState createState() => _ClientInfoState();
+  _ClientProfileState createState() => _ClientProfileState();
 }
 
-class _ClientInfoState extends State<ClientInfo> {
+class _ClientProfileState extends State<ClientProfile> {
   // text field state
 
   bool loading = false;
@@ -33,266 +35,110 @@ class _ClientInfoState extends State<ClientInfo> {
     }
     return loading
         ? Loading()
-        : SafeArea(
-            child: StreamProvider<UserData>.value(
-              value: DatabaseService(uid: user.uid).userData,
-              builder: (context, child) {
-                final userData = Provider.of<UserData>(context);
-                return Scaffold(
-                  backgroundColor: kPrimaryLightColor,
-                  body: Column(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 53),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    height: 40,
-                                    width: 100,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Icon(
-                                          Icons.arrow_back,
-                                          color: kPrimaryLightColor,
-                                        ),
-                                        Text(
-                                          'BACK',
-                                          style: TextStyle(
-                                              color: kPrimaryLightColor,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 20),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: AutoSizeText(
-                                    'Client Info',
-                                    style: TextStyle(
-                                        fontSize: 55,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                    minFontSize: 30,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+        : MultiProvider(
+            providers: [
+              StreamProvider<UserData>.value(
+                  value: DatabaseService(uid: user.uid).userData),
+              StreamProvider<List<Note>>.value(
+                  value: DatabaseService(uid: user.uid)
+                      .getClientNotes(clientData['uid'])),
+            ],
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              body: Padding(
+                padding: EdgeInsets.only(
+                  top: size.height * 0.04,
+                  right: size.width * 0.04,
+                  left: size.width * 0.04,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/call.svg',
+                          height: size.height * 0.05,
+                          width: size.width * 0.05,
+                        ),
+                        SizedBox(
+                          width: size.width * 0.05,
+                        ),
+                        CircleAvatar(
+                          radius: size.width * 0.12,
+                          backgroundImage: clientData['picUrl'] != ''
+                              ? NetworkImage(
+                                  clientData['picUrl'],
+                                )
+                              : AssetImage('assets/images/userPlaceholder.png'),
+                        ),
+                        SizedBox(
+                          width: size.width * 0.05,
+                        ),
+                        SvgPicture.asset(
+                          'assets/images/chat.svg',
+                          height: size.height * 0.05,
+                          width: size.width * 0.05,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: size.height * 0.01,
+                    ),
+                    InkWell(
+                      onTap: () async {},
+                      child: Text(
+                        'Edit',
+                        style: TextStyle(
+                          color: kPrimaryColor,
+                          fontSize: 14,
                         ),
                       ),
-                      Expanded(
-                        flex: 4,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 53, vertical: 40),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(53),
-                                topRight: Radius.circular(53)),
-                          ),
-                          child: Container(
-                            // height: size.height * 0.5,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AutoSizeText(
-                                    'Name: ${clientData['fName']} ${clientData['lName']}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  AutoSizeText(
-                                    'Age: ${clientData['age']}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  AutoSizeText(
-                                    'Gender: ${clientData['gender']}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  AutoSizeText(
-                                    'Phone number: ${clientData['phoneNumber']}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  AutoSizeText(
-                                    'Remaining appointments: ${clientData['numAppointments']}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  RoundedButton(
-                                    press: () {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return FractionallySizedBox(
-                                              heightFactor: 0.7,
-                                              child: DraggableScrollableSheet(
-                                                  initialChildSize: 1.0,
-                                                  maxChildSize: 1.0,
-                                                  minChildSize: 0.25,
-                                                  builder: (BuildContext
-                                                          context,
-                                                      ScrollController
-                                                          scrollController) {
-                                                    return SingleChildScrollView(
-                                                      child: Container(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 20,
-                                                                vertical: 40),
-                                                        child: Column(
-                                                          children: <Widget>[
-                                                            Text(
-                                                              'Add Sessions',
-                                                              style: TextStyle(
-                                                                color:
-                                                                    kPrimaryColor,
-                                                                fontSize: 30,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            Text(
-                                                              'Current number: $curSessions',
-                                                              style: TextStyle(
-                                                                color:
-                                                                    kPrimaryColor,
-                                                                fontSize: 25,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Form(
-                                                              key: _formKey,
-                                                              child: Column(
-                                                                children: [
-                                                                  RoundedInputField(
-                                                                    icon: Icons
-                                                                        .add,
-                                                                    obsecureText:
-                                                                        false,
-                                                                    hintText:
-                                                                        'New number',
-                                                                    onChanged:
-                                                                        (val) {
-                                                                      setState(() =>
-                                                                          newSessions =
-                                                                              int.parse(val));
-                                                                    },
-                                                                    validator: (val) => val
-                                                                            .isEmpty
-                                                                        ? 'Enter a valid number'
-                                                                        : null,
-                                                                  ),
-                                                                  RoundedButton(
-                                                                    text: 'Add',
-                                                                    press:
-                                                                        () async {
-                                                                      if (_formKey
-                                                                          .currentState
-                                                                          .validate()) {
-                                                                        await DatabaseService().updateClientRemainingSessions(
-                                                                            numAppointments:
-                                                                                newSessions,
-                                                                            documentID:
-                                                                                clientData['uid']);
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          10),
-                                                                  Text(
-                                                                    error,
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .red,
-                                                                        fontSize:
-                                                                            14),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }),
-                                            );
-                                          },
-                                          isScrollControlled: true);
-                                    },
-                                    text: 'ADD SESSIONS',
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                    ),
+                    InfoCard(
+                      title: 'Client name',
+                      body: '${clientData['fName']} ${clientData['lName']}',
+                    ),
+                    InfoCard(
+                      title: 'Age',
+                      body: '${clientData['age']}',
+                    ),
+                    InfoCard(
+                      title: 'Phone number',
+                      body: '${clientData['phoneNumber']}',
+                    ),
+                    InfoCard(
+                      title: 'Remaining sessions',
+                      body: '${clientData['numAppointments']}',
+                    ),
+                    InfoCard(
+                      title: 'Email',
+                      body: '${clientData['email']}',
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Doctors notes',
+                        style: TextStyle(
+                          color: kPrimaryTextColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: size.width * 0.05,
                         ),
                       ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        width: size.width * 0.9,
+                        child: NotesList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
   }

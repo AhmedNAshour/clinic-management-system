@@ -42,9 +42,9 @@ class _AppointmentsListSecretaryState extends State<AppointmentsListSecretary> {
     });
 
     if (widget.search == "") {
-      appointments = appointments
-          .where((element) => element.endTime.isAfter(DateTime.now()))
-          .toList();
+      // appointments = appointments
+      //     .where((element) => element.endTime.isAfter(DateTime.now()))
+      //     .toList();
       appointments.sort((a, b) {
         var adate = a.startTime; //before -> var adate = a.expiry;
         var bdate = b.startTime; //before -> var bdate = b.expiry;

@@ -7,8 +7,10 @@ class Client {
   final int numAppointments;
   final int age;
   final String picURL;
+  final String email;
 
   Client({
+    this.email,
     this.picURL,
     this.uid,
     this.fName,
