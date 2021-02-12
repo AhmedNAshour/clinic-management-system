@@ -1,10 +1,7 @@
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
-import 'package:clinic/models/appointment.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 class AppointmentsSecretary extends StatefulWidget {
   @override

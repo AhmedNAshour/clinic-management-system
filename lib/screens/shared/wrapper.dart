@@ -45,7 +45,7 @@ class _WrapperState extends State<Wrapper> {
                   future: DatabaseService(uid: user.uid).getSecretaryBranch(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      print('Branch: ${snapshot.data}');
+                      // print('Branch: ${snapshot.data}');
                       _fcm.subscribeToTopic(
                           'reservationIn${snapshot.data}Branch');
                       return SecretaryNavigation();

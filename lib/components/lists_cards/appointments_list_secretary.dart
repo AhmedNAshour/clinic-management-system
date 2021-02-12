@@ -1,7 +1,6 @@
 import 'package:clinic/components/lists_cards/appointment_card.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AppointmentsListSecretary extends StatefulWidget {
@@ -20,26 +19,26 @@ class _AppointmentsListSecretaryState extends State<AppointmentsListSecretary> {
   Widget build(BuildContext context) {
     List<Appointment> appointments =
         Provider.of<List<Appointment>>(context) ?? [];
-    setState(() {
-      //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
-      widget.searchList = appointments
-          .where((element) => (element.clientFName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.doctorFName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              DateFormat('dd-MM-yyyy')
-                  .format(element.startTime)
-                  .contains(widget.search)))
-          .toList();
-      widget.searchList.sort((a, b) {
-        var adate = a.startTime; //before -> var adate = a.expiry;
-        var bdate = b.startTime; //before -> var bdate = b.expiry;
-        return adate.compareTo(
-            bdate); //to get the order other way just switch `adate & bdate`
-      });
-    });
+    // setState(() {
+    //   //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
+    //   widget.searchList = appointments
+    //       .where((element) => (element.clientFName
+    //               .toLowerCase()
+    //               .contains(widget.search.toLowerCase()) ||
+    //           element.doctorFName
+    //               .toLowerCase()
+    //               .contains(widget.search.toLowerCase()) ||
+    //           DateFormat('yyyy-MM-dd')
+    //               .format(element.startTime)
+    //               .contains(widget.search)))
+    //       .toList();
+    //   widget.searchList.sort((a, b) {
+    //     var adate = a.startTime; //before -> var adate = a.expiry;
+    //     var bdate = b.startTime; //before -> var bdate = b.expiry;
+    //     return adate.compareTo(
+    //         bdate); //to get the order other way just switch `adate & bdate`
+    //   });
+    // });
 
     if (widget.search == "") {
       // appointments = appointments

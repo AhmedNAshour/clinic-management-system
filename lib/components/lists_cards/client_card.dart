@@ -6,6 +6,7 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../models/customBottomSheets.dart';
 
 class ClientCard extends StatefulWidget {
   ClientCard({
@@ -34,17 +35,19 @@ class _ClientCardState extends State<ClientCard> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, ClientProfile.id, arguments: {
-                  'fName': widget.client.fName,
-                  'lName': widget.client.lName,
-                  'age': widget.client.age,
-                  'gender': widget.client.gender,
-                  'numAppointments': widget.client.numAppointments,
-                  'phoneNumber': widget.client.phoneNumber,
-                  'uid': widget.client.uid,
-                  'picUrl': widget.client.picURL,
-                  'email': widget.client.email,
-                });
+                CustomBottomSheets().showCustomBottomSheet(
+                    size, ClientProfile(widget.client), context);
+                // Navigator.pushNamed(context, ClientProfile.id, arguments: {
+                //   'fName': widget.client.fName,
+                //   'lName': widget.client.lName,
+                //   'age': widget.client.age,
+                //   'gender': widget.client.gender,
+                //   'numAppointments': widget.client.numAppointments,
+                //   'phoneNumber': widget.client.phoneNumber,
+                //   'uid': widget.client.uid,
+                //   'picUrl': widget.client.picURL,
+                //   'email': widget.client.email,
+                // });
               },
               child: Container(
                 height: screenHeight * 0.16,
@@ -159,9 +162,14 @@ class _ClientCardState extends State<ClientCard> {
                 onTap: () {
                   showModalBottomSheet(
                     context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0)),
+                    ),
                     builder: (context) {
                       return FractionallySizedBox(
-                        heightFactor: 0.3,
+                        heightFactor: 0.35,
                         child: DraggableScrollableSheet(
                             initialChildSize: 1.0,
                             maxChildSize: 1.0,
@@ -186,11 +194,41 @@ class _ClientCardState extends State<ClientCard> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
-                                        Text(
-                                          'Add Sessions',
-                                          style: TextStyle(
-                                            fontSize: size.width * 0.05,
-                                            color: kPrimaryTextColor,
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: size.width * 0.02,
+                                              right: size.width * 0.02,
+                                              bottom: size.height * 0.01),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                width: size.height * 0.001,
+                                                color: kPrimaryLightColor,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                'Add Sessions',
+                                                style: TextStyle(
+                                                    fontSize: size.width * 0.05,
+                                                    color: kPrimaryTextColor),
+                                              ),
+                                              SizedBox(width: size.width * 0.2),
+                                              IconButton(
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: kPrimaryTextColor,
+                                                  size: size.width * 0.085,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
                                           ),
                                         ),
                                         SizedBox(

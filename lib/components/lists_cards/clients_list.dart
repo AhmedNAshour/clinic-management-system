@@ -19,21 +19,21 @@ class _ClientListState extends State<ClientList> {
     final clients = Provider.of<List<Client>>(context) ?? [];
     setState(() {
       //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
-      widget.searchList = clients
-          .where((element) => (element.fName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.lName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.phoneNumber.contains(widget.search)))
-          .toList();
-      widget.searchList.sort((a, b) {
-        var adate = a.fName; //before -> var adate = a.expiry;
-        var bdate = b.fName; //before -> var bdate = b.expiry;
-        return adate.compareTo(
-            bdate); //to get the order other way just switch `adate & bdate`
-      });
+      // widget.searchList = clients
+      //     .where((element) => (element.fName
+      //             .toLowerCase()
+      //             .contains(widget.search.toLowerCase()) ||
+      //         element.lName
+      //             .toLowerCase()
+      //             .contains(widget.search.toLowerCase()) ||
+      //         element.phoneNumber.contains(widget.search)))
+      //     .toList();
+      // widget.searchList.sort((a, b) {
+      //   var adate = a.fName; //before -> var adate = a.expiry;
+      //   var bdate = b.fName; //before -> var bdate = b.expiry;
+      //   return adate.compareTo(
+      //       bdate); //to get the order other way just switch `adate & bdate`
+      // });
     });
     if (widget.search == '') {
       return ListView.builder(

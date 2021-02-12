@@ -24,20 +24,20 @@ class _DoctorListSecretaryBookingState
   @override
   Widget build(BuildContext context) {
     final doctors = Provider.of<List<Doctor>>(context) ?? [];
-    setState(() {
-      //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
-      widget.searchList = doctors
-          .where((element) => (element.fName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.lName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.phoneNumber.contains(widget.search) &&
-                  element.branch == widget.branch))
-          .toList();
-    });
-    if (widget.search == null) {
+    // setState(() {
+    //   //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
+    //   widget.searchList = doctors
+    //       .where((element) => (element.fName
+    //               .toLowerCase()
+    //               .contains(widget.search.toLowerCase()) ||
+    //           element.lName
+    //               .toLowerCase()
+    //               .contains(widget.search.toLowerCase()) ||
+    //           element.phoneNumber.contains(widget.search) &&
+    //               element.branch == widget.branch))
+    //       .toList();
+    // });
+    if (widget.search == '') {
       return ListView.builder(
         itemCount: doctors.length,
         itemBuilder: (context, index) {

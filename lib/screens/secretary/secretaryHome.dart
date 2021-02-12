@@ -1,17 +1,22 @@
 import 'dart:io';
+import 'package:clinic/components/forms/rounded_button..dart';
+import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/components/forms/secretary_search_appointments.dart';
+import 'package:clinic/components/forms/secretary_search_clients.dart';
+import 'package:clinic/components/forms/secretary_search_doctors.dart';
+import 'package:clinic/components/forms/text_field_container.dart';
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
 import 'package:clinic/models/appointment.dart';
+import 'package:clinic/models/client.dart';
+import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/secretary/changePassword.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../components/lists_cards/clients_list.dart';
@@ -19,6 +24,8 @@ import '../../models/secretary.dart';
 import '../../components/lists_cards/doctors_list_secretary_booking.dart';
 import 'addDoctorSecretary.dart';
 import '../../services/auth.dart';
+import 'addClient.dart';
+import '../../models/customBottomSheets.dart';
 
 class SecretaryHome extends StatefulWidget {
   @override
@@ -26,13 +33,11 @@ class SecretaryHome extends StatefulWidget {
 }
 
 class _SecretaryHomeState extends State<SecretaryHome> {
-  String day = DateFormat("yyyy-MM-dd").format(DateTime.now());
   var textController = new TextEditingController();
-  String search = DateFormat('dd-MM-yyyy').format(DateTime.now());
+  String dateSearch = DateFormat("yyyy-MM-dd").format(DateTime.now());
   bool showCancel = false;
   int selectedTab = 0;
   var todaysDate = DateTime.now();
-
   String email = '';
   String password = '';
   String fName = '';
@@ -40,40 +45,93 @@ class _SecretaryHomeState extends State<SecretaryHome> {
   String phoneNumber = '';
   String error = '';
   int numAppointments = 0;
-  int gender = 0;
-  int age;
   bool loading = false;
   String curEmail;
   String curPassword;
-
+  String searchDoctorNameAppointment = '';
+  String searchClientNameAppointment = '';
+  String searchClientNumberAppointment = '';
+  String searchDoctorName = '';
+  String searchClientName = '';
+  String searchClientNumber = '';
+  var dateTextController = new TextEditingController();
+  DateTime _selectedValue = DateTime.now();
+  DatePickerController _controller = DatePickerController();
+  File newProfilePic;
   List<String> tabs = [
     'Appointments',
     'Clients',
     'Doctors',
   ];
 
-  DateTime _selectedValue = DateTime.now();
-  DatePickerController _controller = DatePickerController();
-  File newProfilePic;
-
-  //TODO: Change profile pic
-
-  Future getImage() async {
-    var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
+  changeDateSearch(newDate) {
     setState(() {
-      newProfilePic = File(tempImage.path);
+      dateSearch = newDate;
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
-        );
+  changeDoctorNameSearchAppointments(newDoctorName) {
+    setState(() {
+      searchDoctorNameAppointment = newDoctorName;
+    });
+  }
+
+  changeClientNameSearchAppointments(newClientName) {
+    setState(() {
+      searchClientNameAppointment = newClientName;
+    });
+  }
+
+  changeClientNumberSearchAppointments(newClientNumber) {
+    setState(() {
+      searchClientNumberAppointment = newClientNumber;
+    });
+  }
+
+  changeDoctorNameSearc(newDoctorName) {
+    setState(() {
+      searchDoctorName = newDoctorName;
+    });
+  }
+
+  changeClientNameSearch(newClientName) {
+    setState(() {
+      searchClientName = newClientName;
+    });
+  }
+
+  changeClientNumberSearch(newClientNumber) {
+    setState(() {
+      searchClientNumber = newClientNumber;
+    });
+  }
+
+  Widget displayAppropriateSearchForm(int selectedTab) {
+    if (selectedTab == 0) {
+      return SearchAppointmentsForm(
+        dateSearch: dateSearch,
+        dateTextController: dateTextController,
+        changeDateSearch: changeDateSearch,
+        changeClientNameSearch: changeClientNameSearchAppointments,
+        changeClientNumberSearch: changeClientNumberSearchAppointments,
+        changeDoctorNameSearch: changeDoctorNameSearchAppointments,
+        doctorNameSearch: searchDoctorNameAppointment,
+        clientNameSearch: searchClientNameAppointment,
+        clientNumberSearch: searchClientNumberAppointment,
+      );
+    } else if (selectedTab == 1) {
+      return SearchClientsForm(
+        changeClientNameSearch: changeClientNameSearch,
+        changeClientNumberSearch: changeClientNumberSearch,
+        clientNameSearch: searchClientName,
+        clientNumberSearch: searchClientNumber,
+      );
+    } else {
+      return SearchDoctorsForm(
+        changeDoctorNameSearch: changeDoctorNameSearc,
+        doctorNameSearch: searchDoctorName,
+      );
+    }
   }
 
   List<Widget> displayTab(int selectedTab, double screenHeight,
@@ -263,7 +321,6 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       ),
       DatePicker(
         todaysDate,
-        // DateTime(todaysDate.year, todaysDate.month - 1, todaysDate.day),
         width: 60,
         height: 80,
         controller: _controller,
@@ -277,8 +334,8 @@ class _SecretaryHomeState extends State<SecretaryHome> {
           // New date selected
           setState(() {
             _selectedValue = date;
-            search = DateFormat('dd-MM-yyyy').format(_selectedValue);
-            print(search);
+            dateSearch = DateFormat('yyyy-MM-dd').format(_selectedValue);
+            dateTextController.text = dateSearch;
           });
         },
       ),
@@ -288,14 +345,14 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       Expanded(
         child: Container(
           width: screenWidth * 0.9,
-          child: AppointmentsListSecretary(search),
+          child: AppointmentsListSecretary(''),
         ),
       ),
     ];
   }
 
-  Widget displayFloatingActionButton(
-      int selectedTab, double screenWidth, double screenHeight, String branch) {
+  Widget displayFloatingActionButton(int selectedTab, double screenWidth,
+      double screenHeight, String branch, Size size) {
     if (selectedTab == 0) {
       return null;
     } else if (selectedTab == 1) {
@@ -306,7 +363,9 @@ class _SecretaryHomeState extends State<SecretaryHome> {
         ),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/secretaryAddClientScreen');
+            CustomBottomSheets()
+                .showCustomBottomSheet(size, AddClient(), context);
+            // Navigator.pushNamed(context, '/secretaryAddClientScreen');
           },
           backgroundColor: Colors.white,
           child: SvgPicture.asset(
@@ -323,9 +382,16 @@ class _SecretaryHomeState extends State<SecretaryHome> {
         ),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, AddDoctorSec.id, arguments: {
-              'branch': branch,
-            });
+            // Navigator.pushNamed(context, AddDoctorSec.id, arguments: {
+            //   'branch': branch,
+            // });
+            CustomBottomSheets().showCustomBottomSheet(
+              size,
+              AddDoctorSec(
+                secretaryBranch: branch,
+              ),
+              context,
+            );
           },
           backgroundColor: Colors.white,
           child: SvgPicture.asset(
@@ -335,6 +401,33 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       );
     }
   }
+
+  // Future showCustomBottomSheet(Size size, Widget child) {
+  //   return showModalBottomSheet(
+  //     context: context,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.only(
+  //           topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
+  //     ),
+  //     builder: (context) {
+  //       return FractionallySizedBox(
+  //         heightFactor: 0.9,
+  //         child: DraggableScrollableSheet(
+  //           initialChildSize: 1.0,
+  //           maxChildSize: 1.0,
+  //           minChildSize: 0.25,
+  //           builder: (BuildContext context, ScrollController scrollController) {
+  //             return StatefulBuilder(
+  //                 builder: (BuildContext context, StateSetter insideState) {
+  //               return child;
+  //             });
+  //           },
+  //         ),
+  //       );
+  //     },
+  //     isScrollControlled: true,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -347,11 +440,29 @@ class _SecretaryHomeState extends State<SecretaryHome> {
         ? Scaffold(
             backgroundColor: Color(0xFFF0F0F0),
             floatingActionButton: displayFloatingActionButton(
-                selectedTab, screenWidth, screenHeight, secretary.branch),
+                selectedTab, screenWidth, screenHeight, secretary.branch, size),
             body: MultiProvider(
               providers: [
                 StreamProvider<List<Appointment>>.value(
-                    value: DatabaseService().appointments),
+                  value: DatabaseService().getAppointmentsBySearch(
+                    dateSearch,
+                    searchDoctorNameAppointment,
+                    searchClientNameAppointment,
+                    searchClientNumberAppointment,
+                  ),
+                ),
+                StreamProvider<List<Doctor>>.value(
+                  value: DatabaseService().getDoctorsBySearch(
+                    secretary.branch,
+                    searchDoctorName,
+                  ),
+                ),
+                StreamProvider<List<Client>>.value(
+                  value: DatabaseService().getClientsBySearch(
+                    searchClientName,
+                    searchClientNumber,
+                  ),
+                ),
                 // StreamProvider<List<Client>>.value(
                 //     value: DatabaseService().clients),
               ],
@@ -381,7 +492,163 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     top: screenHeight * 0.27,
                     left: screenWidth * 0.055,
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.0),
+                                topRight: Radius.circular(20.0)),
+                          ),
+                          builder: (context) {
+                            return FractionallySizedBox(
+                              heightFactor: 0.9,
+                              child: DraggableScrollableSheet(
+                                initialChildSize: 1.0,
+                                maxChildSize: 1.0,
+                                minChildSize: 0.25,
+                                builder: (BuildContext context,
+                                    ScrollController scrollController) {
+                                  return StatefulBuilder(builder:
+                                      (BuildContext context,
+                                          StateSetter insideState) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: size.height * 0.02,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                left: size.width * 0.02,
+                                                right: size.width * 0.02,
+                                                bottom: size.height * 0.01),
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  width: size.height * 0.001,
+                                                  color: kPrimaryLightColor,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  'Search',
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          size.width * 0.05,
+                                                      color: kPrimaryTextColor),
+                                                ),
+                                                SizedBox(
+                                                    width: size.width * 0.28),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: kPrimaryTextColor,
+                                                    size: size.width * 0.085,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          // SizedBox(
+                                          //   height: size.height * 0.02,
+                                          // ),
+                                          Center(
+                                            child: Container(
+                                              width: size.width * 0.9,
+                                              height: size.height * 0.12,
+                                              child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: tabs.length,
+                                                itemBuilder: (context, index) {
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      insideState(() {
+                                                        selectedTab = index;
+                                                      });
+                                                      this.setState(() {
+                                                        selectedTab = index;
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      width: size.width * 0.3,
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                        vertical:
+                                                            size.height * 0.02,
+                                                        horizontal:
+                                                            size.width * 0.01,
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        vertical:
+                                                            size.height * 0.02,
+                                                        horizontal:
+                                                            size.width * 0.02,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            selectedTab == index
+                                                                ? kPrimaryColor
+                                                                : Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        border: Border.all(
+                                                          color: selectedTab ==
+                                                                  index
+                                                              ? Colors
+                                                                  .transparent
+                                                              : kPrimaryLightColor,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          tabs[index],
+                                                          style: TextStyle(
+                                                            color: selectedTab ==
+                                                                    index
+                                                                ? Colors.white
+                                                                : kPrimaryLightColor,
+                                                            // fontSize:
+                                                            //     size.width * 0.04,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              child:
+                                                  displayAppropriateSearchForm(
+                                                      selectedTab),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                          isScrollControlled: true,
+                        );
+                      },
                       child: SvgPicture.asset(
                         'assets/images/search.svg',
                         color: kPrimaryColor,

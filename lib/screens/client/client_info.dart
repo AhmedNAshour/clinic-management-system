@@ -8,9 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../models/client.dart';
 
 class ClientProfile extends StatefulWidget {
   static const id = 'ClientProfile';
+  Client client;
+  ClientProfile(Client client) {
+    this.client = client;
+  }
+
   @override
   _ClientProfileState createState() => _ClientProfileState();
 }
@@ -31,7 +37,7 @@ class _ClientProfileState extends State<ClientProfile> {
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
     if (curSessions == null) {
-      curSessions = clientData['numAppointments'];
+      curSessions = widget.client.numAppointments;
     }
     return loading
         ? Loading()
@@ -41,103 +47,112 @@ class _ClientProfileState extends State<ClientProfile> {
                   value: DatabaseService(uid: user.uid).userData),
               StreamProvider<List<Note>>.value(
                   value: DatabaseService(uid: user.uid)
-                      .getClientNotes(clientData['uid'])),
+                      .getClientNotes(widget.client.uid)),
             ],
-            child: Scaffold(
-              backgroundColor: Colors.white,
-              body: Padding(
-                padding: EdgeInsets.only(
-                  top: size.height * 0.04,
-                  right: size.width * 0.04,
-                  left: size.width * 0.04,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/call.svg',
-                          height: size.height * 0.05,
-                          width: size.width * 0.05,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.05,
-                        ),
-                        CircleAvatar(
-                          radius: size.width * 0.12,
-                          backgroundImage: clientData['picUrl'] != ''
-                              ? NetworkImage(
-                                  clientData['picUrl'],
-                                )
-                              : AssetImage('assets/images/userPlaceholder.png'),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.05,
-                        ),
-                        SvgPicture.asset(
-                          'assets/images/chat.svg',
-                          height: size.height * 0.05,
-                          width: size.width * 0.05,
-                        ),
-                      ],
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: size.width * 0.04,
+                left: size.width * 0.04,
+              ),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: kPrimaryTextColor,
+                        size: size.width * 0.085,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
-                    InkWell(
-                      onTap: () async {},
-                      child: Text(
-                        'Edit',
-                        style: TextStyle(
-                          color: kPrimaryColor,
-                          fontSize: 14,
-                        ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/call.svg',
+                        height: size.height * 0.05,
+                        width: size.width * 0.05,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.05,
+                      ),
+                      CircleAvatar(
+                        radius: size.width * 0.12,
+                        backgroundImage: widget.client.picURL != ''
+                            ? NetworkImage(
+                                widget.client.picURL,
+                              )
+                            : AssetImage('assets/images/userPlaceholder.png'),
+                      ),
+                      SizedBox(
+                        width: size.width * 0.05,
+                      ),
+                      SvgPicture.asset(
+                        'assets/images/chat.svg',
+                        height: size.height * 0.05,
+                        width: size.width * 0.05,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: size.height * 0.01,
+                  ),
+                  InkWell(
+                    onTap: () async {},
+                    child: Text(
+                      'Edit',
+                      style: TextStyle(
+                        color: kPrimaryColor,
+                        fontSize: 14,
                       ),
                     ),
-                    InfoCard(
-                      title: 'Client name',
-                      body: '${clientData['fName']} ${clientData['lName']}',
-                    ),
-                    InfoCard(
-                      title: 'Age',
-                      body: '${clientData['age']}',
-                    ),
-                    InfoCard(
-                      title: 'Phone number',
-                      body: '${clientData['phoneNumber']}',
-                    ),
-                    InfoCard(
-                      title: 'Remaining sessions',
-                      body: '${clientData['numAppointments']}',
-                    ),
-                    InfoCard(
-                      title: 'Email',
-                      body: '${clientData['email']}',
-                    ),
-                    SizedBox(
-                      height: size.height * 0.02,
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Doctors notes',
-                        style: TextStyle(
-                          color: kPrimaryTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: size.width * 0.05,
-                        ),
+                  ),
+                  InfoCard(
+                    title: 'Client name',
+                    body: '${widget.client.fName} ${widget.client.lName}',
+                  ),
+                  InfoCard(
+                    title: 'Age',
+                    body: '${widget.client.age}',
+                  ),
+                  InfoCard(
+                    title: 'Phone number',
+                    body: '${widget.client.phoneNumber}',
+                  ),
+                  InfoCard(
+                    title: 'Remaining sessions',
+                    body: '${widget.client.numAppointments}',
+                  ),
+                  InfoCard(
+                    title: 'Email',
+                    body: '${widget.client.email}',
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Doctors notes',
+                      style: TextStyle(
+                        color: kPrimaryTextColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: size.width * 0.05,
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        width: size.width * 0.9,
-                        child: NotesList(),
-                      ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: size.width * 0.9,
+                      child: NotesList(),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

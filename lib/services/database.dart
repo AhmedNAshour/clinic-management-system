@@ -224,21 +224,6 @@ class DatabaseService {
     }).toList();
   }
 
-  // uploadImage(String uid) async {
-  //   var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
-  //   setState(() {
-  //     newProfilePic = File(tempImage.path);
-  //   });
-  //   final Reference firebaseStorageRef =
-  //       FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-  //   UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-  //   TaskSnapshot taskSnapshot = await task;
-  //   taskSnapshot.ref.getDownloadURL().then(
-  //         (value) => DatabaseService(uid: uid)
-  //             .updateUserProfilePicture(value.toString(), 'secretary'),
-  //       );
-  // }
-
   Stream<List<Appointment>> getDoctorAppointmentsForSelectedDay(
       String doctorID, day) {
     return appointmentsCollection
@@ -253,6 +238,52 @@ class DatabaseService {
         .where('branch', isEqualTo: branch)
         .snapshots()
         .map(_doctorsListFromSnapshot);
+  }
+
+  Stream<List<Client>> getClientsBySearch(
+      String clientName, String clientNumber) {
+    Query query = FirebaseFirestore.instance.collection('clients');
+    if (clientName != '') {
+      query = query.where(
+        'fName',
+        isEqualTo: clientName,
+      );
+    }
+    if (clientNumber != '') {
+      query = query.where('phoneNumber', isEqualTo: clientNumber);
+    }
+    return query.snapshots().map(_clientListFromSnapshot);
+  }
+
+  Stream<List<Doctor>> getDoctorsBySearch(
+      String secretaryBranch, String doctorName) {
+    Query query = FirebaseFirestore.instance.collection('doctors');
+    if (doctorName != '') {
+      query = query.where(
+        'fName',
+        isEqualTo: doctorName,
+      );
+    }
+    query = query.where('branch', isEqualTo: secretaryBranch);
+    return query.snapshots().map(_doctorsListFromSnapshot);
+  }
+
+  Stream<List<Appointment>> getAppointmentsBySearch(
+      String day, doctorName, clientName, clientNumber) {
+    Query query = FirebaseFirestore.instance.collection('appointments');
+    if (day != '') {
+      query = query.where('day', isEqualTo: day);
+    }
+    if (doctorName != '') {
+      query = query.where('doctorFName', isEqualTo: doctorName);
+    }
+    if (clientName != '') {
+      query = query.where('clientFName', isEqualTo: clientName);
+    }
+    if (clientNumber != '') {
+      query = query.where('clientPhoneNumber', isEqualTo: clientName);
+    }
+    return query.snapshots().map(_appointmentsListFromSnapshot);
   }
 
   Stream<List<Appointment>> getAppointmentsForSelectedDay(String day) {
@@ -725,4 +756,22 @@ class DatabaseService {
       return null;
     }
   }
+
+  // Future getImage() async {
+  //   var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
+  //   setState(() {
+  //     newProfilePic = File(tempImage.path);
+  //   });
+  // }
+
+  // uploadImage(String uid) async {
+  //   final Reference firebaseStorageRef =
+  //       FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
+  //   UploadTask task = firebaseStorageRef.putFile(newProfilePic);
+  //   TaskSnapshot taskSnapshot = await task;
+  //   taskSnapshot.ref.getDownloadURL().then(
+  //         (value) => DatabaseService(uid: uid)
+  //             .updateUserProfilePicture(value.toString(), 'secretary'),
+  //       );
+  // }
 }
