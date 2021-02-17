@@ -98,10 +98,10 @@ class _ClientCardState extends State<ClientCard> {
                                 onTap: () {
                                   launch("tel://${widget.client.phoneNumber}");
                                 },
-                                child: SvgPicture.asset(
-                                  'assets/images/call.svg',
-                                  height: screenHeight * 0.04,
-                                  width: screenWidth * 0.04,
+                                child: CircleAvatar(
+                                  radius: screenWidth * 0.04,
+                                  backgroundImage:
+                                      AssetImage('assets/images/call.png'),
                                 ),
                               ),
                               SizedBox(

@@ -9,12 +9,8 @@ class DoctorListSecretaryBooking extends StatefulWidget {
   _DoctorListSecretaryBookingState createState() =>
       _DoctorListSecretaryBookingState();
   List<Doctor> searchList = <Doctor>[];
-  String search = '';
-  String branch;
   Client client;
-  DoctorListSecretaryBooking(String search, branch, Client client) {
-    this.search = search;
-    this.branch = branch;
+  DoctorListSecretaryBooking(Client client) {
     this.client = client;
   }
 }
@@ -24,33 +20,11 @@ class _DoctorListSecretaryBookingState
   @override
   Widget build(BuildContext context) {
     final doctors = Provider.of<List<Doctor>>(context) ?? [];
-    // setState(() {
-    //   //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
-    //   widget.searchList = doctors
-    //       .where((element) => (element.fName
-    //               .toLowerCase()
-    //               .contains(widget.search.toLowerCase()) ||
-    //           element.lName
-    //               .toLowerCase()
-    //               .contains(widget.search.toLowerCase()) ||
-    //           element.phoneNumber.contains(widget.search) &&
-    //               element.branch == widget.branch))
-    //       .toList();
-    // });
-    if (widget.search == '') {
-      return ListView.builder(
-        itemCount: doctors.length,
-        itemBuilder: (context, index) {
-          return DoctorCardSec(doctor: doctors[index]);
-        },
-      );
-    } else {
-      return ListView.builder(
-        itemCount: widget.searchList.length,
-        itemBuilder: (context, index) {
-          return DoctorCardSec(doctor: widget.searchList[index]);
-        },
-      );
-    }
+    return ListView.builder(
+      itemCount: doctors.length,
+      itemBuilder: (context, index) {
+        return DoctorCardSec(doctor: doctors[index]);
+      },
+    );
   }
 }

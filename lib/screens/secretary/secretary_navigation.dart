@@ -1,6 +1,3 @@
-import 'package:clinic/models/appointment.dart';
-import 'package:clinic/models/client.dart';
-import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/appointments_secretary.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
@@ -36,15 +33,6 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
 
     return MultiProvider(
       providers: [
-        StreamProvider<List<Doctor>>.value(
-          value: DatabaseService().doctors,
-        ),
-        StreamProvider<List<Appointment>>.value(
-          value: DatabaseService().appointments,
-        ),
-        StreamProvider<List<Client>>.value(
-          value: DatabaseService().clients,
-        ),
         StreamProvider<Secretary>.value(
           value: DatabaseService(uid: user.uid).secretary,
         ),

@@ -7,10 +7,13 @@ class ClientListSecretaryBooking extends StatefulWidget {
   @override
   _ClientListSecretaryBookingState createState() =>
       _ClientListSecretaryBookingState();
-  List<Client> searchList = List<Client>();
-  String search = '';
-  ClientListSecretaryBooking(String search) {
-    this.search = search;
+  List<Client> searchList = <Client>[];
+  String clientNameSearch = '';
+  String clientNumberSearch = '';
+  ClientListSecretaryBooking(
+      String clientNameSearch, String clientNumberSearch) {
+    this.clientNameSearch = clientNameSearch;
+    this.clientNumberSearch = clientNumberSearch;
   }
 }
 
@@ -20,15 +23,11 @@ class _ClientListSecretaryBookingState
   Widget build(BuildContext context) {
     final clients = Provider.of<List<Client>>(context) ?? [];
     setState(() {
-      //print(DateFormat('dd-MM-yyyy').format(salesLogsList[0].date.toDate()));
       widget.searchList = clients
           .where((element) => (element.fName
                   .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.lName
-                  .toLowerCase()
-                  .contains(widget.search.toLowerCase()) ||
-              element.phoneNumber.contains(widget.search)))
+                  .contains(widget.clientNameSearch.toLowerCase()) &&
+              element.phoneNumber.contains(widget.clientNumberSearch)))
           .toList();
       widget.searchList.sort((a, b) {
         var adate = a.fName; //before -> var adate = a.expiry;
@@ -37,7 +36,7 @@ class _ClientListSecretaryBookingState
             bdate); //to get the order other way just switch `adate & bdate`
       });
     });
-    if (widget.search == null) {
+    if (widget.clientNameSearch == '' && widget.clientNumberSearch == '') {
       return ListView.builder(
         itemCount: clients.length,
         itemBuilder: (context, index) {

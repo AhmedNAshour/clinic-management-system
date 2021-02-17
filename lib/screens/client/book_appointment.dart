@@ -345,9 +345,9 @@ class _BookAppointmentState extends State<BookAppointment> {
                                                     BorderRadius.circular(30),
                                                 child: FlatButton(
                                                   onPressed: () async {
-                                                    DatabaseService(
-                                                            uid: user.uid)
+                                                    DatabaseService()
                                                         .addAppointment(
+                                                      clientId: clientData.uid,
                                                       startTime: startTimes[
                                                           selectedTimeSlotIndex],
                                                       doctorID:

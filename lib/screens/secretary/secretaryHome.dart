@@ -1,15 +1,14 @@
 import 'dart:io';
-import 'package:clinic/components/forms/rounded_button..dart';
-import 'package:clinic/components/forms/rounded_input_field.dart';
 import 'package:clinic/components/forms/secretary_search_appointments.dart';
 import 'package:clinic/components/forms/secretary_search_clients.dart';
 import 'package:clinic/components/forms/secretary_search_doctors.dart';
-import 'package:clinic/components/forms/text_field_container.dart';
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
+import 'package:clinic/components/lists_cards/doctors_list.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/secretary/booking_step1.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
@@ -21,7 +20,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../components/lists_cards/clients_list.dart';
 import '../../models/secretary.dart';
-import '../../components/lists_cards/doctors_list_secretary_booking.dart';
 import 'addDoctorSecretary.dart';
 import '../../services/auth.dart';
 import 'addClient.dart';
@@ -197,7 +195,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       Expanded(
         child: Container(
           width: screenWidth * 0.9,
-          child: DoctorListSecretaryBooking('', branch, null),
+          child: DoctorList(),
         ),
       ),
     ];
@@ -354,7 +352,22 @@ class _SecretaryHomeState extends State<SecretaryHome> {
   Widget displayFloatingActionButton(int selectedTab, double screenWidth,
       double screenHeight, String branch, Size size) {
     if (selectedTab == 0) {
-      return null;
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: kPrimaryColor, width: 2),
+          borderRadius: BorderRadius.circular(360),
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, BookingStep1.id);
+          },
+          backgroundColor: Colors.white,
+          child: SvgPicture.asset(
+            'assets/images/Add-Appointment.svg',
+            color: kPrimaryColor,
+          ),
+        ),
+      );
     } else if (selectedTab == 1) {
       return Container(
         decoration: BoxDecoration(
@@ -394,40 +407,15 @@ class _SecretaryHomeState extends State<SecretaryHome> {
             );
           },
           backgroundColor: Colors.white,
-          child: SvgPicture.asset(
-            'assets/images/Add-doctor.svg',
+          child: CircleAvatar(
+            // radius: screenWidth * 0.04,
+            backgroundColor: Colors.white,
+            backgroundImage: AssetImage('assets/images/Add-doctor.png'),
           ),
         ),
       );
     }
   }
-
-  // Future showCustomBottomSheet(Size size, Widget child) {
-  //   return showModalBottomSheet(
-  //     context: context,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.only(
-  //           topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
-  //     ),
-  //     builder: (context) {
-  //       return FractionallySizedBox(
-  //         heightFactor: 0.9,
-  //         child: DraggableScrollableSheet(
-  //           initialChildSize: 1.0,
-  //           maxChildSize: 1.0,
-  //           minChildSize: 0.25,
-  //           builder: (BuildContext context, ScrollController scrollController) {
-  //             return StatefulBuilder(
-  //                 builder: (BuildContext context, StateSetter insideState) {
-  //               return child;
-  //             });
-  //           },
-  //         ),
-  //       );
-  //     },
-  //     isScrollControlled: true,
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -445,11 +433,12 @@ class _SecretaryHomeState extends State<SecretaryHome> {
               providers: [
                 StreamProvider<List<Appointment>>.value(
                   value: DatabaseService().getAppointmentsBySearch(
-                    dateSearch,
-                    searchDoctorNameAppointment,
-                    searchClientNameAppointment,
-                    searchClientNumberAppointment,
-                  ),
+                      day: dateSearch,
+                      doctorName: searchDoctorNameAppointment,
+                      clientName: searchClientNameAppointment,
+                      clientNumber: searchClientNumberAppointment,
+                      branch: secretary.branch,
+                      status: 'active'),
                 ),
                 StreamProvider<List<Doctor>>.value(
                   value: DatabaseService().getDoctorsBySearch(

@@ -1,7 +1,10 @@
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
+import 'package:clinic/models/secretary.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class AppointmentsSecretary extends StatefulWidget {
   @override
@@ -12,18 +15,30 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
   var textController = new TextEditingController();
   String search = '';
   bool showCancel = false;
-
+  String day = '';
+  // DateFormat("yyyy-MM-dd").format(DateTime.now())
   int selectedType = 0;
+  String status;
+  String dateComparison;
   List<String> appointmentTypes = [
     'Today',
     'Upcoming',
     'Past',
-    'Cancelled',
+    'Canceled',
   ];
+
+  String getStatus(int selectedType) {
+    if (selectedType == 0 || selectedType == 1 || selectedType == 2)
+      status = 'active';
+    if (selectedType == 3) status = 'canceled';
+    return status;
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final secretary = Provider.of<Secretary>(context);
+
     return Column(
       children: [
         Container(
@@ -98,7 +113,13 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
         Expanded(
           child: Container(
             width: size.width * 0.9,
-            child: AppointmentsListSecretary(search),
+            child: StreamProvider.value(
+                value: DatabaseService().getAppointmentsBySearch(
+                  status: getStatus(selectedType),
+                  branch: secretary.branch,
+                  dateComparison: appointmentTypes[selectedType],
+                ),
+                child: AppointmentsListSecretary(search)),
           ),
         ),
       ],

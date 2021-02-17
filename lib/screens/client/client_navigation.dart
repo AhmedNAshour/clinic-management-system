@@ -3,12 +3,10 @@ import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/client/appointments_client.dart';
 import 'package:clinic/screens/client/client_home.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -25,8 +23,6 @@ class _ClientNavigationState extends State<ClientNavigation> {
   ];
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final AuthService _auth = AuthService();
     final user = Provider.of<MyUser>(context);
 
     return MultiProvider(

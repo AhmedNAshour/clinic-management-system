@@ -1,4 +1,3 @@
-import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/search_input_field.dart';
 import 'package:flutter/material.dart';
 
@@ -46,12 +45,12 @@ class _SearchClientsFormState extends State<SearchClientsForm> {
               widget.changeClientNumberSearch(val);
             },
           ),
-          RoundedButton(
-            text: 'SEARCH',
-            press: () {
-              Navigator.pop(context);
-            },
-          ),
+          // RoundedButton(
+          //   text: 'SEARCH',
+          //   press: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
         ],
       ),
     );

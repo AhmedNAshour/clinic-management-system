@@ -269,7 +269,13 @@ class DatabaseService {
   }
 
   Stream<List<Appointment>> getAppointmentsBySearch(
-      String day, doctorName, clientName, clientNumber) {
+      {String day,
+      doctorName,
+      clientName,
+      clientNumber,
+      branch,
+      status,
+      dateComparison}) {
     Query query = FirebaseFirestore.instance.collection('appointments');
     if (day != '') {
       query = query.where('day', isEqualTo: day);
@@ -283,6 +289,21 @@ class DatabaseService {
     if (clientNumber != '') {
       query = query.where('clientPhoneNumber', isEqualTo: clientName);
     }
+    if (branch != '') {
+      query = query.where('branch', isEqualTo: branch);
+    }
+    if (status != '') {
+      query = query.where('status', isEqualTo: status);
+    }
+    if (dateComparison == 'Today') {
+      query = query.where('day',
+          isEqualTo: DateFormat("yyyy-MM-dd").format(DateTime.now()));
+    } else if (dateComparison == 'Upcoming') {
+      query = query.where('startTime', isGreaterThan: DateTime.now());
+    } else if (dateComparison == 'Past') {
+      query = query.where('startTime', isLessThan: DateTime.now());
+    }
+
     return query.snapshots().map(_appointmentsListFromSnapshot);
   }
 
@@ -309,6 +330,7 @@ class DatabaseService {
   Future addAppointment({
     DateTime startTime,
     String doctorID,
+    String clientId,
     String clientFName,
     String clientLName,
     String clientPhoneNumber,
@@ -319,11 +341,12 @@ class DatabaseService {
     String doctorLName,
     String doctorToken,
     String branch,
+    String status,
   }) async {
     return await appointmentsCollection.doc().set({
       'startTime': startTime,
       'endTime': startTime.add(Duration(minutes: 30)),
-      'clientID': uid,
+      'clientID': clientId,
       'doctorID': doctorID,
       'day': DateFormat("yyyy-MM-dd").format(startTime),
       'clientFName': clientFName,
@@ -336,6 +359,7 @@ class DatabaseService {
       'branch': branch,
       'clientPicURL': clientPicURL,
       'doctorPicURL': doctorPicURL,
+      'status': 'active'
     });
   }
 

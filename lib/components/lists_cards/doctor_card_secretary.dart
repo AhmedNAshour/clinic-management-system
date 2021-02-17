@@ -90,10 +90,10 @@ class DoctorCardSec extends StatelessWidget {
                             onTap: () {
                               launch("tel://${doctor.phoneNumber}");
                             },
-                            child: SvgPicture.asset(
-                              'assets/images/call.svg',
-                              height: screenHeight * 0.04,
-                              width: screenWidth * 0.04,
+                            child: CircleAvatar(
+                              radius: screenWidth * 0.04,
+                              backgroundImage:
+                                  AssetImage('assets/images/call.png'),
                             ),
                           ),
                           SizedBox(
@@ -135,7 +135,15 @@ class DoctorCardSec extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/doctorScheduleScreen',
+                        arguments: {
+                          'docId': doctor.uid,
+                          'fName': doctor.fName,
+                          'lName': doctor.lName,
+                          'profession': doctor.proffesion,
+                        });
+                  },
                   child: SvgPicture.asset(
                     'assets/images/edit.svg',
                     color: kPrimaryColor,

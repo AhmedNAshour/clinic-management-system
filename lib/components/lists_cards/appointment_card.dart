@@ -50,26 +50,6 @@ class _AppointmentCardState extends State<AppointmentCard> {
     double screenHeight = size.height;
     double screenWidth = size.width;
     return GestureDetector(
-      onTap: () async {
-        await DatabaseService().updateAppointmentStatus(
-            id: widget.appointment.docID, status: 'confirmed');
-      },
-      onDoubleTap: () async {
-        await DatabaseService().updateAppointmentStatus(
-            id: widget.appointment.docID, status: 'abscent');
-      },
-      onLongPress: () async {
-        await DatabaseService().addNote(
-          clientID: widget.appointment.clientID,
-          doctorID: widget.appointment.doctorID,
-          body: 'Alf salama',
-          doctorPicUrl: widget.appointment.doctorPicURL,
-          clientFName: widget.appointment.clientFName,
-          doctorFName: widget.appointment.doctorFName,
-          clientLName: widget.appointment.clientLName,
-          doctorLName: widget.appointment.doctorLName,
-        );
-      },
       child: Container(
         height: screenHeight * 0.18,
         width: screenWidth * 0.9,
@@ -149,7 +129,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                         width: screenWidth * 0.01,
                       ),
                       Text(
-                        '${DateFormat("MMM").format(widget.appointment.startTime)} ${DateFormat("d").format(widget.appointment.startTime)} - ${DateFormat("Hm").format(widget.appointment.startTime)}',
+                        '${DateFormat("MMM").format(widget.appointment.startTime)} ${DateFormat("d").format(widget.appointment.startTime)} - ${DateFormat("jm").format(widget.appointment.startTime)}',
                         style: TextStyle(
                           color: kPrimaryTextColor,
                           fontSize: screenWidth * 0.05,
@@ -247,10 +227,9 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   onTap: () {
                     launch("tel://${widget.appointment.clientPhoneNumber}");
                   },
-                  child: SvgPicture.asset(
-                    'assets/images/call.svg',
-                    height: screenHeight * 0.04,
-                    width: screenWidth * 0.04,
+                  child: CircleAvatar(
+                    radius: screenWidth * 0.04,
+                    backgroundImage: AssetImage('assets/images/call.png'),
                   ),
                 ),
               ],
