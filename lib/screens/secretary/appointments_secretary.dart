@@ -1,3 +1,4 @@
+import 'package:clinic/components/forms/secretary_search_appointments.dart';
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
 import 'package:clinic/models/secretary.dart';
 import 'package:clinic/screens/shared/constants.dart';
@@ -34,6 +35,8 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
     return status;
   }
 
+  var dateTextController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -57,9 +60,94 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
                 ),
               ),
               SizedBox(width: size.width * 0.2),
-              SvgPicture.asset(
-                'assets/images/search.svg',
-                color: Colors.white,
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0)),
+                    ),
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.9,
+                        child: DraggableScrollableSheet(
+                          initialChildSize: 1.0,
+                          maxChildSize: 1.0,
+                          minChildSize: 0.25,
+                          builder: (BuildContext context,
+                              ScrollController scrollController) {
+                            return StatefulBuilder(builder:
+                                (BuildContext context,
+                                    StateSetter insideState) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: size.height * 0.02,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          left: size.width * 0.02,
+                                          right: size.width * 0.02,
+                                          bottom: size.height * 0.01),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            width: size.height * 0.001,
+                                            color: kPrimaryLightColor,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            'Search',
+                                            style: TextStyle(
+                                                fontSize: size.width * 0.05,
+                                                color: kPrimaryTextColor),
+                                          ),
+                                          SizedBox(width: size.width * 0.28),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: kPrimaryTextColor,
+                                              size: size.width * 0.085,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // SizedBox(
+                                    //   height: size.height * 0.02,
+                                    // ),
+                                    Expanded(
+                                      child: Container(
+                                        child: SearchAppointmentsForm(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                          },
+                        ),
+                      );
+                    },
+                    isScrollControlled: true,
+                  );
+                },
+                child: SvgPicture.asset(
+                  'assets/images/search.svg',
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
@@ -119,7 +207,7 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
                   branch: secretary.branch,
                   dateComparison: appointmentTypes[selectedType],
                 ),
-                child: AppointmentsListSecretary(search)),
+                child: AppointmentsListSecretary(isSearch: 'no')),
           ),
         ),
       ],

@@ -37,7 +37,7 @@ class _ClientNavigationState extends State<ClientNavigation> {
       child: Scaffold(
         body: screens[_currentIndex],
         bottomNavigationBar: CurvedNavigationBar(
-          backgroundColor: kPrimaryLightColor,
+          // backgroundColor: kPrimaryLightColor,
           animationDuration: Duration(milliseconds: 300),
           height: 60,
           index: 0,

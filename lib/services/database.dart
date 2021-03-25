@@ -65,6 +65,7 @@ class DatabaseService {
       picURL: data['picURL'],
       token: data['token'],
       branch: data['branch'],
+      branchName: data['branchName'],
     );
   }
 
@@ -142,7 +143,8 @@ class DatabaseService {
     String lName,
     String phoneNumber,
     String gender,
-    String branch,
+    String branchId,
+    String branchName,
     String picURL,
   }) async {
     return await secretariesCollection.doc(uid).set({
@@ -150,7 +152,8 @@ class DatabaseService {
       'lName': lName,
       'phoneNumber': phoneNumber,
       'gender': gender,
-      'branch': branch,
+      'branch': branchId,
+      'branchName': branchName,
       'picURL': picURL,
     });
   }

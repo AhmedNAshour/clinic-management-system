@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../models/secretary.dart';
 import 'notifications_secretary.dart';
 import 'profile_secretary.dart';
+import 'chat_secretary.dart';
 
 class SecretaryNavigation extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
   List<Widget> screens = [
     SecretaryHome(),
     AppointmentsSecretary(),
-    AppointmentsSecretary(),
+    Chat(),
     NotificationsSecretary(),
     ProfileSecretary(),
   ];
@@ -39,7 +40,7 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
       ],
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Color(0xFFF0F0F0),
+          // backgroundColor: Color(0xFFF0F0F0),
           body: screens[_currentIndex],
           bottomNavigationBar: CurvedNavigationBar(
             backgroundColor: Colors.transparent,

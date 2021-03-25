@@ -4,6 +4,7 @@ import 'package:clinic/components/lists_cards/doctor_card_secretary_booking.dart
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/shared/search_results/noResults.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,10 @@ class DoctorList extends StatefulWidget {
   @override
   _DoctorListState createState() => _DoctorListState();
   Client client;
-  DoctorList();
+  String search = '';
+  DoctorList({String isSearch}) {
+    this.search = isSearch;
+  }
   DoctorList.booking(Client client) {
     this.client = client;
   }
@@ -40,6 +44,21 @@ class _DoctorListState extends State<DoctorList> {
             ],
           );
         },
+      );
+    }
+    if (widget.search == 'yes') {
+      if (doctors.isNotEmpty) {
+        return ListView.builder(
+          itemCount: doctors.length,
+          itemBuilder: (context, index) {
+            return userData.role == 'client'
+                ? DoctorCardCli(doctor: doctors[index])
+                : DoctorCardSec(doctor: doctors[index]);
+          },
+        );
+      }
+      return NoResults(
+        text: 'No Doctors Found',
       );
     }
     return ListView.builder(

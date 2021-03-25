@@ -1,135 +1,83 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:clinic/components/lists_cards/workDays_list.dart';
+import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/workDay.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 
 class DoctorSchedule extends StatefulWidget {
+  static const id = 'doctorSchedule';
   @override
   _DoctorScheduleState createState() => _DoctorScheduleState();
 }
 
 class _DoctorScheduleState extends State<DoctorSchedule> {
-  Map doctorData = {};
+  Doctor doctor;
   List<bool> values = List.filled(7, false);
   List<WorkDay> workDays = [];
   bool status = true;
   @override
   Widget build(BuildContext context) {
-    doctorData = ModalRoute.of(context).settings.arguments;
+    doctor = ModalRoute.of(context).settings.arguments;
+    Size size = MediaQuery.of(context).size;
+
     // bool status = doctorData['status'];
     return StreamProvider<List<WorkDay>>.value(
-      value: DatabaseService().getWorkDays(doctorData['docId']),
-      child: Scaffold(
-        backgroundColor: kPrimaryLightColor,
-        body: Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.bottomLeft,
+      value: DatabaseService().getWorkDays(doctor.uid),
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+                height: size.height * 0.1,
+                width: double.infinity,
+                color: kPrimaryColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    BackButton(
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: size.width * 0.22),
+                    Text(
+                      'Schedule',
+                      style: TextStyle(
+                        fontSize: size.width * 0.06,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.04,
+              ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(
+              //     horizontal: size.width * 0.04,
+              //     vertical: size.height * 0.04,
+              //   ),
+              //   child: Text(
+              //     'Please switch the toggle to turn on available days and determine working hours',
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(
+              //       color: kPrimaryTextColor,
+              //       fontSize: size.width * 0.05,
+              //     ),
+              //   ),
+              // ),
+              Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 53),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          height: 40,
-                          width: 100,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Icon(
-                                Icons.arrow_back,
-                                color: kPrimaryLightColor,
-                              ),
-                              Text(
-                                'BACK',
-                                style: TextStyle(
-                                    color: kPrimaryLightColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 20),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: AutoSizeText(
-                          'Dr. ' + doctorData['fName'],
-                          style: TextStyle(
-                              fontSize: 55,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                          minFontSize: 30,
-                          maxLines: 1,
-                        ),
-                      ),
-                    ],
+                  width: size.width * 0.9,
+                  child: WorkDaysList(
+                    doctorID: doctor.uid,
                   ),
                 ),
               ),
-            ),
-            Container(
-              child: FlutterSwitch(
-                width: 125.0,
-                height: 55.0,
-                valueFontSize: 15,
-                toggleSize: 30,
-                value: status,
-                borderRadius: 30.0,
-                padding: 8.0,
-                showOnOff: true,
-                activeText: 'on',
-                activeColor: kPrimaryLightColor,
-                inactiveText: 'off',
-                onToggle: (val) async {
-                  if (status) {
-                    await DatabaseService().updateDoctorStatus(
-                        doctorID: doctorData['docId'], working: 1);
-                  } else {
-                    await DatabaseService().updateDoctorStatus(
-                        doctorID: doctorData['docId'], working: 0);
-                  }
-                  setState(() {
-                    status = val;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(53),
-                      topRight: Radius.circular(53)),
-                ),
-                child: WorkDaysList(
-                  doctorID: doctorData['docId'],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

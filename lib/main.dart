@@ -5,8 +5,6 @@ import 'package:clinic/screens/admin/secretaries.dart';
 import 'package:clinic/screens/admin/appointments_admin.dart';
 import 'package:clinic/screens/client/book_appointment.dart';
 import 'package:clinic/screens/client/client_home.dart';
-import 'package:clinic/screens/client/client_info.dart';
-import 'package:clinic/screens/client/doctor_info.dart';
 import 'package:clinic/screens/secretary/addClient.dart';
 import 'package:clinic/screens/secretary/addDoctorSecretary.dart';
 import 'package:clinic/screens/secretary/appLanguage.dart';
@@ -16,12 +14,14 @@ import 'package:clinic/screens/secretary/booking_step2.dart';
 import 'package:clinic/screens/secretary/booking_step3.dart';
 import 'package:clinic/screens/secretary/clients.dart';
 import 'package:clinic/screens/secretary/doctorSchedule.dart';
-import 'package:clinic/screens/secretary/doctors.dart';
 import 'package:clinic/screens/secretary/doctors_admin.dart';
 import 'package:clinic/screens/secretary/notificationSettings.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
 import 'package:clinic/screens/secretary/secretary_navigation.dart';
 import 'package:clinic/screens/shared/reset_password.dart';
+import 'package:clinic/screens/shared/search_results/appointments_search_results.dart';
+import 'package:clinic/screens/shared/search_results/clients_search_results.dart';
+import 'package:clinic/screens/shared/search_results/doctors_search_results.dart';
 import 'package:clinic/screens/shared/wrapper.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:flutter/material.dart';
@@ -59,21 +59,18 @@ class MyApp extends StatelessWidget {
           '/secretaryHomeScreen': (context) => SecretaryHome(),
           '/clientsScreen': (context) => Clients(),
           '/clientsScreenAdmin': (context) => ClientsAdmin(),
-          // '/doctorsScreen': (context) => Doctors(),
           '/doctorsScreenAdmin': (context) => DoctorsAdmin(),
-          '/doctorScheduleScreen': (context) => DoctorSchedule(),
+          DoctorSchedule.id: (context) => DoctorSchedule(),
           '/secretaryAddClientScreen': (context) => AddClient(),
           AddDoctorSec.id: (context) => AddDoctorSec(),
           '/adminAddDoctorScreen': (context) => AddDoctorAdmin(),
           '/bookingScreen': (context) => BookAppointment(),
-          // DoctorProfileSec.id: (context) => DoctorProfileSec(),
           '/appointmentsScreenAdmin': (context) => AppointmentsAdmin(),
           '/appointmentsScreenSecretary': (context) => AppointmentsSecretary(),
           '/branchesScreen': (context) => Branches(),
           '/secretariesScreen': (context) => Secretaries(),
           '/secretaryNavigation': (context) => SecretaryNavigation(),
           '/addSecretaryScreen': (context) => AddSecretary(),
-          // ClientProfile.id: (context) => ClientProfile(cl),
           BookingStep1.id: (context) => BookingStep1(),
           BookingStep2.id: (context) => BookingStep2(),
           BookingStep3.id: (context) => BookingStep3(),
@@ -81,6 +78,10 @@ class MyApp extends StatelessWidget {
           ChangePassword.id: (context) => ChangePassword(),
           NotificationSettings.id: (context) => NotificationSettings(),
           AppLanguage.id: (context) => AppLanguage(),
+          AppointmentsSearchResults.id: (context) =>
+              AppointmentsSearchResults(),
+          ClientsSearchresults.id: (context) => ClientsSearchresults(),
+          DoctorsSearchResults.id: (context) => DoctorsSearchResults(),
         },
       ),
     );

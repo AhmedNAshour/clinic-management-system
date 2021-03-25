@@ -2,12 +2,14 @@ import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/secretary/doctorSchedule.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/doctor.dart';
 
 class DoctorProfileSec extends StatefulWidget {
@@ -28,7 +30,6 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
   Map doctorData = {};
   int curSessions;
   int newSessions;
-  final _formKey = GlobalKey<FormState>();
   String error = '';
 
   @override
@@ -70,10 +71,14 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
-                        'assets/images/call.svg',
-                        height: size.height * 0.05,
-                        width: size.width * 0.05,
+                      GestureDetector(
+                        onTap: () {
+                          launch("tel://${widget.doctor.phoneNumber}");
+                        },
+                        child: CircleAvatar(
+                          radius: size.width * 0.05,
+                          backgroundImage: AssetImage('assets/images/call.png'),
+                        ),
                       ),
                       SizedBox(
                         width: size.width * 0.05,
@@ -102,7 +107,23 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                   InkWell(
                     onTap: () async {},
                     child: Text(
-                      'Edit',
+                      'Edit info',
+                      style: TextStyle(
+                        color: kPrimaryColor,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      Navigator.pushNamed(context, DoctorSchedule.id,
+                          arguments: widget.doctor);
+                    },
+                    child: Text(
+                      'Edit Schedule',
                       style: TextStyle(
                         color: kPrimaryColor,
                         fontSize: 14,

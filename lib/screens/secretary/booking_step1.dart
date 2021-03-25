@@ -74,6 +74,7 @@ class _BookingStep1State extends State<BookingStep1> {
               changeClientNumberSearch: changeClientNumberSearch,
               clientNameSearch: searchClientName,
               clientNumberSearch: searchClientNumber,
+              showSearchButton: 'no',
             ),
             SizedBox(height: size.height * 0.02),
             Expanded(

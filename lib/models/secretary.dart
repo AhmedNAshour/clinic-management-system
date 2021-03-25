@@ -5,6 +5,7 @@ class Secretary {
   final String phoneNumber;
   final String gender;
   final String branch;
+  final String branchName;
   final String picURL;
   final String token;
 
@@ -16,6 +17,7 @@ class Secretary {
     this.lName,
     this.phoneNumber,
     this.branch,
+    this.branchName,
     this.gender,
   });
 }

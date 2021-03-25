@@ -33,7 +33,8 @@ class _AddSecretaryState extends State<AddSecretary> {
   int gender = 0;
   int age;
   bool loading = false;
-  String branch = '';
+  Branch branch;
+  String branchName = '';
   String dummyBranchName = '';
   String curEmail;
   String curPassword;
@@ -58,8 +59,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                       if (snapshot.hasData) {
                         List<Branch> branches = snapshot.data;
                         if (branches.length != 0) {
-                          dummyBranchName = branches[0].name;
-                          branch = branches[0].docID;
+                          branch = branches[0];
                         }
                         return Scaffold(
                           backgroundColor: kPrimaryLightColor,
@@ -156,7 +156,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                 //     branches[0],
                                                 items: branches.map((branch) {
                                                   return DropdownMenuItem(
-                                                    value: branch.docID,
+                                                    value: branch,
                                                     child:
                                                         Text('${branch.name}'),
                                                   );
@@ -274,7 +274,8 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                       gender: gender == 0
                                                           ? 'male'
                                                           : 'female',
-                                                      branch: branch,
+                                                      branchId: branch.docID,
+                                                      branchName: branch.name,
                                                       picURL: '',
                                                     );
                                                     await _auth.signOut();

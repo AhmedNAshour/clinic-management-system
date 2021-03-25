@@ -108,7 +108,6 @@ class _SecretaryHomeState extends State<SecretaryHome> {
     if (selectedTab == 0) {
       return SearchAppointmentsForm(
         dateSearch: dateSearch,
-        dateTextController: dateTextController,
         changeDateSearch: changeDateSearch,
         changeClientNameSearch: changeClientNameSearchAppointments,
         changeClientNumberSearch: changeClientNumberSearchAppointments,
@@ -123,6 +122,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
         changeClientNumberSearch: changeClientNumberSearch,
         clientNameSearch: searchClientName,
         clientNumberSearch: searchClientNumber,
+        showSearchButton: 'yes',
       );
     } else {
       return SearchDoctorsForm(
@@ -135,16 +135,18 @@ class _SecretaryHomeState extends State<SecretaryHome> {
   List<Widget> displayTab(int selectedTab, double screenHeight,
       double screenWidth, UserData user, Secretary secretary) {
     if (selectedTab == 0) {
-      return appointmentsTab(screenHeight, screenWidth, user);
+      return appointmentsTab(
+          screenHeight, screenWidth, user, secretary.branchName);
     } else if (selectedTab == 1) {
-      return clientsTab(screenHeight, screenWidth, user);
+      return clientsTab(screenHeight, screenWidth, user, secretary.branchName);
     } else {
-      return doctorsTab(screenHeight, screenWidth, user, secretary.branch);
+      return doctorsTab(screenHeight, screenWidth, user, secretary.branch,
+          secretary.branchName);
     }
   }
 
-  List<Widget> doctorsTab(
-      double screenHeight, double screenWidth, UserData user, String branch) {
+  List<Widget> doctorsTab(double screenHeight, double screenWidth,
+      UserData user, String branch, String branchName) {
     return [
       Container(
         height: screenHeight * 0.3,
@@ -177,7 +179,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     ),
                   ),
                   Text(
-                    'Heliopolis Branch',
+                    '$branchName Branch',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.05,
@@ -201,8 +203,8 @@ class _SecretaryHomeState extends State<SecretaryHome> {
     ];
   }
 
-  List<Widget> clientsTab(
-      double screenHeight, double screenWidth, UserData user) {
+  List<Widget> clientsTab(double screenHeight, double screenWidth,
+      UserData user, String branchName) {
     return [
       Container(
         height: screenHeight * 0.3,
@@ -235,7 +237,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     ),
                   ),
                   Text(
-                    'Heliopolis Branch',
+                    '$branchName Branch',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.05,
@@ -253,14 +255,16 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       Expanded(
         child: Container(
           width: screenWidth * 0.9,
-          child: ClientList(''),
+          child: ClientList(
+            isSearch: 'no',
+          ),
         ),
       ),
     ];
   }
 
-  List<Widget> appointmentsTab(
-      double screenHeight, double screenWidth, UserData user) {
+  List<Widget> appointmentsTab(double screenHeight, double screenWidth,
+      UserData user, String branchName) {
     return [
       Container(
         height: screenHeight * 0.3,
@@ -293,7 +297,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     ),
                   ),
                   Text(
-                    'Heliopolis Branch',
+                    '$branchName Branch',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.05,
@@ -343,7 +347,9 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       Expanded(
         child: Container(
           width: screenWidth * 0.9,
-          child: AppointmentsListSecretary(''),
+          child: AppointmentsListSecretary(
+            isSearch: 'no',
+          ),
         ),
       ),
     ];
@@ -426,7 +432,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
     double screenWidth = size.width;
     return user != null && secretary != null
         ? Scaffold(
-            backgroundColor: Color(0xFFF0F0F0),
+            // backgroundColor: Color(0xFFF0F0F0),
             floatingActionButton: displayFloatingActionButton(
                 selectedTab, screenWidth, screenHeight, secretary.branch, size),
             body: MultiProvider(

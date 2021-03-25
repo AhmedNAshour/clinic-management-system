@@ -1,6 +1,7 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/search_input_field.dart';
 import 'package:clinic/components/forms/text_field_container.dart';
+import 'package:clinic/screens/shared/search_results/appointments_search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../screens/shared/constants.dart';
@@ -9,8 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class SearchAppointmentsForm extends StatefulWidget {
   const SearchAppointmentsForm({
     Key key,
-    @required this.dateSearch,
-    @required this.dateTextController,
+    this.dateSearch,
     this.changeDateSearch,
     this.changeClientNumberSearch,
     this.changeClientNameSearch,
@@ -21,7 +21,6 @@ class SearchAppointmentsForm extends StatefulWidget {
   }) : super(key: key);
 
   final String dateSearch;
-  final TextEditingController dateTextController;
   final Function changeDateSearch;
   final Function changeClientNumberSearch;
   final Function changeClientNameSearch;
@@ -35,6 +34,13 @@ class SearchAppointmentsForm extends StatefulWidget {
 }
 
 class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
+  String doctorNameSearch;
+  String clientNameSearch;
+  String clientNumberSearch;
+  String dateSearch = '';
+
+  var dateTextController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -46,28 +52,30 @@ class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
                 onTap: () {
                   showDatePicker(
                     context: context,
-                    initialDate: widget.dateSearch == ''
+                    initialDate: dateSearch == ''
                         ? DateTime.now()
-                        : DateTime.parse(widget.dateSearch),
+                        : DateTime.parse(dateSearch),
                     firstDate: DateTime(2020),
                     lastDate: DateTime(2030),
                   ).then((value) => setState(() {
                         if (value == null) {
-                          widget.changeDateSearch('');
-                          widget.dateTextController.text = '';
+                          // widget.changeDateSearch('');
+                          dateSearch = '';
+                          dateTextController.text = '';
                           // showCancel =
                           //     false;
                         } else {
-                          widget.changeDateSearch(
-                              DateFormat('yyyy-MM-dd').format(value));
-                          widget.dateTextController.text =
+                          // widget.changeDateSearch(
+                          //     DateFormat('yyyy-MM-dd').format(value));
+                          dateSearch = DateFormat('yyyy-MM-dd').format(value);
+                          dateTextController.text =
                               DateFormat('yyyy-MM-dd').format(value);
                           // showCancel =
                           //     true;
                         }
                       }));
                 },
-                controller: widget.dateTextController,
+                controller: dateTextController,
                 // initialValue: widget.dateSearch,
                 decoration: InputDecoration(
                   focusColor: kPrimaryColor,
@@ -78,7 +86,7 @@ class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
                   icon: SvgPicture.asset('assets/images/date.svg'),
                 ),
                 onChanged: (val) {
-                  widget.changeDateSearch(val);
+                  dateSearch = val;
                 },
               ),
             ),
@@ -89,7 +97,7 @@ class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
               obsecureText: false,
               hintText: 'Doctor name',
               onChanged: (val) {
-                widget.changeDoctorNameSearch(val);
+                doctorNameSearch = val;
               },
             ),
             SearchInputField(
@@ -99,7 +107,7 @@ class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
               obsecureText: false,
               hintText: 'Client name',
               onChanged: (val) {
-                widget.changeClientNameSearch(val);
+                clientNameSearch = val;
               },
             ),
             SearchInputField(
@@ -109,13 +117,19 @@ class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
               obsecureText: false,
               hintText: 'Client number',
               onChanged: (val) {
-                widget.changeClientNumberSearch(val);
+                clientNumberSearch = val;
               },
             ),
             RoundedButton(
               text: 'SEARCH',
               press: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, AppointmentsSearchResults.id,
+                    arguments: {
+                      'date': dateSearch,
+                      'doctorName': doctorNameSearch,
+                      'clientName': clientNameSearch,
+                      'clientNumber': clientNumberSearch,
+                    });
               },
             ),
           ],

@@ -153,7 +153,9 @@ class _ClientsState extends State<Clients> {
                           height: 15,
                         ),
                         Expanded(
-                          child: ClientList(search),
+                          child: ClientList(
+                            isSearch: 'no',
+                          ),
                         ),
                       ],
                     ),

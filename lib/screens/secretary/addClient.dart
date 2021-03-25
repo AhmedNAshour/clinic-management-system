@@ -327,10 +327,10 @@ class _AddClientState extends State<AddClient> {
                                 setState(() {
                                   loading = true;
                                 });
-                                if (user.role != 'client') {
-                                  // curEmail = user.email;
-                                  // curPassword = userData.password;
-                                }
+                                // if (user.role != 'client') {
+                                //   // curEmail = user.email;
+                                //   // curPassword = userData.password;
+                                // }
                                 MyUser result =
                                     await _auth.createUserWithEmailAndPasword(
                                   email,

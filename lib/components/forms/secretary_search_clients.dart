@@ -1,4 +1,6 @@
+import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/search_input_field.dart';
+import 'package:clinic/screens/shared/search_results/clients_search_results.dart';
 import 'package:flutter/material.dart';
 
 class SearchClientsForm extends StatefulWidget {
@@ -8,49 +10,58 @@ class SearchClientsForm extends StatefulWidget {
     this.changeClientNameSearch,
     this.clientNameSearch,
     this.clientNumberSearch,
+    this.showSearchButton,
   }) : super(key: key);
 
   final Function changeClientNumberSearch;
   final Function changeClientNameSearch;
   final String clientNameSearch;
   final String clientNumberSearch;
+  final String showSearchButton;
 
   @override
   _SearchClientsFormState createState() => _SearchClientsFormState();
 }
 
 class _SearchClientsFormState extends State<SearchClientsForm> {
+  String clientNameSearch;
+  String clientNumberSearch;
+
   @override
   Widget build(BuildContext context) {
     return Form(
       child: Column(
         children: [
           SearchInputField(
-            initialValue: widget.clientNameSearch,
+            initialValue: clientNameSearch,
             labelText: 'Client Name',
             iconPath: 'assets/images/client.svg',
             obsecureText: false,
             hintText: 'Client name',
             onChanged: (val) {
-              widget.changeClientNameSearch(val);
+              clientNameSearch = val;
             },
           ),
           SearchInputField(
-            initialValue: widget.clientNumberSearch,
+            initialValue: clientNumberSearch,
             labelText: 'Client Number',
             iconPath: 'assets/images/client-num.svg',
             obsecureText: false,
             hintText: 'Client number',
-            onChanged: (val) {
-              widget.changeClientNumberSearch(val);
-            },
+            onChanged: (val) => clientNumberSearch = val,
           ),
-          // RoundedButton(
-          //   text: 'SEARCH',
-          //   press: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
+          widget.showSearchButton == 'yes'
+              ? RoundedButton(
+                  text: 'SEARCH',
+                  press: () {
+                    Navigator.pushNamed(context, ClientsSearchresults.id,
+                        arguments: {
+                          'clientName': clientNameSearch,
+                          'clientNumber': clientNumberSearch,
+                        });
+                  },
+                )
+              : Container(),
         ],
       ),
     );

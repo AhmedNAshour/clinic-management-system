@@ -25,16 +25,6 @@ class DoctorCardSec extends StatelessWidget {
           onTap: () {
             CustomBottomSheets()
                 .showCustomBottomSheet(size, DoctorProfileSec(doctor), context);
-            // Navigator.pushNamed(context, DoctorProfileSec.id, arguments: {
-            //   'fName': doctor.fName,
-            //   'lName': doctor.lName,
-            //   'gender': doctor.gender,
-            //   'specialty': doctor.proffesion,
-            //   'bio': doctor.about,
-            //   'phoneNumber': doctor.phoneNumber,
-            //   'uid': doctor.uid,
-            //   'picUrl': doctor.picURL,
-            // });
           },
           child: Container(
             width: screenWidth * 0.9,

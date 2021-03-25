@@ -21,7 +21,7 @@ class _WorkDaysListState extends State<WorkDaysList> {
     return ListView.builder(
       itemCount: workDays.length,
       itemBuilder: (context, index) {
-        return DayCard(workDay: workDays[index], doctorID: widget.doctorID);
+        return WorkdayCard(workDay: workDays[index], doctorID: widget.doctorID);
       },
     );
   }

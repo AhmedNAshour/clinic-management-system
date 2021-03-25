@@ -1,4 +1,3 @@
-import 'package:clinic/components/lists_cards/appointment_card.dart';
 import 'package:clinic/components/lists_cards/branch_card.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:flutter/material.dart';

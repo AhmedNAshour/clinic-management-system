@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/search_input_field.dart';
+import 'package:clinic/screens/shared/search_results/doctors_search_results.dart';
 import 'package:flutter/material.dart';
 
 class SearchDoctorsForm extends StatefulWidget {
@@ -17,6 +18,7 @@ class SearchDoctorsForm extends StatefulWidget {
 }
 
 class _SearchDoctorsFormState extends State<SearchDoctorsForm> {
+  String doctorNameSearch;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -29,13 +31,15 @@ class _SearchDoctorsFormState extends State<SearchDoctorsForm> {
             obsecureText: false,
             hintText: 'Doctor name',
             onChanged: (val) {
-              widget.changeDoctorNameSearch(val);
+              doctorNameSearch = val;
             },
           ),
           RoundedButton(
             text: 'SEARCH',
             press: () {
-              Navigator.pop(context);
+              Navigator.pushNamed(context, DoctorsSearchResults.id, arguments: {
+                'doctorName': doctorNameSearch,
+              });
             },
           ),
         ],
