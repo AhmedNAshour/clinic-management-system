@@ -3,6 +3,7 @@ import 'package:clinic/models/client.dart';
 import 'package:clinic/screens/shared/search_results/noResults.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'registration_card.dart';
 
 class ClientList extends StatefulWidget {
   @override
@@ -34,7 +35,9 @@ class _ClientListState extends State<ClientList> {
       return ListView.builder(
         itemCount: clients.length,
         itemBuilder: (context, index) {
-          return ClientCard(client: clients[index]);
+          return clients[index].status == 1
+              ? ClientCard(client: clients[index])
+              : RequestCard(client: clients[index]);
         },
       );
     }

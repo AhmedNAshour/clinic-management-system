@@ -8,8 +8,10 @@ class Secretary {
   final String branchName;
   final String picURL;
   final String token;
+  final int status;
 
   Secretary({
+    this.status,
     this.token,
     this.picURL,
     this.uid,

@@ -328,6 +328,21 @@ class _BookingStep3State extends State<BookingStep3> {
                                             clientPicURL: client.picURL ?? '',
                                             doctorPicURL: doctor.picURL ?? '',
                                           );
+                                          await DatabaseService(uid: client.uid)
+                                              .addAppointmentNotifications(
+                                            clientID: client.uid,
+                                            startTime: startTimes[
+                                                selectedTimeSlotIndex],
+                                            doctorID: doctor.uid,
+                                            doctorFName: doctor.fName,
+                                            doctorLName: doctor.lName,
+                                            clientFName: client.fName,
+                                            clientLName: client.lName,
+                                            branch: doctor.branch,
+                                            clientPicURL: client.picURL ?? '',
+                                            status: 1,
+                                            type: 1,
+                                          );
                                           await DatabaseService
                                               .updateNumAppointments(
                                                   numAppointments:

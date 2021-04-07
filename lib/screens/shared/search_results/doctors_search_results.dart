@@ -1,4 +1,3 @@
-import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
 import 'package:clinic/components/lists_cards/doctors_list.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/constants.dart';
@@ -84,10 +83,12 @@ class _DoctorsSearchResultsState extends State<DoctorsSearchResults> {
                                   secretaryBranch,
                                   searchData['doctorName'],
                                 ),
+                                initialData: [],
                               ),
                               StreamProvider.value(
-                                  value:
-                                      DatabaseService(uid: user.uid).userData),
+                                value: DatabaseService(uid: user.uid).userData,
+                                initialData: null,
+                              ),
                             ],
                             child: DoctorList(
                               isSearch: 'yes',

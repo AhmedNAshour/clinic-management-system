@@ -81,6 +81,7 @@ class _BookingStep1State extends State<BookingStep1> {
               child: Container(
                 child: StreamProvider<List<Client>>.value(
                   value: DatabaseService().clients,
+                  initialData: [],
                   child: ClientListSecretaryBooking(
                       searchClientName, searchClientNumber),
                 ),

@@ -8,8 +8,10 @@ class Client {
   final int age;
   final String picURL;
   final String email;
+  final int status;
 
   Client({
+    this.status,
     this.email,
     this.picURL,
     this.uid,

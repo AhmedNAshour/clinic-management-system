@@ -53,7 +53,7 @@ class _AddClientState extends State<AddClient> {
     TaskSnapshot taskSnapshot = await task;
     taskSnapshot.ref.getDownloadURL().then(
           (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
+              .updateUserProfilePicture(value.toString(), 'client'),
         );
   }
 
@@ -107,7 +107,6 @@ class _AddClientState extends State<AddClient> {
               ),
               Expanded(
                 child: Container(
-                  // height: size.height * 0.5,
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
@@ -341,6 +340,7 @@ class _AddClientState extends State<AddClient> {
                                   gender == 0 ? 'male' : 'female',
                                   'client',
                                   '',
+                                  1,
                                 );
                                 if (result == null) {
                                   setState(() {
@@ -371,6 +371,7 @@ class _AddClientState extends State<AddClient> {
                                     numAppointments: numAppointments,
                                     age: age,
                                     email: email,
+                                    status: 1,
                                   );
                                   await db.updateUserProfilePicture(
                                       newProfilePic != null ? downloadUrl : '',
@@ -430,8 +431,7 @@ class _AddClientState extends State<AddClient> {
                                                   BorderRadius.circular(10),
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  // Navigator.popUntil(context,
-                                                  //     (route) => false);
+                                                  AuthService().signOut();
                                                 },
                                                 child: Container(
                                                   child: Center(

@@ -1,11 +1,13 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/screens/shared/reset_password.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import '../../screens/client/registrationRequest.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;
@@ -25,15 +27,24 @@ class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  final FirebaseMessaging messaging = FirebaseMessaging();
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   @override
   void initState() {}
 
   @override
   Widget build(BuildContext context) {
-    configureCallbacks();
+    // configureCallbacks();
     Size size = MediaQuery.of(context).size;
+    // Color kPrimaryColor =
+    //     Provider.of<DesignElements>(context, listen: false).primaryColor ??
+    //         Color(0xFF0060AD);
+    // Color kPrimaryLightColor =
+    //     Provider.of<DesignElements>(context, listen: false).primaryLightColor ??
+    //         Color(0xFFBEBEBE);
+    // Color kPrimaryTextColor =
+    //     Provider.of<DesignElements>(context, listen: false).primaryTextColor ??
+    //         Color(0xFF212121);
 
     return loading
         ? Loading()
@@ -140,7 +151,10 @@ class _LoginState extends State<Login> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    CustomBottomSheets().showCustomBottomSheet(
+                                        size, RegistrationRequest(), context);
+                                  },
                                   child: Container(
                                     child: Center(
                                       child: Text(
@@ -181,11 +195,11 @@ class _LoginState extends State<Login> {
           );
   }
 
-  void configureCallbacks() {
-    messaging.configure(
-      onMessage: (message) async {
-        print('onMessage: $message');
-      },
-    );
-  }
+  // void configureCallbacks() {
+  //   messaging.configure(
+  //     onMessage: (message) async {
+  //       print('onMessage: $message');
+  //     },
+  //   );
+  // }
 }

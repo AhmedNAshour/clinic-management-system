@@ -78,6 +78,7 @@ class _NoteCardState extends State<NoteCard> {
                       color: kPrimaryLightColor,
                     ),
                   ),
+                  //TODO: Add delete note button
                 ],
               ),
             ),

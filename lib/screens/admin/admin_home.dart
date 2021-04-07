@@ -1,10 +1,17 @@
+import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/admin/branches.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'clientsAdmin.dart';
+import 'doctorsAdmin.dart';
+import 'managersAdmin.dart';
+import '../shared/constants.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -12,179 +19,432 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  List<Appointment> todaysAppointments;
+  List<Appointment> pastAppointments;
+  List<Appointment> upcomingAppointments;
+  List<Appointment> cancelledAppointments;
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final AuthService _auth = AuthService();
     final user = Provider.of<UserData>(context);
+    Size size = MediaQuery.of(context).size;
+    double screenHeight = size.height;
+    double screenWidth = size.width;
+    List<Appointment> appointments =
+        Provider.of<List<Appointment>>(context) ?? [];
+    todaysAppointments = appointments
+        .where((element) =>
+            element.day == DateFormat("yyyy-MM-dd").format(DateTime.now()))
+        .toList();
+    pastAppointments = appointments
+        .where((element) => element.startTime.isBefore(DateTime.now()))
+        .toList();
+    upcomingAppointments = appointments
+        .where((element) => element.startTime.isAfter(DateTime.now()))
+        .toList();
+    cancelledAppointments =
+        appointments.where((element) => element.status == 'canceled').toList();
 
     return user != null
-        ? Container(
-            width: double.infinity,
-            color: kPrimaryColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        ? Scaffold(
+            body: Stack(
               children: [
-                Container(
-                    padding: EdgeInsets.only(
-                        top: size.height * 0.1, left: 30, right: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                await _auth.signOut();
-                              },
-                              child: Text(
-                                'Sign out',
-                                style: TextStyle(
-                                    color: kPrimaryLightColor, fontSize: 14),
-                              ),
+                Positioned(
+                  child: Container(
+                    height: screenHeight * 0.3,
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(50),
+                        bottomRight: Radius.circular(50),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.02,
+                      vertical: screenHeight * 0.04),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: CircleAvatar(
+                              radius: screenWidth * 0.10,
+                              backgroundImage:
+                                  user.picURL != '' && user.picURL != null
+                                      ? NetworkImage(user.picURL)
+                                      : AssetImage(
+                                          'assets/images/userPlaceholder.png'),
                             ),
-                            Text(
-                              'Hello, ${user.fName}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 38,
-                                  fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Welcome ${user.fName}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: screenWidth * 0.07,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'Admin',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: screenWidth * 0.05,
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    await AuthService().signOut();
+                                  },
+                                  child: Text(
+                                    'Sign out',
+                                    style: TextStyle(
+                                        color: kPrimaryLightColor,
+                                        fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Container(
+                        padding: EdgeInsets.all(screenWidth * 0.04),
+                        height: screenHeight * 0.18,
+                        width: screenWidth * 0.9,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/Add-Appointment.svg',
+                                  color: kPrimaryColor,
+                                ),
+                                SizedBox(
+                                  width: screenWidth * 0.04,
+                                ),
+                                Text(
+                                  'Appointments Report',
+                                  style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontSize: screenWidth * 0.06,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: screenHeight * 0.03),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppointmentsReportItem(
+                                  name: 'Today',
+                                  count: todaysAppointments.length,
+                                ),
+                                AppointmentsReportItem(
+                                  name: 'Previous',
+                                  count: pastAppointments.length,
+                                ),
+                                AppointmentsReportItem(
+                                  name: 'Upcoming',
+                                  count: upcomingAppointments.length,
+                                ),
+                                AppointmentsReportItem(
+                                  name: 'Cancelled',
+                                  count: cancelledAppointments.length,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
-                      ],
-                    )),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                    decoration: BoxDecoration(
-                      color: kPrimaryLightColor,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(53),
-                          topRight: Radius.circular(53)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          height: size.height * 0.1,
-                          width: double.infinity,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, '/clientsScreenAdmin');
-                              },
-                              color: Colors.white,
-                              child: Text(
-                                'Clients',
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Expanded(
+                        child: Container(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: screenWidth * 0.9,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, ClientsAdmin.id);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                                size.width * 0.03),
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: size.height * 0.02),
+                                            height: size.height * 0.15,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: kPrimaryLightColor,
+                                                  blurRadius: 10.0,
+                                                  spreadRadius: 0.5,
+                                                  offset: Offset(0,
+                                                      0), // shadow direction: bottom right
+                                                )
+                                              ],
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/user-defult.svg',
+                                                  color: kPrimaryColor,
+                                                  height: screenWidth * 0.1,
+                                                ),
+                                                SizedBox(
+                                                  height: size.height * 0.02,
+                                                ),
+                                                Text(
+                                                  'Clients',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: size.width * 0.05,
+                                                    color: kPrimaryTextColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.05,
+                                      ),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, DoctorsAdmin.id);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                                size.width * 0.03),
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: size.height * 0.02),
+                                            height: size.height * 0.15,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: kPrimaryLightColor,
+                                                  blurRadius: 10.0,
+                                                  spreadRadius: 0.5,
+                                                  offset: Offset(0,
+                                                      0), // shadow direction: bottom right
+                                                )
+                                              ],
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/user-defult.svg',
+                                                  color: kPrimaryColor,
+                                                  height: screenWidth * 0.1,
+                                                ),
+                                                SizedBox(
+                                                  height: size.height * 0.02,
+                                                ),
+                                                Text(
+                                                  'Doctors',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: size.width * 0.05,
+                                                    color: kPrimaryTextColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: screenWidth * 0.9,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, ManagersAdmin.id);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                                size.width * 0.03),
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: size.height * 0.02),
+                                            height: size.height * 0.15,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: kPrimaryLightColor,
+                                                  blurRadius: 10.0,
+                                                  spreadRadius: 0.5,
+                                                  offset: Offset(0,
+                                                      0), // shadow direction: bottom right
+                                                )
+                                              ],
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/user-defult.svg',
+                                                  color: kPrimaryColor,
+                                                  height: screenWidth * 0.1,
+                                                ),
+                                                SizedBox(
+                                                  height: size.height * 0.02,
+                                                ),
+                                                Text(
+                                                  'Managers',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: size.width * 0.05,
+                                                    color: kPrimaryTextColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.05,
+                                      ),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, Branches.id);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                                size.width * 0.03),
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: size.height * 0.02),
+                                            height: size.height * 0.15,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: kPrimaryLightColor,
+                                                  blurRadius: 10.0,
+                                                  spreadRadius: 0.5,
+                                                  offset: Offset(0,
+                                                      0), // shadow direction: bottom right
+                                                )
+                                              ],
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/user-defult.svg',
+                                                  color: kPrimaryColor,
+                                                  height: screenWidth * 0.1,
+                                                ),
+                                                SizedBox(
+                                                  height: size.height * 0.02,
+                                                ),
+                                                Text(
+                                                  'Branches',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: size.width * 0.05,
+                                                    color: kPrimaryTextColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          height: size.height * 0.1,
-                          width: double.infinity,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, '/doctorsScreenAdmin');
-                              },
-                              color: Colors.white,
-                              child: Text(
-                                'Doctors',
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          height: size.height * 0.1,
-                          width: double.infinity,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, '/secretariesScreen');
-                              },
-                              color: Colors.white,
-                              child: Text(
-                                'Secretaries',
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          height: size.height * 0.1,
-                          width: double.infinity,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/branchesScreen');
-                              },
-                              color: Colors.white,
-                              child: Text(
-                                'Branches',
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           )
         : Loading();
+  }
+}
+
+class AppointmentsReportItem extends StatelessWidget {
+  const AppointmentsReportItem({
+    Key key,
+    this.name,
+    this.count,
+  }) : super(key: key);
+
+  final String name;
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.maybeOf(context).size;
+    double screenWidth = size.width;
+    return Column(
+      children: [
+        Text(
+          name,
+          style: TextStyle(
+            fontSize: screenWidth * 0.045,
+            fontWeight: FontWeight.bold,
+            color: kPrimaryTextColor,
+          ),
+        ),
+        Text(
+          count.toString(),
+          style: TextStyle(
+            fontSize: screenWidth * 0.04,
+            fontWeight: FontWeight.bold,
+            color: kPrimaryLightColor,
+          ),
+        ),
+      ],
+    );
   }
 }

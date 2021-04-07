@@ -16,8 +16,18 @@ class UserData {
   final String password;
   final String email;
   final String picURL;
+  final int status;
+  final String language;
+  final String token;
+  final bool cancellingNotifs;
+  final bool bookingNotifs;
 
   UserData({
+    this.cancellingNotifs,
+    this.bookingNotifs,
+    this.token,
+    this.language,
+    this.status,
     this.email,
     this.password,
     this.uid,

@@ -1,9 +1,14 @@
+import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/admin/disable_user.dart';
+import 'package:clinic/screens/secretary/editDoctorSecretary.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:clinic/screens/shared/stringManipulation.dart';
+import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/doctor.dart';
-import '../../screens/client/doctor_info.dart';
+import '../../screens/secretary/doctor_info.dart';
 import '../../models/customBottomSheets.dart';
 
 class DoctorCardSec extends StatelessWidget {
@@ -26,122 +31,162 @@ class DoctorCardSec extends StatelessWidget {
             CustomBottomSheets()
                 .showCustomBottomSheet(size, DoctorProfileSec(doctor), context);
           },
-          child: Container(
-            width: screenWidth * 0.9,
-            margin: EdgeInsets.only(bottom: size.height * 0.02),
-            padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(10)),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.02),
-                  child: CircleAvatar(
+          child: Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Container(
+              width: screenWidth * 0.9,
+              // margin: EdgeInsets.only(bottom: size.height * 0.02),
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.02,
+                  vertical: screenHeight * 0.02),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
                     radius: screenWidth * 0.11,
                     backgroundImage: doctor.picURL != ''
                         ? NetworkImage(doctor.picURL)
                         : AssetImage('assets/images/drPlaceholder.png'),
                   ),
-                ),
-                SizedBox(
-                  width: screenWidth * 0.02,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Dr. ${doctor.fName} ${doctor.lName}',
-                        style: TextStyle(
-                          color: kPrimaryTextColor,
-                          fontSize: screenWidth * 0.05,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.01,
-                      ),
-                      Text(
-                        doctor.proffesion,
-                        style: TextStyle(
-                          color: kPrimaryLightColor,
-                          fontSize: screenWidth * 0.04,
-                        ),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.02,
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              launch("tel://${doctor.phoneNumber}");
-                            },
-                            child: CircleAvatar(
-                              radius: screenWidth * 0.04,
-                              backgroundImage:
-                                  AssetImage('assets/images/call.png'),
-                            ),
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.01,
-                          ),
-                          Text(
-                            'Call',
-                            style: TextStyle(
-                              color: kPrimaryColor,
-                              fontSize: screenWidth * 0.05,
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.02,
-                            ),
-                            width: screenWidth * 0.005,
-                            height: screenHeight * 0.02,
+                  SizedBox(
+                    width: screenWidth * 0.02,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          StringManipulation.limitLength(
+                              'Dr. ${doctor.fName} ${doctor.lName}', 25),
+                          style: TextStyle(
                             color: kPrimaryTextColor,
+                            fontSize: screenWidth * 0.045,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SvgPicture.asset(
-                            'assets/images/chat.svg',
-                            height: screenHeight * 0.04,
-                            width: screenWidth * 0.04,
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.01,
+                        ),
+                        Text(
+                          doctor.proffesion,
+                          style: TextStyle(
+                            color: kPrimaryLightColor,
+                            fontSize: screenWidth * 0.04,
                           ),
-                          SizedBox(
-                            width: screenWidth * 0.01,
-                          ),
-                          Text(
-                            'Message',
-                            style: TextStyle(
-                              color: kPrimaryColor,
-                              fontSize: screenWidth * 0.05,
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                launch("tel://${doctor.phoneNumber}");
+                              },
+                              child: Icon(
+                                Icons.phone_android_rounded,
+                                color: kPrimaryColor,
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              width: screenWidth * 0.01,
+                            ),
+                            Text(
+                              'Call',
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: screenWidth * 0.045,
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02,
+                              ),
+                              width: screenWidth * 0.005,
+                              height: screenHeight * 0.02,
+                              color: kPrimaryTextColor,
+                            ),
+                            Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              color: kPrimaryColor,
+                            ),
+                            SizedBox(
+                              width: screenWidth * 0.01,
+                            ),
+                            Text(
+                              'Message',
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: screenWidth * 0.045,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          CustomBottomSheets().showCustomBottomSheet(
+                            size,
+                            EditDoctorSec(
+                              doctor: doctor,
+                            ),
+                            context,
+                          );
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.userEdit,
+                          color: kPrimaryColor,
+                        ),
                       ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      doctor.status == 1
+                          ? GestureDetector(
+                              onTap: () async {
+                                CustomBottomSheets()
+                                    .showDynamicCustomBottomSheet(
+                                        size,
+                                        DisableUser(UserData(
+                                          fName: doctor.fName,
+                                          lName: doctor.lName,
+                                          uid: doctor.uid,
+                                          role: 'doctor',
+                                        )),
+                                        context);
+                              },
+                              child: Icon(
+                                Icons.cancel,
+                                color: Color(0xFFB5020B),
+                                size: size.width * 0.075,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () async {
+                                var result =
+                                    await DatabaseService(uid: doctor.uid)
+                                        .updateUserStatus('doctor', 1);
+                                if (result == 0) print('DIDNT WORK');
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.checkCircle,
+                                color: Colors.green,
+                              ),
+                            ),
                     ],
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/doctorScheduleScreen',
-                        arguments: {
-                          'docId': doctor.uid,
-                          'fName': doctor.fName,
-                          'lName': doctor.lName,
-                          'profession': doctor.proffesion,
-                        });
-                  },
-                  child: SvgPicture.asset(
-                    'assets/images/edit.svg',
-                    color: kPrimaryColor,
-                    height: screenHeight * 0.04,
-                    width: screenWidth * 0.04,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

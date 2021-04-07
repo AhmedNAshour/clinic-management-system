@@ -32,7 +32,7 @@ class AuthService {
 
   // register with email and password
   Future registerWithEmailAndPasword(String email, password, fName, lName,
-      phoneNumber, gender, role, picURL) async {
+      phoneNumber, gender, role, picURL, int status) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -40,8 +40,8 @@ class AuthService {
       user.updateProfile(photoURL: picURL);
 
       // create new document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData(
-          fName, lName, phoneNumber, gender, role, password, email, picURL);
+      await DatabaseService(uid: user.uid).updateUserData(fName, lName,
+          phoneNumber, gender, role, password, email, picURL, status);
 
       return _userFromFirbaseUser(user);
     } catch (e) {
@@ -50,7 +50,7 @@ class AuthService {
   }
 
   Future createUserWithEmailAndPasword(String email, password, fName, lName,
-      phoneNumber, gender, role, picURL) async {
+      phoneNumber, gender, role, picURL, int status) async {
     FirebaseApp tempApp = await Firebase.initializeApp(
         name: 'temporaryregister', options: Firebase.app().options);
     try {
@@ -60,8 +60,8 @@ class AuthService {
       User user = userCredential.user;
       await user.updateProfile(photoURL: picURL);
       // create new document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData(
-          fName, lName, phoneNumber, gender, role, password, email, picURL);
+      await DatabaseService(uid: user.uid).updateUserData(fName, lName,
+          phoneNumber, gender, role, password, email, picURL, status);
       await tempApp.delete();
       return Future.sync(() => _userFromFirbaseUser(user));
     } catch (e) {

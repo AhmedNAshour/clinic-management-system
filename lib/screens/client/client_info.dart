@@ -1,13 +1,15 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/secretary/editClient.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/client.dart';
 
 class ClientProfile extends StatefulWidget {
@@ -55,6 +57,7 @@ class _ClientProfileState extends State<ClientProfile> {
                 left: size.width * 0.04,
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Align(
                     alignment: Alignment.topRight,
@@ -72,10 +75,14 @@ class _ClientProfileState extends State<ClientProfile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
-                        'assets/images/call.svg',
-                        height: size.height * 0.05,
-                        width: size.width * 0.05,
+                      GestureDetector(
+                        onTap: () {
+                          launch("tel://${widget.client.phoneNumber}");
+                        },
+                        child: Icon(
+                          Icons.phone_android_rounded,
+                          color: kPrimaryColor,
+                        ),
                       ),
                       SizedBox(
                         width: size.width * 0.05,
@@ -91,10 +98,9 @@ class _ClientProfileState extends State<ClientProfile> {
                       SizedBox(
                         width: size.width * 0.05,
                       ),
-                      SvgPicture.asset(
-                        'assets/images/chat.svg',
-                        height: size.height * 0.05,
-                        width: size.width * 0.05,
+                      Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        color: kPrimaryColor,
                       ),
                     ],
                   ),
@@ -102,7 +108,10 @@ class _ClientProfileState extends State<ClientProfile> {
                     height: size.height * 0.01,
                   ),
                   InkWell(
-                    onTap: () async {},
+                    onTap: () async {
+                      CustomBottomSheets().showCustomBottomSheet(
+                          size, EditClient(client: widget.client), context);
+                    },
                     child: Text(
                       'Edit',
                       style: TextStyle(
@@ -144,6 +153,9 @@ class _ClientProfileState extends State<ClientProfile> {
                         fontSize: size.width * 0.05,
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
                   ),
                   Expanded(
                     flex: 1,

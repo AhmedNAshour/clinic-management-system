@@ -19,7 +19,7 @@ exports.doctorBookingTrigger = functions.firestore.document('appointments/{appoi
         tokens.push(snapshot.data().doctorToken);
         var payload = {notification: {title: 'New Appointment', body: 'You have a new appointment'}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
         console.log(tokens[0]);
-        const response = await admin.messaging().sendToDevice(tokens , payload)
+        const response = await admin.messaging().sendToTopic('reservationBookedForDoctor' + snapshot.data().doctorID,payload)
     }
 )
 
@@ -31,7 +31,9 @@ exports.doctorCancellingTrigger = functions.firestore.document('appointments/{ap
         tokens.push(snapshot.data().doctorToken);
         var payload = {notification: {title: 'Appointment Cancelled', body: 'One appointment was cancelled'}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
         console.log(tokens[0]);
-        const response = await admin.messaging().sendToDevice(tokens , payload)
+        // const response = await admin.messaging().sendToDevice(tokens , payload)
+        const response = await admin.messaging().sendToTopic('reservationCancelledForDoctor' + snapshot.data().doctorID,payload)
+
     }
 )
 

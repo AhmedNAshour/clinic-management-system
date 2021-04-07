@@ -1,15 +1,15 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:clinic/components/lists_cards/doctors_list_client.dart';
-import 'package:clinic/models/branch.dart';
+import 'package:clinic/components/lists_cards/appointments_list_client.dart';
+import 'package:clinic/models/client.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/client/search_field.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'booking_step1_client.dart';
 
 class ClientHome extends StatefulWidget {
   @override
@@ -21,229 +21,182 @@ class _ClientHomeState extends State<ClientHome> {
   var textController = new TextEditingController();
   String search = '';
   bool showCancel = false;
+  int selectedType = 0;
+  String status;
+  String dateComparison;
+  List<String> appointmentTypes = [
+    'Upcoming',
+    'Past',
+    'Canceled',
+  ];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final AuthService _auth = AuthService();
+    double screenHeight = size.height;
+    double screenWidth = size.width;
     final user = Provider.of<UserData>(context);
+    final client = Provider.of<Client>(context);
 
-    return user != null
-        ? FutureBuilder(
-            future: DatabaseService(uid: user.uid).getClientRemainingSessions(),
-            builder: (context, numAppointments) {
-              if (numAppointments.hasData) {
-                return StreamBuilder<List<Branch>>(
-                    stream: DatabaseService().branches,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<Branch> branches = snapshot.data;
-                        if (branches.length != 0) {
-                          if (branchId == '') {
-                            branchId = '';
-                          }
-                        }
-                        return Container(
-                          width: double.infinity,
-                          color: kPrimaryColor,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.only(
-                                      top: size.height * 0.1,
-                                      left: 30,
-                                      right: 30),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          InkWell(
-                                            onTap: () async {
-                                              await _auth.signOut();
-                                            },
-                                            child: Text(
-                                              'Sign out',
-                                              style: TextStyle(
-                                                  color: kPrimaryLightColor,
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                          Text(
-                                            'Hello, ${user.fName}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 38,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        numAppointments.data != 0
-                                            ? 'You have ${numAppointments.data} sessions left. Find a doctor below'
-                                            : 'You have ${numAppointments.data} sessions left. Please contact a secretary',
-                                        style: TextStyle(
-                                            color: kPrimaryLightColor,
-                                            fontSize: 14),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        'Select a branch',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Container(
-                                        height: 60,
-                                        width: double.infinity,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(29),
-                                        ),
-                                        child: DropdownButtonFormField(
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                          ),
-                                          icon: Icon(
-                                            Icons.pin_drop,
-                                            color: kPrimaryColor,
-                                          ),
-                                          hint: Text(
-                                            'Choose branch',
-                                          ),
-                                          items: branches.map((branch) {
-                                            return DropdownMenuItem(
-                                              value: branch.docID,
-                                              child: Text('${branch.name}'),
-                                            );
-                                          }).toList(),
-                                          onChanged: (val) => setState(() {
-                                            branchId = val;
-                                          }),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
-                                  )),
-                              Expanded(
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 30),
-                                  decoration: BoxDecoration(
-                                    color: kPrimaryLightColor,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(53),
-                                        topRight: Radius.circular(53)),
+    String getStatus(int selectedType) {
+      if (selectedType == 0 || selectedType == 1) status = 'active';
+      if (selectedType == 2) status = 'canceled';
+      return status;
+    }
+
+    return user != null && client != null
+        ? Scaffold(
+            body: Stack(
+              children: [
+                Positioned(
+                  child: Container(
+                    height: screenHeight * 0.18,
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.02,
+                      vertical: screenHeight * 0.04),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: CircleAvatar(
+                              radius: screenWidth * 0.10,
+                              backgroundImage:
+                                  user.picURL != '' && user.picURL != null
+                                      ? NetworkImage(user.picURL)
+                                      : AssetImage(
+                                          'assets/images/userPlaceholder.png'),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Welcome ${user.fName}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: screenWidth * 0.07,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  child: Column(
-                                    children: [
-                                      // Form(
-                                      //   child: Container(
-                                      //     decoration: BoxDecoration(
-                                      //       color: Colors.white,
-                                      //       borderRadius:
-                                      //           BorderRadius.circular(28),
-                                      //     ),
-                                      //     child: Row(
-                                      //       mainAxisAlignment:
-                                      //           MainAxisAlignment.spaceEvenly,
-                                      //       children: <Widget>[
-                                      //         Container(
-                                      //           width: size.width * 0.5,
-                                      //           margin: EdgeInsets.symmetric(
-                                      //               horizontal: 10,
-                                      //               vertical: 10),
-                                      //           child: TextFormField(
-                                      //             controller: textController,
-                                      //             decoration: InputDecoration(
-                                      //               icon: Icon(
-                                      //                 Icons.search,
-                                      //                 color: kPrimaryColor,
-                                      //               ),
-                                      //               hintText: "Search Doctors",
-                                      //               border: InputBorder.none,
-                                      //             ),
-                                      //             onChanged: (val) {
-                                      //               setState(
-                                      //                   () => search = val);
-                                      //             },
-                                      //           ),
-                                      //         ),
-                                      //         IconButton(
-                                      //           icon: Icon(
-                                      //             Icons.cancel,
-                                      //             color: kPrimaryColor,
-                                      //           ),
-                                      //           enableFeedback: showCancel,
-                                      //           onPressed: () {
-                                      //             setState(() {
-                                      //               search = '';
-                                      //               textController.text = '';
-                                      //               showCancel = false;
-                                      //             });
-                                      //           },
-                                      //           // DateFormat('dd-MM-yyyy').format(value))
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Doctors in selected branch: ',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: branchId == ''
-                                            ? Center(
-                                                child: AutoSizeText(
-                                                  'PLEASE SELECT A BRANCH',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 50,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  minFontSize: 15,
-                                                  maxLines: 1,
-                                                ),
-                                              )
-                                            : DoctorListClient(
-                                                search, branchId),
-                                      ),
-                                    ],
+                                ),
+                                Text(
+                                  '${client.numAppointments} sessions remaining.',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: screenWidth * 0.04,
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    await AuthService().signOut();
+                                  },
+                                  child: Text(
+                                    'Sign out',
+                                    style: TextStyle(
+                                        color: kPrimaryLightColor,
+                                        fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.02,
+                      ),
+                      Container(
+                        height: size.height * 0.1,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: appointmentTypes.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedType = index;
+                                });
+                              },
+                              child: Container(
+                                width: size.width * 0.35,
+                                height: size.height * 0.12,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: size.height * 0.02,
+                                  horizontal: size.width * 0.02,
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: size.height * 0.01,
+                                  horizontal: size.width * 0.02,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: selectedType == index
+                                      ? kPrimaryColor
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: selectedType == index
+                                        ? Colors.transparent
+                                        : kPrimaryLightColor,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    appointmentTypes[index],
+                                    style: TextStyle(
+                                        color: selectedType == index
+                                            ? Colors.white
+                                            : kPrimaryLightColor,
+                                        fontSize: size.width * 0.05),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return Loading();
-                      }
-                    });
-              } else {
-                return Loading();
-              }
-            },
+                            );
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          width: size.width * 0.9,
+                          child: StreamProvider.value(
+                              value: DatabaseService().getAppointmentsBySearch(
+                                status: getStatus(selectedType),
+                                dateComparison: appointmentTypes[selectedType],
+                                clientId: client.uid,
+                              ),
+                              child: AppointmentsListClient('yes')),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            floatingActionButton: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: kPrimaryColor, width: 2),
+                borderRadius: BorderRadius.circular(360),
+              ),
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, BookingStep1Client.id);
+                },
+                backgroundColor: Colors.white,
+                child: SvgPicture.asset(
+                  'assets/images/Add-Appointment.svg',
+                  color: kPrimaryColor,
+                ),
+              ),
+            ),
           )
         : Loading();
   }

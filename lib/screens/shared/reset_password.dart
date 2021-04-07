@@ -29,11 +29,11 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  final FirebaseMessaging messaging = FirebaseMessaging();
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   @override
   Widget build(BuildContext context) {
-    configureCallbacks();
+    // configureCallbacks();
     Size size = MediaQuery.of(context).size;
 
     return loading
@@ -244,11 +244,11 @@ class _ResetPasswordState extends State<ResetPassword> {
           );
   }
 
-  void configureCallbacks() {
-    messaging.configure(
-      onMessage: (message) async {
-        print('onMessage: $message');
-      },
-    );
-  }
+  // void configureCallbacks() {
+  //   messaging.configure(
+  //     onMessage: (message) async {
+  //       print('onMessage: $message');
+  //     },
+  //   );
+  // }
 }

@@ -1,13 +1,15 @@
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/material.dart';
 
-class NotificationSettings extends StatefulWidget {
-  static final id = 'NotificationSettings';
+class NotificationSettingsManager extends StatefulWidget {
+  static final id = 'NotificationSettingsManager';
   @override
-  _NotificationSettingsState createState() => _NotificationSettingsState();
+  _NotificationSettingsManagerState createState() =>
+      _NotificationSettingsManagerState();
 }
 
-class _NotificationSettingsState extends State<NotificationSettings> {
+class _NotificationSettingsManagerState
+    extends State<NotificationSettingsManager> {
   String currentPassword = '';
   String newPassword = '';
   String newPasswordConfirm = '';
@@ -29,7 +31,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                   BackButton(
                     color: Colors.white,
                   ),
-                  SizedBox(width: size.width * 0.2),
+                  SizedBox(width: size.width * 0.13),
                   Text(
                     'Notification Settings',
                     style: TextStyle(

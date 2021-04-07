@@ -36,6 +36,7 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
       providers: [
         StreamProvider<Secretary>.value(
           value: DatabaseService(uid: user.uid).secretary,
+          initialData: null,
         ),
       ],
       child: SafeArea(

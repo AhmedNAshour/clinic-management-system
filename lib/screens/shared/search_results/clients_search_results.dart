@@ -80,7 +80,9 @@ class _ClientsSearchresultsState extends State<ClientsSearchresults> {
                             value: DatabaseService().getClientsBySearch(
                               searchData['clientName'],
                               searchData['clientNumber'],
+                              1,
                             ),
+                            initialData: [],
                             child: ClientList(
                               isSearch: 'yes',
                               // isSearch: 'yes',

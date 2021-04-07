@@ -1,10 +1,8 @@
 import 'package:clinic/components/lists_cards/appointment_card.dart';
 import 'package:clinic/models/appointment.dart';
-import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/search_results/noResults.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class AppointmentsListSecretary extends StatefulWidget {
   @override
@@ -23,9 +21,6 @@ class AppointmentsListSecretary extends StatefulWidget {
 class _AppointmentsListSecretaryState extends State<AppointmentsListSecretary> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    double screenHeight = size.height;
-    double screenWidth = size.width;
     List<Appointment> appointments =
         Provider.of<List<Appointment>>(context) ?? [];
 

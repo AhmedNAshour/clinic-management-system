@@ -2,11 +2,13 @@ import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/screens/client/client_info.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:clinic/screens/shared/stringManipulation.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/customBottomSheets.dart';
+import '../../screens/secretary/editClient.dart';
 
 class ClientCard extends StatefulWidget {
   ClientCard({
@@ -37,126 +39,120 @@ class _ClientCardState extends State<ClientCard> {
               onTap: () {
                 CustomBottomSheets().showCustomBottomSheet(
                     size, ClientProfile(widget.client), context);
-                // Navigator.pushNamed(context, ClientProfile.id, arguments: {
-                //   'fName': widget.client.fName,
-                //   'lName': widget.client.lName,
-                //   'age': widget.client.age,
-                //   'gender': widget.client.gender,
-                //   'numAppointments': widget.client.numAppointments,
-                //   'phoneNumber': widget.client.phoneNumber,
-                //   'uid': widget.client.uid,
-                //   'picUrl': widget.client.picURL,
-                //   'email': widget.client.email,
-                // });
               },
-              child: Container(
-                height: screenHeight * 0.16,
-                width: screenWidth * 0.9,
-                margin: EdgeInsets.only(bottom: size.height * 0.025),
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.02,
-                    vertical: screenHeight * 0.02),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: screenWidth * 0.02),
-                      child: CircleAvatar(
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  // height: screenHeight * 0.16,
+                  width: screenWidth * 0.9,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.02,
+                      vertical: screenHeight * 0.02),
+
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
                         radius: screenWidth * 0.11,
                         backgroundImage: widget.client.picURL != ''
                             ? NetworkImage(widget.client.picURL)
                             : AssetImage('assets/images/userPlaceholder.png'),
                       ),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.02,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.client.gender == 'male'
-                                ? 'Mr. ${widget.client.fName} ${widget.client.lName}'
-                                : 'Mrs. ${widget.client.fName} ${widget.client.lName}',
-                            style: TextStyle(
-                              color: kPrimaryTextColor,
-                              fontSize: screenWidth * 0.05,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.01,
-                          ),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  launch("tel://${widget.client.phoneNumber}");
-                                },
-                                child: CircleAvatar(
-                                  radius: screenWidth * 0.04,
-                                  backgroundImage:
-                                      AssetImage('assets/images/call.png'),
-                                ),
-                              ),
-                              SizedBox(
-                                width: screenWidth * 0.01,
-                              ),
-                              Text(
-                                'Call',
-                                style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontSize: screenWidth * 0.05,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.02,
-                                ),
-                                width: screenWidth * 0.005,
-                                height: screenHeight * 0.02,
+                      SizedBox(
+                        width: screenWidth * 0.02,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.client.gender == 'male'
+                                  ? StringManipulation.limitLength(
+                                      'Mr. ${widget.client.fName} ${widget.client.lName}',
+                                      25)
+                                  : StringManipulation.limitLength(
+                                      'Mrs. ${widget.client.fName} ${widget.client.lName}',
+                                      25),
+                              style: TextStyle(
                                 color: kPrimaryTextColor,
+                                fontSize: screenWidth * 0.045,
+                                fontWeight: FontWeight.bold,
                               ),
-                              SvgPicture.asset(
-                                'assets/images/chat.svg',
-                                height: screenHeight * 0.04,
-                                width: screenWidth * 0.04,
-                              ),
-                              SizedBox(
-                                width: screenWidth * 0.01,
-                              ),
-                              Text(
-                                'Message',
-                                style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontSize: screenWidth * 0.05,
+                            ),
+                            SizedBox(
+                              height: screenHeight * 0.01,
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    launch(
+                                        "tel://${widget.client.phoneNumber}");
+                                  },
+                                  child: Icon(
+                                    Icons.phone_android_rounded,
+                                    color: kPrimaryColor,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                SizedBox(
+                                  width: screenWidth * 0.01,
+                                ),
+                                Text(
+                                  'Call',
+                                  style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontSize: screenWidth * 0.045,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.02,
+                                  ),
+                                  width: screenWidth * 0.005,
+                                  height: screenHeight * 0.02,
+                                  color: kPrimaryTextColor,
+                                ),
+                                Icon(
+                                  Icons.chat_bubble_outline_rounded,
+                                  color: kPrimaryColor,
+                                ),
+                                SizedBox(
+                                  width: screenWidth * 0.01,
+                                ),
+                                Text(
+                                  'Message',
+                                  style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontSize: screenWidth * 0.045,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: SvgPicture.asset(
-                        'assets/images/edit.svg',
-                        color: kPrimaryColor,
-                        height: screenHeight * 0.04,
-                        width: screenWidth * 0.04,
+                      GestureDetector(
+                        onTap: () {
+                          CustomBottomSheets().showCustomBottomSheet(
+                              size, EditClient(client: widget.client), context);
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.userEdit,
+                          color: kPrimaryColor,
+                          size: size.width * 0.05,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
             Positioned(
-              bottom: 0,
+              bottom: -size.height * 0.02,
               right: 0,
               child: GestureDetector(
                 onTap: () {
@@ -332,52 +328,58 @@ class _ClientCardState extends State<ClientCard> {
                     isScrollControlled: true,
                   );
                 },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.02,
-                      vertical: screenHeight * 0.01),
-                  height: screenHeight * 0.065,
-                  width: screenWidth * 0.42,
-                  decoration: BoxDecoration(
-                    color: kPrimaryColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
+                child: Card(
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: size.width * 0.07,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.02,
+                        vertical: screenHeight * 0.01),
+                    height: screenHeight * 0.065,
+                    width: screenWidth * 0.42,
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
                       ),
-                      SizedBox(
-                        width: screenWidth * 0.01,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            'ADD SESSIONS',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: screenHeight * 0.02,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: size.width * 0.07,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.01,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'ADD SESSIONS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: screenHeight * 0.02,
+                              ),
                             ),
-                          ),
-                          Text(
-                            '${widget.client.numAppointments} Sessions Remaining',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: screenHeight * 0.013,
+                            Text(
+                              '${widget.client.numAppointments} Sessions Remaining',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: screenHeight * 0.013,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

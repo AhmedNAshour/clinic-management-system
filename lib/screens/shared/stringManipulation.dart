@@ -22,4 +22,20 @@ class StringManipulation {
     // Join/Merge all words back to one String
     return capitalizedWords.join(' ');
   }
+
+  static String limitLength(String text, int maxLength) {
+    if (text == null) {
+      return null;
+    }
+
+    if (text.length <= 1) {
+      return text.toUpperCase();
+    }
+
+    if (text.length > maxLength) {
+      text = text.substring(0, maxLength - 3);
+      text = text + '...';
+    }
+    return text;
+  }
 }

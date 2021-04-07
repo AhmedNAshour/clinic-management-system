@@ -1,20 +1,24 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:clinic/screens/shared/stringManipulation.dart';
 import 'package:clinic/services/database.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../screens/admin/manager_info.dart';
+import '../../screens/admin/edit_secretary.dart';
+import '../../screens/admin/disable_user.dart';
 
 class SecretaryCard extends StatelessWidget {
   const SecretaryCard({
     Key key,
-    @required this.secretary,
+    @required this.manager,
   }) : super(key: key);
 
-  final Secretary secretary;
+  final Secretary manager;
 
   @override
   Widget build(BuildContext context) {
@@ -22,130 +26,168 @@ class SecretaryCard extends StatelessWidget {
       'deleteUser',
     );
     Size size = MediaQuery.of(context).size;
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
-      child: Container(
-        height: 100,
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.only(bottom: 10),
-        width: size.width * 0.8,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(11), color: Colors.white),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage:
-                  AssetImage('assets/images/doctorPortraitCenter.jpg'),
-              radius: (80 / 100 * size.width) * 0.1,
-            ),
-            SizedBox(
-              width: size.width * 0.04,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${secretary.fName} ${secretary.lName}',
-                  style: TextStyle(
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-              ],
-            ),
-          ],
+    double screenHeight = size.height;
+    double screenWidth = size.width;
+    return GestureDetector(
+      onTap: () {
+        CustomBottomSheets().showDynamicCustomBottomSheet(
+            size, ManagerProfileAdmin(manager), context);
+      },
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-      ),
-      secondaryActions: <Widget>[
-        SlideAction(
-          child: Container(
-            decoration: BoxDecoration(
-                // shape: BoxShape.circle,
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(28)),
-            margin: EdgeInsets.only(bottom: 15),
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FaIcon(
-                  FontAwesomeIcons.trashAlt,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                AutoSizeText(
-                  'REMOVE',
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            ),
-          ),
-          onTap: () {
-            AwesomeDialog(
-              context: context,
-              headerAnimationLoop: false,
-              dialogType: DialogType.WARNING,
-              animType: AnimType.BOTTOMSLIDE,
-              title: "Remove Employee",
-              desc: 'Are you sure you want to remove this employee ?',
-              btnCancelOnPress: () {},
-              btnOkOnPress: () async {
-                print('Sectetary id: ${secretary.uid}');
-                dynamic result =
-                    await deleteUserFunction.call(<String, dynamic>{
-                  'uid': secretary.uid,
-                });
-
-                DatabaseService().deleteUser(secretary.uid, 'secretary');
-
-                if (result == null) {
-                  AwesomeDialog(
-                      context: context,
-                      headerAnimationLoop: false,
-                      dialogType: DialogType.ERROR,
-                      animType: AnimType.BOTTOMSLIDE,
-                      body: Align(
-                        alignment: Alignment.center,
-                        child: Center(
-                          child: Text(
-                            'COULD NOT REMOVE EMPLOYEE..',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                            textAlign: TextAlign.center,
+        child: Container(
+          width: screenWidth * 0.9,
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: screenWidth * 0.11,
+                backgroundImage: manager.picURL != ''
+                    ? NetworkImage(manager.picURL)
+                    : AssetImage('assets/images/userPlaceholder.png'),
+              ),
+              SizedBox(
+                width: screenWidth * 0.02,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      StringManipulation.limitLength(
+                          '${manager.fName} ${manager.lName}', 25),
+                      style: TextStyle(
+                        color: kPrimaryTextColor,
+                        fontSize: screenWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.01,
+                    ),
+                    // Text(
+                    //   manager.branchName,
+                    //   style: TextStyle(
+                    //     color: kPrimaryLightColor,
+                    //     fontSize: screenWidth * 0.04,
+                    //   ),
+                    // ),
+                    SizedBox(
+                      height: screenHeight * 0.02,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            launch("tel://${manager.phoneNumber}");
+                          },
+                          child: Icon(
+                            Icons.phone_android_rounded,
+                            color: kPrimaryColor,
                           ),
                         ),
-                      ),
-                      onDissmissCallback: () {},
-                      btnOkOnPress: () {})
-                    ..show();
-                } else {
-                  //Navigator.pop(context);
-                  AwesomeDialog(
-                      context: context,
-                      headerAnimationLoop: false,
-                      dialogType: DialogType.SUCCES,
-                      animType: AnimType.BOTTOMSLIDE,
-                      body: Center(
-                        child: Text(
-                          'Employee Removed Successfully',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
-                          textAlign: TextAlign.center,
+                        SizedBox(
+                          width: screenWidth * 0.01,
                         ),
-                      ),
-                      onDissmissCallback: () {},
-                      btnOkOnPress: () {})
-                    ..show();
-                }
-              },
-            )..show();
-          },
+                        Text(
+                          'Call',
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: screenWidth * 0.045,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.02,
+                          ),
+                          width: screenWidth * 0.005,
+                          height: screenHeight * 0.02,
+                          color: kPrimaryTextColor,
+                        ),
+                        Icon(
+                          Icons.chat_bubble_outline_rounded,
+                          color: kPrimaryColor,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.01,
+                        ),
+                        Text(
+                          'Message',
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: screenWidth * 0.045,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      CustomBottomSheets().showCustomBottomSheet(
+                        size,
+                        EditSecretary(
+                          secretary: manager,
+                        ),
+                        context,
+                      );
+                    },
+                    child: Icon(
+                      FontAwesomeIcons.userEdit,
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  manager.status == 1
+                      ? GestureDetector(
+                          onTap: () async {
+                            CustomBottomSheets().showDynamicCustomBottomSheet(
+                                size,
+                                DisableUser(UserData(
+                                  fName: manager.fName,
+                                  lName: manager.lName,
+                                  uid: manager.uid,
+                                  role: 'secretary',
+                                )),
+                                context);
+                          },
+                          child: Icon(
+                            Icons.cancel,
+                            color: Color(0xFFB5020B),
+                            size: size.width * 0.075,
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () async {
+                            var result = await DatabaseService(uid: manager.uid)
+                                .updateUserStatus('secretary', 1);
+                            if (result == 0) print('DIDNT WORK');
+                          },
+                          child: Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: size.width * 0.075,
+                          ),
+                        ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }

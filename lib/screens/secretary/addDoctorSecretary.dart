@@ -59,7 +59,7 @@ class _AddDoctorSecState extends State<AddDoctorSec> {
     TaskSnapshot taskSnapshot = await task;
     taskSnapshot.ref.getDownloadURL().then(
           (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
+              .updateUserProfilePicture(value.toString(), 'doctor'),
         );
   }
 
@@ -354,6 +354,7 @@ class _AddDoctorSecState extends State<AddDoctorSec> {
                                       gender == 0 ? 'male' : 'female',
                                       'doctor',
                                       '',
+                                      1,
                                     );
                                     if (result == null) {
                                       setState(() {

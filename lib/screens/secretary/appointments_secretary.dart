@@ -153,7 +153,7 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
           ),
         ),
         Container(
-          height: size.height * 0.12,
+          height: size.height * 0.1,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: appointmentTypes.length,
@@ -169,10 +169,6 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
                   margin: EdgeInsets.symmetric(
                     vertical: size.height * 0.02,
                     horizontal: size.width * 0.02,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    vertical: size.height * 0.02,
-                    horizontal: size.width * 0.04,
                   ),
                   decoration: BoxDecoration(
                     color: selectedType == index ? kPrimaryColor : Colors.white,

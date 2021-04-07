@@ -8,7 +8,9 @@ class Note {
   final String doctorLName;
   final String doctorPicUrl;
   final String body;
+  final String doctorProfession;
   Note({
+    this.doctorProfession,
     this.body,
     this.doctorPicUrl,
     this.submissionTime,

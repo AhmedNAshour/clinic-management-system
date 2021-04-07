@@ -86,7 +86,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
     });
   }
 
-  changeDoctorNameSearc(newDoctorName) {
+  changeDoctorNameSearch(newDoctorName) {
     setState(() {
       searchDoctorName = newDoctorName;
     });
@@ -126,7 +126,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
       );
     } else {
       return SearchDoctorsForm(
-        changeDoctorNameSearch: changeDoctorNameSearc,
+        changeDoctorNameSearch: changeDoctorNameSearch,
         doctorNameSearch: searchDoctorName,
       );
     }
@@ -439,27 +439,30 @@ class _SecretaryHomeState extends State<SecretaryHome> {
               providers: [
                 StreamProvider<List<Appointment>>.value(
                   value: DatabaseService().getAppointmentsBySearch(
-                      day: dateSearch,
-                      doctorName: searchDoctorNameAppointment,
-                      clientName: searchClientNameAppointment,
-                      clientNumber: searchClientNumberAppointment,
-                      branch: secretary.branch,
-                      status: 'active'),
+                    day: dateSearch,
+                    doctorName: searchDoctorNameAppointment,
+                    clientName: searchClientNameAppointment,
+                    clientNumber: searchClientNumberAppointment,
+                    branch: secretary.branch,
+                    status: 'active',
+                  ),
+                  initialData: [],
                 ),
                 StreamProvider<List<Doctor>>.value(
                   value: DatabaseService().getDoctorsBySearch(
                     secretary.branch,
                     searchDoctorName,
                   ),
+                  initialData: [],
                 ),
                 StreamProvider<List<Client>>.value(
                   value: DatabaseService().getClientsBySearch(
                     searchClientName,
                     searchClientNumber,
+                    1,
                   ),
+                  initialData: [],
                 ),
-                // StreamProvider<List<Client>>.value(
-                //     value: DatabaseService().clients),
               ],
               child: Stack(
                 clipBehavior: Clip.none,

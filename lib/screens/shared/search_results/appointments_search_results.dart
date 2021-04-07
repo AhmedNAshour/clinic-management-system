@@ -85,6 +85,7 @@ class _AppointmentsSearchResultsState extends State<AppointmentsSearchResults> {
                               clientNumber: searchData['clientNumber'],
                               day: searchData['date'],
                             ),
+                            initialData: [],
                             child: AppointmentsListSecretary(
                               isSearch: 'yes',
                             )),

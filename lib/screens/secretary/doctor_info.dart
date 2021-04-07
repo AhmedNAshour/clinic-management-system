@@ -1,5 +1,6 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/doctorSchedule.dart';
@@ -104,19 +105,28 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                   SizedBox(
                     height: size.height * 0.01,
                   ),
-                  InkWell(
-                    onTap: () async {},
-                    child: Text(
-                      'Edit info',
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.02,
-                  ),
+                  // InkWell(
+                  //   onTap: () async {
+                  //     Navigator.pop(context);
+                  //     CustomBottomSheets().showCustomBottomSheet(
+                  //       size,
+                  //       EditDoc(
+                  //         secretary: widget.manager,
+                  //       ),
+                  //       context,
+                  //     );
+                  //   },
+                  //   child: Text(
+                  //     'Edit info',
+                  //     style: TextStyle(
+                  //       color: kPrimaryColor,
+                  //       fontSize: 14,
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: size.height * 0.02,
+                  // ),
                   InkWell(
                     onTap: () async {
                       Navigator.pushNamed(context, DoctorSchedule.id,

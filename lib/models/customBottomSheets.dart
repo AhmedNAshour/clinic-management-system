@@ -27,4 +27,22 @@ class CustomBottomSheets {
       isScrollControlled: true,
     );
   }
+
+  Future showDynamicCustomBottomSheet(
+      Size size, Widget child, BuildContext context) {
+    return showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter insideState) {
+          return child;
+        });
+      },
+    );
+  }
 }
