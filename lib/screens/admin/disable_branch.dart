@@ -1,3 +1,4 @@
+import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -5,18 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:provider/provider.dart';
 
-class DisableUser extends StatefulWidget {
+class DisableBranch extends StatefulWidget {
   static const id = 'DisableUser';
-  UserData userData;
-  DisableUser(UserData userData) {
-    this.userData = userData;
+  Branch branch;
+  DisableBranch(Branch branch) {
+    this.branch = branch;
   }
 
   @override
-  _DisableUserState createState() => _DisableUserState();
+  _DisableBranchState createState() => _DisableBranchState();
 }
 
-class _DisableUserState extends State<DisableUser> {
+class _DisableBranchState extends State<DisableBranch> {
   // text field state
 
   bool loading = false;
@@ -38,8 +39,10 @@ class _DisableUserState extends State<DisableUser> {
             padding: EdgeInsets.only(
               right: size.width * 0.04,
               left: size.width * 0.04,
+              bottom: size.height * 0.02,
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Align(
                   alignment: Alignment.topRight,
@@ -58,7 +61,7 @@ class _DisableUserState extends State<DisableUser> {
                   height: size.height * 0.02,
                 ),
                 Text(
-                  'Are you sure you want to disable ${widget.userData.fName} ${widget.userData.lName}\'s account ?',
+                  'Are you sure you want to disable ${widget.branch.name} branch ? This will disable all doctors , managers , and appointments associated with it !',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
@@ -99,15 +102,15 @@ class _DisableUserState extends State<DisableUser> {
                       ),
                       child: TextButton(
                         onPressed: () async {
-                          var result =
-                              await DatabaseService(uid: widget.userData.uid)
-                                  .updateUserStatus(widget.userData.role, 0);
+                          var result = await DatabaseService()
+                              .updateBranchStatus(
+                                  id: widget.branch.docID, status: 0);
                           if (result == 0) {
                             //TODO: Add dialog
                             print('DIDNT WORK');
                           } else {
-                            Navigator.pop(context);
                             //TODO: Add dialog
+                            Navigator.pop(context);
                           }
                         },
                         child: Text(

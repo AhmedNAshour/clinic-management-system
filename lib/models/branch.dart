@@ -5,7 +5,9 @@ class Branch {
   final String phoneNumber;
   final double longitude;
   final double latitude;
+  final int status;
   Branch({
+    this.status,
     this.docID,
     this.name,
     this.address,

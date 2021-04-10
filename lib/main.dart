@@ -11,11 +11,11 @@ import 'package:clinic/screens/secretary/appointments_secretary.dart';
 import 'package:clinic/screens/secretary/booking_step1.dart';
 import 'package:clinic/screens/secretary/booking_step2.dart';
 import 'package:clinic/screens/secretary/booking_step3.dart';
-import 'package:clinic/screens/secretary/clients.dart';
 import 'package:clinic/screens/secretary/doctorSchedule.dart';
 import 'package:clinic/screens/secretary/notificationSettings.dart';
 import 'package:clinic/screens/secretary/secretaryHome.dart';
 import 'package:clinic/screens/secretary/secretary_navigation.dart';
+import 'package:clinic/screens/shared/login.dart';
 import 'package:clinic/screens/shared/reset_password.dart';
 import 'package:clinic/screens/shared/search_results/appointments_search_results.dart';
 import 'package:clinic/screens/shared/search_results/clients_search_results.dart';
@@ -34,12 +34,12 @@ import './screens/admin/managersAdmin.dart';
 import './screens/admin/add_branch.dart';
 import './screens/admin/notificationSettings_admin.dart';
 import './screens/admin/appColor.dart';
-import './screens/admin/appLogo.dart';
 import 'models/user.dart';
 import './screens/client/booking_step1_client.dart';
 import './screens/client/booking_step2_client.dart';
 import './screens/doctor/notificationSettings_doctor.dart';
 import './langs/codegen_loader.g.dart';
+import './screens/shared/chat_room.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,9 +86,9 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => Wrapper(),
+          Login.id: (context) => Login(),
           '/clientHomeScreen': (context) => ClientHome(),
           '/secretaryHomeScreen': (context) => SecretaryHome(),
-          '/clientsScreen': (context) => Clients(),
           ClientsAdmin.id: (context) => ClientsAdmin(),
           '/doctorsScreenAdmin': (context) => DoctorsAdmin(),
           DoctorSchedule.id: (context) => DoctorSchedule(),
@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
           ResetPassword.id: (context) => ResetPassword(),
           ChangePassword.id: (context) => ChangePassword(),
           ChangeAppColor.id: (context) => ChangeAppColor(),
-          ChangeAppLogo.id: (context) => ChangeAppLogo(),
+          ChatRoom.id: (context) => ChatRoom(),
           NotificationSettingsManager.id: (context) =>
               NotificationSettingsManager(),
           NotificationSettingsAdmin.id: (context) =>

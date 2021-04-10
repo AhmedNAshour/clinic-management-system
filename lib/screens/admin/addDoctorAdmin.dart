@@ -292,6 +292,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                       ),
                                     ),
                                     RoundedInputField(
+                                      initialValue: fName,
                                       obsecureText: false,
                                       icon: Icons.person_add_alt,
                                       hintText: 'First Name',
@@ -302,6 +303,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           val.isEmpty ? 'Enter a name' : null,
                                     ),
                                     RoundedInputField(
+                                      initialValue: lName,
                                       obsecureText: false,
                                       icon: Icons.person_add_alt_1,
                                       hintText: 'Last Name',
@@ -312,6 +314,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           val.isEmpty ? 'Enter a name' : null,
                                     ),
                                     RoundedInputField(
+                                      initialValue: specialty,
                                       obsecureText: false,
                                       icon: Icons.person,
                                       hintText: 'Specialty',
@@ -323,6 +326,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           : null,
                                     ),
                                     RoundedInputField(
+                                      initialValue: phoneNumber,
                                       obsecureText: false,
                                       icon: Icons.phone,
                                       hintText: 'Phone Number',
@@ -334,6 +338,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           : null,
                                     ),
                                     RoundedInputField(
+                                      initialValue: bio,
                                       obsecureText: false,
                                       icon: Icons.info,
                                       hintText: 'Bio',
@@ -342,6 +347,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                       },
                                     ),
                                     RoundedInputField(
+                                      initialValue: email,
                                       obsecureText: false,
                                       icon: Icons.email,
                                       hintText: 'Email',

@@ -10,6 +10,8 @@ import 'package:clinic/screens/shared/constants.dart';
 import '../../screens/client/registrationRequest.dart';
 
 class Login extends StatefulWidget {
+  static const id = 'Login';
+
   final Function toggleView;
   Login({this.toggleView});
 

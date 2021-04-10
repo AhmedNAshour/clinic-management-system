@@ -2,12 +2,14 @@ import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/stringManipulation.dart';
+import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../screens/admin/branch_info.dart';
+import '../../screens/admin/disable_branch.dart';
 
 class BranchCard extends StatefulWidget {
   const BranchCard({
@@ -124,14 +126,42 @@ class _BranchCardState extends State<BranchCard> {
                     SizedBox(
                       height: size.height * 0.02,
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.cancel,
-                        color: Color(0xFFB5020B),
-                        size: size.width * 0.075,
-                      ),
-                    ),
+                    widget.branch.status == 1
+                        ? GestureDetector(
+                            onTap: () {
+                              CustomBottomSheets().showDynamicCustomBottomSheet(
+                                  size,
+                                  DisableBranch(Branch(
+                                    name: widget.branch.name,
+                                    docID: widget.branch.docID,
+                                    address: widget.branch.address,
+                                    phoneNumber: widget.branch.phoneNumber,
+                                  )),
+                                  context);
+                            },
+                            child: Icon(
+                              Icons.cancel,
+                              color: Color(0xFFB5020B),
+                              size: size.width * 0.075,
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () async {
+                              var result = await DatabaseService()
+                                  .updateBranchStatus(
+                                      id: widget.branch.docID, status: 1);
+                              if (result == 0) {
+                                //TODO: Add dialog
+                                print('DIDNT WORK');
+                              } else {
+                                //TODO: Add dialog
+                              }
+                            },
+                            child: Icon(
+                              FontAwesomeIcons.checkCircle,
+                              color: Colors.green,
+                            ),
+                          ),
                   ],
                 ),
               ],

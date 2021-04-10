@@ -57,6 +57,7 @@ class _NotificationCardState extends State<NotificationCard> {
     double screenWidth = size.width;
     return GestureDetector(
       onTap: () {
+        //TODO: Change according to user role
         CustomBottomSheets().showCustomBottomSheet(
             size, ClientProfileDoctor(widget.notification.clientID), context);
       },

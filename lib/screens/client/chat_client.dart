@@ -1,5 +1,11 @@
+import 'package:clinic/models/user.dart';
+import 'package:clinic/models/chat.dart';
+import '../../components/lists_cards/chat_list.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:clinic/screens/shared/loading.dart';
+import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChatClient extends StatefulWidget {
   static final id = 'ChatAdmin';
@@ -11,6 +17,8 @@ class _ChatClientState extends State<ChatClient> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final user = Provider.of<MyUser>(context);
+
     return Column(
       children: [
         Container(
@@ -26,6 +34,36 @@ class _ChatClientState extends State<ChatClient> {
                 color: Colors.white,
               ),
             ),
+          ),
+        ),
+        SizedBox(
+          height: size.height * 0.03,
+        ),
+        Expanded(
+          child: FutureBuilder(
+            future: DatabaseService(uid: user.uid).getChatsLength(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  child: MultiProvider(
+                    providers: [
+                      StreamProvider<List<ChatModel>>.value(
+                        value: snapshot.data > 0
+                            ? DatabaseService(uid: user.uid).getChats(true)
+                            : DatabaseService(uid: user.uid).getChats(false),
+                        initialData: [],
+                      ),
+                      StreamProvider<UserData>.value(
+                        value: DatabaseService(uid: user.uid).userData,
+                      ),
+                    ],
+                    child: ChatsList(),
+                  ),
+                );
+              } else {
+                return Loading();
+              }
+            },
           ),
         ),
       ],

@@ -51,9 +51,11 @@ class AuthService {
 
   Future createUserWithEmailAndPasword(String email, password, fName, lName,
       phoneNumber, gender, role, picURL, int status) async {
-    FirebaseApp tempApp = await Firebase.initializeApp(
-        name: 'temporaryregister', options: Firebase.app().options);
+    User user;
+
     try {
+      FirebaseApp tempApp = await Firebase.initializeApp(
+          name: 'temporaryregister', options: Firebase.app().options);
       UserCredential userCredential =
           await FirebaseAuth.instanceFor(app: tempApp)
               .createUserWithEmailAndPassword(email: email, password: password);

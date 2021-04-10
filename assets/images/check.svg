@@ -1,1 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="55.028" height="39.848" viewBox="0 0 55.028 39.848"><defs><style>.a{fill:#fff;}</style></defs><path class="a" d="M65.919,84.379l-30.36,30.36a4.742,4.742,0,0,1-6.708,0l-15.18-15.18a4.743,4.743,0,0,1,6.708-6.708l11.826,11.826L59.211,77.671a4.743,4.743,0,0,1,6.708,6.708Z" transform="translate(-12.281 -76.281)"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg12"
+   version="1.1"
+   height="132"
+   width="133">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs16" />
+  <g
+     id="g10"
+     transform="translate(.464 -.269)">
+    <ellipse
+       id="ellipse2"
+       fill="rgba(255,255,255,.08)"
+       transform="translate(-.464 .269)"
+       ry="66"
+       rx="66.5"
+       cy="66"
+       cx="66.5" />
+    <ellipse
+       id="ellipse4"
+       fill="rgba(255,255,255,.11)"
+       transform="translate(12.536 14.269)"
+       ry="52.5"
+       rx="53"
+       cy="52.5"
+       cx="53" />
+    <ellipse
+       id="ellipse6"
+       fill="rgba(255,255,255,.13)"
+       transform="translate(26.536 27.269)"
+       ry="39"
+       rx="39.5"
+       cy="39"
+       cx="39.5" />
+    <path
+       id="path8"
+       fill="#fff"
+       d="M92.174 54.367l-30.36 30.36a4.742 4.742 0 01-6.708 0l-15.18-15.18a4.743 4.743 0 016.708-6.708L58.46 74.665l27.006-27.006a4.743 4.743 0 016.708 6.708z" />
+  </g>
+</svg>

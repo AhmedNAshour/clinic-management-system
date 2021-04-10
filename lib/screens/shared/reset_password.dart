@@ -2,11 +2,13 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/text_field_container.dart';
 import 'package:clinic/screens/shared/loading.dart';
+import 'package:clinic/screens/shared/login.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
 import 'constants.dart';
 
@@ -79,7 +81,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                     Center(
                       child: Column(
                         children: [
-                          SvgPicture.asset('assets/images/ResetPassword.svg'),
+                          SvgPicture.asset(
+                            'assets/images/ResetPassword.svg',
+                            color: kPrimaryColor,
+                          ),
                           SizedBox(
                             height: size.height * 0.02,
                           ),
@@ -131,12 +136,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Container(
-                                                  child: SvgPicture.asset(
-                                                    'assets/images/check2.svg',
-                                                    fit: BoxFit.none,
-                                                    color: Colors.white,
-                                                  ),
+                                                Icon(
+                                                  FontAwesomeIcons.checkCircle,
+                                                  color: Colors.white,
+                                                  size: size.height * 0.125,
                                                 ),
                                                 SizedBox(
                                                   height: size.height * 0.05,
@@ -173,8 +176,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                             10),
                                                     child: GestureDetector(
                                                       onTap: () {
-                                                        // Navigator.popUntil(context,
-                                                        //     (route) => false);
+                                                        Navigator.popUntil(
+                                                            context,
+                                                            ModalRoute.withName(
+                                                                '/'));
                                                       },
                                                       child: Container(
                                                         child: Center(

@@ -101,7 +101,7 @@ class _NotificationsSecretaryState extends State<NotificationsSecretary> {
                     child: NotificationsList(),
                   )
                 : StreamProvider<List<Client>>.value(
-                    value: DatabaseService().getClientsBySearch('', '', 0),
+                    value: DatabaseService().getClientsBySearch('', '', 2),
                     child: ClientList(
                       isSearch: 'no',
                     ),

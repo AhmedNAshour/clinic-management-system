@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/components/forms/text_field_container.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
@@ -7,6 +8,8 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -37,7 +40,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
   String curEmail;
   String curPassword;
   File newProfilePic;
-
+  String initialCountry = 'NG';
   final _formKey = GlobalKey<FormState>();
   Future getImage() async {
     var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
@@ -250,6 +253,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                             height: size.height * 0.02,
                           ),
                           RoundedInputField(
+                            initialValue: fName,
                             obsecureText: false,
                             icon: Icons.person_add_alt,
                             hintText: 'First Name',
@@ -260,6 +264,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
+                            initialValue: lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
                             hintText: 'Last Name',
@@ -270,6 +275,8 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
+                            initialValue: age != null ? age.toString() : '',
+                            inputType: TextInputType.number,
                             obsecureText: false,
                             icon: Icons.calendar_today,
                             hintText: 'Age',
@@ -279,6 +286,18 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                             validator: (val) =>
                                 val.isEmpty ? 'Enter an age' : null,
                           ),
+                          // TextFieldContainer(
+                          //   child: IntlPhoneField(
+                          //     decoration: InputDecoration(
+                          //       labelText: 'Phone Number',
+                          //       border: UnderlineInputBorder(),
+                          //     ),
+                          //     initialCountryCode: 'EG',
+                          //     onChanged: (phone) {
+                          //       phoneNumber = phone.completeNumber;
+                          //     },
+                          //   ),
+                          // ),
                           RoundedInputField(
                             obsecureText: false,
                             icon: Icons.phone,
@@ -291,6 +310,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 : null,
                           ),
                           RoundedInputField(
+                            initialValue: email,
                             obsecureText: false,
                             icon: Icons.email,
                             hintText: 'Email',
@@ -311,6 +331,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 ? ' Enter a password 6+ chars long '
                                 : null,
                           ),
+
                           RoundedButton(
                             text: 'Add',
                             press: () async {
@@ -332,7 +353,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 );
                                 if (result == null) {
                                   setState(() {
-                                    error = 'invalid credentials';
+                                    error = 'invalid email';
                                     loading = false;
                                   });
                                 } else {
@@ -359,7 +380,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                     numAppointments: 0,
                                     age: age,
                                     email: email,
-                                    status: 0,
+                                    status: 2,
                                   );
                                   await db.updateUserProfilePicture(
                                       newProfilePic != null ? downloadUrl : '',
@@ -368,6 +389,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                   setState(() {
                                     loading = false;
                                   });
+                                  Navigator.pop(context);
                                   await NDialog(
                                     dialogStyle: DialogStyle(
                                       backgroundColor: kPrimaryColor,
@@ -380,12 +402,10 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Container(
-                                            child: SvgPicture.asset(
-                                              'assets/images/check2.svg',
-                                              fit: BoxFit.none,
-                                              color: Colors.white,
-                                            ),
+                                          Icon(
+                                            FontAwesomeIcons.checkCircle,
+                                            color: Colors.white,
+                                            size: size.height * 0.125,
                                           ),
                                           SizedBox(
                                             height: size.height * 0.05,

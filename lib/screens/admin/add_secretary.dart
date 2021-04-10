@@ -10,6 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
@@ -300,6 +301,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                           height: 15,
                                         ),
                                         RoundedInputField(
+                                          initialValue: fName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt,
                                           hintText: 'First Name',
@@ -311,6 +313,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                               : null,
                                         ),
                                         RoundedInputField(
+                                          initialValue: lName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt_1,
                                           hintText: 'Last Name',
@@ -322,6 +325,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                               : null,
                                         ),
                                         RoundedInputField(
+                                          initialValue: phoneNumber,
                                           obsecureText: false,
                                           icon: Icons.phone,
                                           hintText: 'Phone Number',
@@ -333,6 +337,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                               : null,
                                         ),
                                         RoundedInputField(
+                                          initialValue: email,
                                           obsecureText: false,
                                           icon: Icons.email,
                                           hintText: 'Email',
@@ -424,6 +429,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                 setState(() {
                                                   loading = false;
                                                 });
+                                                Navigator.pop(context);
                                                 await NDialog(
                                                   dialogStyle: DialogStyle(
                                                     backgroundColor:
@@ -440,13 +446,12 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                           MainAxisAlignment
                                                               .center,
                                                       children: [
-                                                        Container(
-                                                          child:
-                                                              SvgPicture.asset(
-                                                            'assets/images/check2.svg',
-                                                            fit: BoxFit.none,
-                                                            color: Colors.white,
-                                                          ),
+                                                        Icon(
+                                                          FontAwesomeIcons
+                                                              .checkCircle,
+                                                          color: Colors.white,
+                                                          size: size.height *
+                                                              0.125,
                                                         ),
                                                         SizedBox(
                                                           height: size.height *
@@ -477,62 +482,6 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                           ),
                                                           textAlign:
                                                               TextAlign.center,
-                                                        ),
-                                                        SizedBox(
-                                                          height: size.height *
-                                                              0.04,
-                                                        ),
-                                                        Container(
-                                                          width:
-                                                              size.width * 0.8,
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            child:
-                                                                GestureDetector(
-                                                              onTap: () {
-                                                                AuthService()
-                                                                    .signOut();
-                                                              },
-                                                              child: Container(
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    'SIGN IN',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          size.height *
-                                                                              0.025,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color:
-                                                                      kPrimaryColor,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                  border: Border
-                                                                      .all(
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                ),
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                  vertical: 20,
-                                                                  horizontal:
-                                                                      40,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
                                                         ),
                                                       ],
                                                     ),

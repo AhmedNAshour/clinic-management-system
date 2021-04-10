@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/models/client.dart';
+import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/client/client_info.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/stringManipulation.dart';
@@ -9,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/customBottomSheets.dart';
 import '../../screens/secretary/editClient.dart';
+import '../../screens/shared/chat_room.dart';
 
 class ClientCard extends StatefulWidget {
   ClientCard({
@@ -116,9 +118,23 @@ class _ClientCardState extends State<ClientCard> {
                                   height: screenHeight * 0.02,
                                   color: kPrimaryTextColor,
                                 ),
-                                Icon(
-                                  Icons.chat_bubble_outline_rounded,
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.chat_bubble_outline_rounded,
+                                  ),
                                   color: kPrimaryColor,
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, ChatRoom.id,
+                                        arguments: {
+                                          'otherUser': UserData(
+                                            fName: widget.client.fName,
+                                            lName: widget.client.lName,
+                                            uid: widget.client.uid,
+                                            picURL: widget.client.picURL,
+                                            role: 'client',
+                                          ),
+                                        });
+                                  },
                                 ),
                                 SizedBox(
                                   width: screenWidth * 0.01,
@@ -135,6 +151,7 @@ class _ClientCardState extends State<ClientCard> {
                           ],
                         ),
                       ),
+                      //TODO: use icon buttons instead
                       GestureDetector(
                         onTap: () {
                           CustomBottomSheets().showCustomBottomSheet(

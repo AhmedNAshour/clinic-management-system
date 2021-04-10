@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'appColor.dart';
-import 'appLogo.dart';
+import '../shared/chat_room.dart';
 
 class ProfileAdmin extends StatefulWidget {
   static final id = 'ProfileAdmin';
@@ -32,7 +32,7 @@ class _ProfileAdminState extends State<ProfileAdmin> {
         children: [
           Positioned(
             child: Container(
-              height: size.height * 0.2,
+              height: size.height * 0.13,
               width: size.width,
               color: kPrimaryColor,
             ),
@@ -48,16 +48,6 @@ class _ProfileAdminState extends State<ProfileAdmin> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'My Account',
-                    style: TextStyle(
-                      fontSize: size.width * 0.06,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.04,
-                  ),
                   CircleAvatar(
                     radius: size.width * 0.14,
                     backgroundImage: admin.picURL != '' && admin.picURL != null
@@ -285,89 +275,6 @@ class _ProfileAdminState extends State<ProfileAdmin> {
                                 ),
                                 Text(
                                   'App Language',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    // fontSize: size.width * 0.042,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, ChangeAppColor.id);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(size.width * 0.03),
-                            margin: EdgeInsets.symmetric(
-                                vertical: size.height * 0.02),
-                            height: size.height * 0.15,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: kPrimaryLightColor,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/notificationProfile.svg',
-                                  color: kPrimaryColor,
-                                ),
-                                SizedBox(
-                                  height: size.height * 0.02,
-                                ),
-                                Text(
-                                  'App Colors',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    // fontSize: size.width * 0.042,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: size.width * 0.05,
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, ChangeAppLogo.id);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(size.width * 0.03),
-                            margin: EdgeInsets.symmetric(
-                                vertical: size.height * 0.02),
-                            height: size.height * 0.15,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: kPrimaryLightColor,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/language.svg',
-                                  color: kPrimaryColor,
-                                ),
-                                SizedBox(
-                                  height: size.height * 0.02,
-                                ),
-                                Text(
-                                  'App Logo',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     // fontSize: size.width * 0.042,

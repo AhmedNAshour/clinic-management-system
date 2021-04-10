@@ -1,5 +1,6 @@
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/disable_user.dart';
+import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/stringManipulation.dart';
 import 'package:clinic/services/database.dart';
@@ -112,9 +113,23 @@ class DoctorCardAdmin extends StatelessWidget {
                               height: screenHeight * 0.02,
                               color: kPrimaryTextColor,
                             ),
-                            Icon(
-                              Icons.chat_bubble_outline_rounded,
+                            IconButton(
+                              icon: Icon(
+                                Icons.chat_bubble_outline_rounded,
+                              ),
                               color: kPrimaryColor,
+                              onPressed: () {
+                                Navigator.pushNamed(context, ChatRoom.id,
+                                    arguments: {
+                                      'otherUser': UserData(
+                                        fName: doctor.fName,
+                                        lName: doctor.lName,
+                                        uid: doctor.uid,
+                                        picURL: doctor.picURL,
+                                        role: 'doctor',
+                                      ),
+                                    });
+                              },
                             ),
                             SizedBox(
                               width: screenWidth * 0.01,
@@ -157,12 +172,14 @@ class DoctorCardAdmin extends StatelessWidget {
                                 CustomBottomSheets()
                                     .showDynamicCustomBottomSheet(
                                         size,
-                                        DisableUser(UserData(
-                                          fName: doctor.fName,
-                                          lName: doctor.lName,
-                                          uid: doctor.uid,
-                                          role: 'doctor',
-                                        )),
+                                        DisableUser(
+                                          UserData(
+                                            fName: doctor.fName,
+                                            lName: doctor.lName,
+                                            uid: doctor.uid,
+                                            role: 'doctor',
+                                          ),
+                                        ),
                                         context);
                               },
                               child: Icon(

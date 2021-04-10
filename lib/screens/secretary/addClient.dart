@@ -7,6 +7,7 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -250,6 +251,7 @@ class _AddClientState extends State<AddClient> {
                             height: size.height * 0.02,
                           ),
                           RoundedInputField(
+                            initialValue: fName,
                             obsecureText: false,
                             icon: Icons.person_add_alt,
                             hintText: 'First Name',
@@ -260,6 +262,7 @@ class _AddClientState extends State<AddClient> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
+                            initialValue: lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
                             hintText: 'Last Name',
@@ -270,6 +273,8 @@ class _AddClientState extends State<AddClient> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
+                            inputType: TextInputType.number,
+                            initialValue: age != null ? age.toString() : '',
                             obsecureText: false,
                             icon: Icons.calendar_today,
                             hintText: 'Age',
@@ -280,6 +285,7 @@ class _AddClientState extends State<AddClient> {
                                 val.isEmpty ? 'Enter an age' : null,
                           ),
                           RoundedInputField(
+                            initialValue: phoneNumber,
                             obsecureText: false,
                             icon: Icons.phone,
                             hintText: 'Phone Number',
@@ -291,6 +297,9 @@ class _AddClientState extends State<AddClient> {
                                 : null,
                           ),
                           RoundedInputField(
+                            inputType: TextInputType.number,
+                            initialValue:
+                                numAppointments != null ? age.toString() : '',
                             obsecureText: false,
                             icon: Icons.add,
                             hintText: 'Remaining Sessions',
@@ -299,6 +308,7 @@ class _AddClientState extends State<AddClient> {
                             },
                           ),
                           RoundedInputField(
+                            initialValue: email,
                             obsecureText: false,
                             icon: Icons.email,
                             hintText: 'Email',
@@ -326,10 +336,6 @@ class _AddClientState extends State<AddClient> {
                                 setState(() {
                                   loading = true;
                                 });
-                                // if (user.role != 'client') {
-                                //   // curEmail = user.email;
-                                //   // curPassword = userData.password;
-                                // }
                                 MyUser result =
                                     await _auth.createUserWithEmailAndPasword(
                                   email,
@@ -380,6 +386,7 @@ class _AddClientState extends State<AddClient> {
                                   setState(() {
                                     loading = false;
                                   });
+                                  Navigator.pop(context);
                                   await NDialog(
                                     dialogStyle: DialogStyle(
                                       backgroundColor: kPrimaryColor,
@@ -392,12 +399,10 @@ class _AddClientState extends State<AddClient> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Container(
-                                            child: SvgPicture.asset(
-                                              'assets/images/check2.svg',
-                                              fit: BoxFit.none,
-                                              color: Colors.white,
-                                            ),
+                                          Icon(
+                                            FontAwesomeIcons.checkCircle,
+                                            color: Colors.white,
+                                            size: size.height * 0.125,
                                           ),
                                           SizedBox(
                                             height: size.height * 0.05,
@@ -421,54 +426,10 @@ class _AddClientState extends State<AddClient> {
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
-                                          SizedBox(
-                                            height: size.height * 0.04,
-                                          ),
-                                          Container(
-                                            width: size.width * 0.8,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  AuthService().signOut();
-                                                },
-                                                child: Container(
-                                                  child: Center(
-                                                    child: Text(
-                                                      'SIGN IN',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize:
-                                                            size.height * 0.025,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: kPrimaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    border: Border.all(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: 20,
-                                                    horizontal: 40,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
                                         ],
                                       ),
                                     ),
                                   ).show(context);
-                                  // await _auth.signOut();
-                                  // await _auth
-                                  //     .signInWithEmailAndPassword(
-                                  //         curEmail, curPassword);
                                 }
                               }
                             },

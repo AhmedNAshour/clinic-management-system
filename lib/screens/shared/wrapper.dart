@@ -105,7 +105,7 @@ class _WrapperState extends State<Wrapper> {
                     },
                   );
                 } else {
-                  return Loading();
+                  return Login();
                 }
               } else {
                 return Loading();
