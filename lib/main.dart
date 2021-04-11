@@ -69,13 +69,8 @@ class MyApp extends StatelessWidget {
           value: AuthService().user,
           initialData: null,
         ),
-        // ChangeNotifierProvider.value(
-        //   value: DesignElements(),
-        // ),
       ],
       child: MaterialApp(
-        // locale: DevicePreview.of(context).locale,
-        // builder: DevicePreview.appBuilder,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,

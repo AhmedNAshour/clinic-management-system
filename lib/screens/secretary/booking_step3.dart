@@ -63,7 +63,8 @@ class _BookingStep3State extends State<BookingStep3> {
         startTime = DateTime.parse(startTimeString);
         endTime = DateTime.parse(endTimeString);
 
-        while (!startTime.isAtSameMomentAs(endTime)) {
+        while (!startTime.isAtSameMomentAs(endTime) &&
+            startTime.isAfter(DateTime.now())) {
           startTimes.add(
             startTime,
           );

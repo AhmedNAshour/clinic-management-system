@@ -65,14 +65,12 @@ class _NotificationSettingsDoctorState
             child: SwitchListTile(
               tileColor: Color(0xFFF0F0F0),
               activeColor: kPrimaryColor,
-              //TODO: Get value from database
               value: bookingNotifs,
               title: Text(
                 'Booking',
                 style: TextStyle(
                     color: kPrimaryTextColor, fontSize: size.width * 0.06),
               ),
-
               onChanged: (value) async {
                 this.setState(() {
                   bookingNotifs = value;
@@ -93,7 +91,6 @@ class _NotificationSettingsDoctorState
             child: SwitchListTile(
               tileColor: Color(0xFFF0F0F0),
               activeColor: kPrimaryColor,
-              //TODO: Get value from database
               value: cancellingNotifs,
               title: Text(
                 'Cancelling',

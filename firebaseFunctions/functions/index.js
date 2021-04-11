@@ -1,6 +1,25 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const { user } = require('firebase-functions/lib/providers/auth');
 admin.initializeApp(functions.config().firebase);
+
+
+exports.addUser = functions.https.onCall((data,context) => {
+    admin
+    .auth()
+    .createUser({
+      email: data.email,
+      password: data.password,
+      disabled: false,
+    })
+    .then((userRecord) => {
+      // See the UserRecord reference doc for the contents of userRecord.
+      return {'uid':userRecord.uid};
+    })
+    .catch((error) => {
+        return {'uid':'fail'};
+    });
+})
 
 exports.deleteUser = functions.https.onCall((data,context) => {
     admin.auth().deleteUser(data.uid)
@@ -51,6 +70,6 @@ exports.secretaryCancellingTrigger = functions.firestore.document('appointments/
     async (snapshot , context) =>
     {
         var payload = {notification: {title: 'Appointment Cancelled', body: 'Appointment cancelled in ' + snapshot.data().branch}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
-        const response = await admin.messaging().sendToTopic('reservationIn' + snapshot.data().branch + 'Branch',payload)
+        const response = await admin.messaging().sendToTopic('cancelledReservationIn' + snapshot.data().branch + 'Branch',payload)
     }
 )

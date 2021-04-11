@@ -54,20 +54,6 @@ class _DoctorScheduleState extends State<DoctorSchedule> {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(
-              //     horizontal: size.width * 0.04,
-              //     vertical: size.height * 0.04,
-              //   ),
-              //   child: Text(
-              //     'Please switch the toggle to turn on available days and determine working hours',
-              //     textAlign: TextAlign.center,
-              //     style: TextStyle(
-              //       color: kPrimaryTextColor,
-              //       fontSize: size.width * 0.05,
-              //     ),
-              //   ),
-              // ),
               Expanded(
                 child: Container(
                   width: size.width * 0.9,

@@ -90,14 +90,6 @@ class _WorkdayCardState extends State<WorkdayCard> {
                                     left: size.width * 0.02,
                                     right: size.width * 0.02,
                                     bottom: size.height * 0.01),
-                                // decoration: BoxDecoration(
-                                //   border: Border(
-                                //     bottom: BorderSide(
-                                //       width: size.height * 0.001,
-                                //       color: kPrimaryLightColor,
-                                //     ),
-                                //   ),
-                                // ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -147,8 +139,9 @@ class _WorkdayCardState extends State<WorkdayCard> {
                                 borderColor: kPrimaryLightColor,
                                 backgroundColor: Colors.transparent,
                                 activeBackgroundColor: kPrimaryColor,
-                                firstTime: TimeOfDay(hour: 1, minute: 30),
-                                lastTime: TimeOfDay(hour: 5, minute: 00),
+                                //TODO: Set according to branch working hours
+                                firstTime: TimeOfDay(hour: 0, minute: 00),
+                                lastTime: TimeOfDay(hour: 23, minute: 00),
                                 timeStep: 30,
                                 timeBlock: 30,
                                 onRangeCompleted: (range) => setState(

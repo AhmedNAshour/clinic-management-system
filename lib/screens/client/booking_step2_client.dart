@@ -63,7 +63,8 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
         startTime = DateTime.parse(startTimeString);
         endTime = DateTime.parse(endTimeString);
 
-        while (!startTime.isAtSameMomentAs(endTime)) {
+        while (!startTime.isAtSameMomentAs(endTime) &&
+            startTime.isAfter(DateTime.now())) {
           startTimes.add(
             startTime,
           );

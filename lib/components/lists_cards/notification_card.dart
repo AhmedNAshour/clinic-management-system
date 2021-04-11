@@ -6,10 +6,9 @@ import 'package:intl/intl.dart';
 import '../../screens/doctor/client_info_doctor.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
+import '../../screens/client/appointment_info.dart';
 
 class NotificationCard extends StatefulWidget {
   NotificationCard({
@@ -29,26 +28,6 @@ class _NotificationCardState extends State<NotificationCard> {
   File newProfilePic;
   String note = '';
   String error = '';
-  final _formKey = GlobalKey<FormState>();
-
-  Future getImage() async {
-    var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
-    setState(() {
-      newProfilePic = File(tempImage.path);
-    });
-  }
-
-  uploadImage() async {
-    final Reference firebaseStorageRef = FirebaseStorage.instance
-        .ref()
-        .child('profilePics/${widget.notification.doctorID}.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: widget.notification.docID)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
-        );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +37,11 @@ class _NotificationCardState extends State<NotificationCard> {
     return GestureDetector(
       onTap: () {
         //TODO: Change according to user role
-        CustomBottomSheets().showCustomBottomSheet(
-            size, ClientProfileDoctor(widget.notification.clientID), context);
+        // widget.userData.role == 'doctor'
+        //     ? CustomBottomSheets().showCustomBottomSheet(size,
+        //         ClientProfileDoctor(widget.notification.clientID), context)
+        //     : CustomBottomSheets().showCustomBottomSheet(
+        //         size, AppointmentInfo(widget.notification.), context);
       },
       child: Card(
         elevation: 5,

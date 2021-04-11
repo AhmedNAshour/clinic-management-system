@@ -32,7 +32,6 @@ class DoctorCardSecBooking extends StatelessWidget {
           child: Container(
             width: screenWidth * 0.4,
             height: screenWidth * 0.3,
-            margin: EdgeInsets.only(bottom: size.height * 0.02),
             padding: EdgeInsets.symmetric(
                 horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
             decoration: BoxDecoration(

@@ -18,10 +18,10 @@ class _ChatRoomState extends State<ChatRoom> {
   String message = '';
   final _formKey = GlobalKey<FormState>();
   String chatId;
+  TextEditingController textEditingController = new TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     chatId = null;
   }
@@ -108,7 +108,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       child: TextFormField(
-                                        initialValue: message,
+                                        controller: textEditingController,
                                         validator: (val) => val.isEmpty
                                             ? 'Cant send an empty message..'
                                             : null,
@@ -127,7 +127,6 @@ class _ChatRoomState extends State<ChatRoom> {
                                         Icons.send,
                                       ),
                                       onPressed: () async {
-                                        //TODO: Add send message code
                                         if (_formKey.currentState.validate()) {
                                           await DatabaseService().sendMessage(
                                             message: message,
@@ -136,9 +135,12 @@ class _ChatRoomState extends State<ChatRoom> {
                                             existingChatID: chatId,
                                           );
                                         }
+                                        setState(() {
+                                          textEditingController.text = '';
+                                        });
                                       },
                                       color: kPrimaryColor,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),

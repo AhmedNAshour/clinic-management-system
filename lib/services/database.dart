@@ -1100,6 +1100,31 @@ class DatabaseService {
     return client;
   }
 
+  Future<Appointment> getAppointment(String id) async {
+    DocumentSnapshot doc = await appointmentsCollection.doc(id).get();
+    Appointment appointment = Appointment(
+      startTime: DateTime.parse(doc.data()['startTime'].toDate().toString()) ??
+          '' ??
+          '',
+      endTime: DateTime.parse(doc.data()['endTime'].toDate().toString()) ?? '',
+      clientID: doc.data()['clientID'] ?? '',
+      doctorID: doc.data()['doctorID'] ?? '',
+      day: doc.data()['day'] ?? '',
+      clientFName: doc.data()['clientFName'] ?? '',
+      clientLName: doc.data()['clientLName'] ?? '',
+      clientGender: doc.data()['clientGender'] ?? '',
+      clientPhoneNumber: doc.data()['clientPhoneNumber'] ?? '',
+      doctorFName: doc.data()['doctorFName'] ?? '',
+      doctorLName: doc.data()['doctorLName'] ?? '',
+      status: doc.data()['status'] ?? '',
+      docID: doc.id,
+      doctorPicURL: doc.data()['doctorPicURL'] ?? '',
+      clientPicURL: doc.data()['clientPicURL'] ?? '',
+    );
+
+    return appointment;
+  }
+
   Future<UserData> getUser() async {
     DocumentSnapshot s = await clientsCollection.doc(uid).get();
     UserData client = UserData(

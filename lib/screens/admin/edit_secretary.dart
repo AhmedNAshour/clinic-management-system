@@ -375,77 +375,73 @@ class _EditSecretaryState extends State<EditSecretary> {
                                                 downloadUrl = await taskSnapshot
                                                     .ref
                                                     .getDownloadURL();
-
-                                                // Add client to clients collectionab
-                                                DatabaseService db =
-                                                    DatabaseService(
-                                                        uid: widget
-                                                            .secretary.uid);
-                                                await db.updateSecretaryData(
-                                                  fName: fName,
-                                                  lName: lName,
-                                                  phoneNumber: phoneNumber,
-                                                  gender: gender == 0
-                                                      ? 'male'
-                                                      : 'female',
-                                                  branchId: branch.docID,
-                                                  branchName: branch.name,
-                                                  picURL: '',
-                                                );
-                                                await db
-                                                    .updateUserProfilePicture(
-                                                        newProfilePic != null
-                                                            ? downloadUrl
-                                                            : '',
-                                                        'secretary');
-
-                                                setState(() {
-                                                  loading = false;
-                                                });
-                                                await NDialog(
-                                                  dialogStyle: DialogStyle(
-                                                    backgroundColor:
-                                                        kPrimaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  content: Container(
-                                                    height: size.height * 0.5,
-                                                    width: size.width * 0.8,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Container(
-                                                          child:
-                                                              SvgPicture.asset(
-                                                            'assets/images/check2.svg',
-                                                            fit: BoxFit.none,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          height: size.height *
-                                                              0.05,
-                                                        ),
-                                                        Text(
-                                                          'Manager Edited',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize:
-                                                                size.height *
-                                                                    0.04,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ).show(context);
                                               }
+                                              // Add client to clients collectionab
+                                              DatabaseService db =
+                                                  DatabaseService(
+                                                      uid:
+                                                          widget.secretary.uid);
+                                              await db.updateSecretaryData(
+                                                fName: fName,
+                                                lName: lName,
+                                                phoneNumber: phoneNumber,
+                                                gender: gender == 0
+                                                    ? 'male'
+                                                    : 'female',
+                                                branchId: branch.docID,
+                                                branchName: branch.name,
+                                                picURL: '',
+                                              );
+                                              await db.updateUserProfilePicture(
+                                                  newProfilePic != null
+                                                      ? downloadUrl
+                                                      : '',
+                                                  'secretary');
+
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                              await NDialog(
+                                                dialogStyle: DialogStyle(
+                                                  backgroundColor:
+                                                      kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                content: Container(
+                                                  height: size.height * 0.5,
+                                                  width: size.width * 0.8,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Container(
+                                                        child: SvgPicture.asset(
+                                                          'assets/images/check2.svg',
+                                                          fit: BoxFit.none,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height:
+                                                            size.height * 0.05,
+                                                      ),
+                                                      Text(
+                                                        'Manager Edited',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize:
+                                                              size.height *
+                                                                  0.04,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ).show(context);
                                             }
                                           },
                                         ),

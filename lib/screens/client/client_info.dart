@@ -4,6 +4,7 @@ import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/editClient.dart';
+import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -98,9 +99,22 @@ class _ClientProfileState extends State<ClientProfile> {
                       SizedBox(
                         width: size.width * 0.05,
                       ),
-                      Icon(
-                        Icons.chat_bubble_outline_rounded,
+                      IconButton(
+                        icon: Icon(
+                          Icons.chat_bubble_outline_rounded,
+                        ),
                         color: kPrimaryColor,
+                        onPressed: () {
+                          Navigator.pushNamed(context, ChatRoom.id, arguments: {
+                            'otherUser': UserData(
+                              fName: widget.client.fName,
+                              lName: widget.client.lName,
+                              uid: widget.client.uid,
+                              picURL: widget.client.picURL,
+                              role: 'client',
+                            ),
+                          });
+                        },
                       ),
                     ],
                   ),

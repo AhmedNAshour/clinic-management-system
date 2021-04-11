@@ -212,6 +212,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                                   widget.appointment.doctorPicURL ?? '',
                               status: 1,
                               type: 0,
+                              //TODO: add appointment ID to notification
                             );
                             //Navigator.pop(context);
                             AwesomeDialog(

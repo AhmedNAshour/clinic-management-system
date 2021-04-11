@@ -89,7 +89,10 @@ class _BookingStep2State extends State<BookingStep2> {
                             value: DatabaseService(uid: user.uid).userData,
                           ),
                         ],
-                        child: DoctorList.booking(client: client),
+                        child: DoctorList.booking(
+                          client: client,
+                          isClientBooking: false,
+                        ),
                       ),
                     ),
                   ],

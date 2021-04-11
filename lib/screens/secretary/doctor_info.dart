@@ -4,6 +4,7 @@ import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/secretary/doctorSchedule.dart';
+import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -76,9 +77,9 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                         onTap: () {
                           launch("tel://${widget.doctor.phoneNumber}");
                         },
-                        child: CircleAvatar(
-                          radius: size.width * 0.05,
-                          backgroundImage: AssetImage('assets/images/call.png'),
+                        child: Icon(
+                          Icons.phone_android_rounded,
+                          color: kPrimaryColor,
                         ),
                       ),
                       SizedBox(
@@ -95,10 +96,22 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                       SizedBox(
                         width: size.width * 0.05,
                       ),
-                      SvgPicture.asset(
-                        'assets/images/chat.svg',
-                        height: size.height * 0.05,
-                        width: size.width * 0.05,
+                      IconButton(
+                        icon: Icon(
+                          Icons.chat_bubble_outline_rounded,
+                        ),
+                        color: kPrimaryColor,
+                        onPressed: () {
+                          Navigator.pushNamed(context, ChatRoom.id, arguments: {
+                            'otherUser': UserData(
+                              fName: widget.doctor.fName,
+                              lName: widget.doctor.lName,
+                              uid: widget.doctor.uid,
+                              picURL: widget.doctor.picURL,
+                              role: 'doctor',
+                            ),
+                          });
+                        },
                       ),
                     ],
                   ),

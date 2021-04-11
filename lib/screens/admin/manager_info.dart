@@ -2,6 +2,7 @@ import 'package:clinic/components/info_card.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/secretary.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -94,9 +95,22 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
                       SizedBox(
                         width: size.width * 0.05,
                       ),
-                      Icon(
-                        Icons.chat_bubble_outline_rounded,
+                      IconButton(
+                        icon: Icon(
+                          Icons.chat_bubble_outline_rounded,
+                        ),
                         color: kPrimaryColor,
+                        onPressed: () {
+                          Navigator.pushNamed(context, ChatRoom.id, arguments: {
+                            'otherUser': UserData(
+                              fName: widget.manager.fName,
+                              lName: widget.manager.lName,
+                              uid: widget.manager.uid,
+                              picURL: widget.manager.picURL,
+                              role: 'secretary',
+                            ),
+                          });
+                        },
                       ),
                     ],
                   ),

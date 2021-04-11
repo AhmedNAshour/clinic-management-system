@@ -2,6 +2,7 @@ import 'package:clinic/models/user.dart';
 import 'package:clinic/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -51,8 +52,6 @@ class AuthService {
 
   Future createUserWithEmailAndPasword(String email, password, fName, lName,
       phoneNumber, gender, role, picURL, int status) async {
-    User user;
-
     try {
       FirebaseApp tempApp = await Firebase.initializeApp(
           name: 'temporaryregister', options: Firebase.app().options);

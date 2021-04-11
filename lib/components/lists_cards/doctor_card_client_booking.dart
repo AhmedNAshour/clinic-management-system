@@ -34,22 +34,9 @@ class DoctorCardClientBooking extends StatelessWidget {
             child: Container(
               width: screenWidth * 0.4,
               height: screenWidth * 0.35,
-              // margin: EdgeInsets.only(bottom: size.height * 0.02),
               padding: EdgeInsets.symmetric(
                   horizontal: screenWidth * 0.02,
                   vertical: screenHeight * 0.02),
-              // decoration: BoxDecoration(
-              //   color: Colors.white,
-              //   borderRadius: BorderRadius.circular(10),
-              //   // boxShadow: [
-              //   //   BoxShadow(
-              //   //     color: kPrimaryLightColor,
-              //   //     blurRadius: 10.0,
-              //   //     spreadRadius: 0.5,
-              //   //     offset: Offset(0, 0), // shadow direction: bottom right
-              //   //   )
-              //   // ],
-              // ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

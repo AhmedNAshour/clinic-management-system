@@ -342,25 +342,25 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                                   TaskSnapshot taskSnapshot = await task;
                                   downloadUrl =
                                       await taskSnapshot.ref.getDownloadURL();
-                                  DatabaseService db =
-                                      DatabaseService(uid: widget.doctor.uid);
-                                  db.updateDoctorData(
-                                    fName: fName,
-                                    lName: lName,
-                                    phoneNumber: phoneNumber,
-                                    gender: gender == 0 ? 'male' : 'female',
-                                    about: bio,
-                                    profession: specialty,
-                                    branch: widget.doctor.branch,
-                                  );
-                                  await db.updateDoctorWorkDays();
-                                  await db.updateUserProfilePicture(
-                                      newProfilePic != null ? downloadUrl : '',
-                                      'doctor');
-                                  setState(() {
-                                    loading = false;
-                                  });
                                 }
+                                DatabaseService db =
+                                    DatabaseService(uid: widget.doctor.uid);
+                                db.updateDoctorData(
+                                  fName: fName,
+                                  lName: lName,
+                                  phoneNumber: phoneNumber,
+                                  gender: gender == 0 ? 'male' : 'female',
+                                  about: bio,
+                                  profession: specialty,
+                                  branch: widget.doctor.branch,
+                                );
+                                await db.updateDoctorWorkDays();
+                                await db.updateUserProfilePicture(
+                                    newProfilePic != null ? downloadUrl : '',
+                                    'doctor');
+                                setState(() {
+                                  loading = false;
+                                });
                               }
                             },
                           ),

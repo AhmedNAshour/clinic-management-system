@@ -11,6 +11,8 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
+  ScrollController _controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final messages = Provider.of<List<MessageModel>>(context) ?? [];
@@ -18,8 +20,12 @@ class _MessageListState extends State<MessageList> {
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
+    if (messages.isNotEmpty) {
+      _controller.jumpTo(_controller.position.maxScrollExtent);
+    }
 
     return ListView.builder(
+      controller: _controller,
       itemCount: messages.length,
       itemBuilder: (context, index) {
         return Align(

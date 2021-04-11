@@ -23,18 +23,6 @@ class _WrapperState extends State<Wrapper> {
   String role = '';
   bool loading;
   bool isInit = true;
-  @override
-  void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
-    if (isInit) {
-      // await Provider.of<DesignElements>(context).getPrimaryColor();
-      // await Provider.of<DesignElements>(context, listen: false)
-      //     .getPrimaryLightColor();
-      // await Provider.of<DesignElements>(context, listen: false)
-      //     .getPrimaryTextColor();
-    }
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +56,6 @@ class _WrapperState extends State<Wrapper> {
                                 .getSecretaryBranch(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                //TODO: subbscirbe to notifications according to notification settings
                                 if (userData.data.bookingNotifs) {
                                   _fcm.subscribeToTopic(
                                       'reservationIn${snapshot.data}Branch');

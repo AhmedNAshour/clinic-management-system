@@ -5,6 +5,9 @@ import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:country_code_picker/country_code.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,11 +30,17 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
   AuthService _auth = AuthService();
 
   // text field state
-  String email = '';
+  // String email = '';
+  // String password = '';
+  // String fName = '';
+  // String lName = '';
+  // String phoneNumber = '';
+  String email = 'testtest@gmail.test';
   String password = '';
-  String fName = '';
-  String lName = '';
-  String phoneNumber = '';
+  String fName = 'testRegistration';
+  String lName = 'testRegistration';
+  String phoneNumber = '01003369055';
+  CountryCode countryCode;
   String error = '';
   int numAppointments = 0;
   int gender = 0;
@@ -252,6 +261,44 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                           SizedBox(
                             height: size.height * 0.02,
                           ),
+                          Container(
+                            width: size.width * 0.8,
+                            child: Row(
+                              children: [
+                                CountryCodePicker(
+                                  padding: EdgeInsets.zero,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      countryCode = value;
+                                    });
+                                  },
+                                  // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                  initialSelection: 'EG',
+                                  // optional. Shows only country name and flag
+                                  showCountryOnly: false,
+                                  // optional. Shows only country name and flag when popup is closed.
+                                  showOnlyCountryWhenClosed: false,
+                                  // optional. aligns the flag and the Text left
+                                  alignLeft: false,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  width: size.width * 0.55,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 5),
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (val) {
+                                      setState(() => phoneNumber = val);
+                                    },
+                                    validator: (val) => val.length != 11
+                                        ? 'Enter a valid number'
+                                        : null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           RoundedInputField(
                             initialValue: fName,
                             obsecureText: false,
@@ -286,29 +333,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                             validator: (val) =>
                                 val.isEmpty ? 'Enter an age' : null,
                           ),
-                          // TextFieldContainer(
-                          //   child: IntlPhoneField(
-                          //     decoration: InputDecoration(
-                          //       labelText: 'Phone Number',
-                          //       border: UnderlineInputBorder(),
-                          //     ),
-                          //     initialCountryCode: 'EG',
-                          //     onChanged: (phone) {
-                          //       phoneNumber = phone.completeNumber;
-                          //     },
-                          //   ),
-                          // ),
-                          RoundedInputField(
-                            obsecureText: false,
-                            icon: Icons.phone,
-                            hintText: 'Phone Number',
-                            onChanged: (val) {
-                              setState(() => phoneNumber = val);
-                            },
-                            validator: (val) => val.length != 11
-                                ? 'Enter a valid number'
-                                : null,
-                          ),
+
                           RoundedInputField(
                             initialValue: email,
                             obsecureText: false,
@@ -339,6 +364,15 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 setState(() {
                                   loading = true;
                                 });
+                                // HttpsCallable addUserFunction =
+                                //     FirebaseFunctions.instance
+                                //         .httpsCallable('addUser');
+                                // dynamic userID = await addUserFunction
+                                //     .call(<String, dynamic>{
+                                //   'email': email,
+                                //   'password': password,
+                                // });
+
                                 MyUser result =
                                     await _auth.createUserWithEmailAndPasword(
                                   email,
@@ -351,6 +385,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                   '',
                                   0,
                                 );
+
                                 if (result == null) {
                                   setState(() {
                                     error = 'invalid email';
@@ -389,7 +424,6 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                   setState(() {
                                     loading = false;
                                   });
-                                  Navigator.pop(context);
                                   await NDialog(
                                     dialogStyle: DialogStyle(
                                       backgroundColor: kPrimaryColor,
@@ -439,6 +473,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                                   BorderRadius.circular(10),
                                               child: GestureDetector(
                                                 onTap: () {
+                                                  Navigator.pop(context);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Container(
