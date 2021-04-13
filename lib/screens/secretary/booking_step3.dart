@@ -10,7 +10,9 @@ import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -350,32 +352,44 @@ class _BookingStep3State extends State<BookingStep3> {
                                                       client.numAppointments -
                                                           1,
                                                   documentID: client.uid);
-                                          AwesomeDialog(
-                                              context: context,
-                                              headerAnimationLoop: false,
-                                              dialogType: DialogType.SUCCES,
-                                              animType: AnimType.BOTTOMSLIDE,
-                                              body: Center(
-                                                child: Text(
-                                                  'Appointment booked successfully',
-                                                  style: TextStyle(
+                                          Navigator.popUntil(context,
+                                              ModalRoute.withName('/'));
+                                          await NDialog(
+                                            dialogStyle: DialogStyle(
+                                              backgroundColor: kPrimaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            content: Container(
+                                              height: size.height * 0.5,
+                                              width: size.width * 0.8,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    FontAwesomeIcons
+                                                        .checkCircle,
+                                                    color: Colors.white,
+                                                    size: size.height * 0.125,
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.05,
+                                                  ),
+                                                  Text(
+                                                    'Appointment Booked',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize:
+                                                          size.height * 0.04,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 20),
-                                                  textAlign: TextAlign.center,
-                                                ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              title: '',
-                                              desc: '',
-                                              onDissmissCallback: () {
-                                                Navigator.popUntil(context,
-                                                    ModalRoute.withName('/'));
-                                              },
-                                              btnOkOnPress: () {
-                                                Navigator.popUntil(context,
-                                                    ModalRoute.withName('/'));
-                                              })
-                                            ..show();
+                                            ),
+                                          ).show(context);
                                         } else {
                                           setState(() {
                                             error = 'No time slot was selected';

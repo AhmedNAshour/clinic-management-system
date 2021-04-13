@@ -7,8 +7,10 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:ndialog/ndialog.dart';
 import 'dart:io';
 import '../shared/constants.dart';
 
@@ -361,6 +363,39 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                                 setState(() {
                                   loading = false;
                                 });
+                                Navigator.pop(context);
+                                await NDialog(
+                                  dialogStyle: DialogStyle(
+                                    backgroundColor: kPrimaryColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  content: Container(
+                                    height: size.height * 0.5,
+                                    width: size.width * 0.8,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          FontAwesomeIcons.checkCircle,
+                                          color: Colors.white,
+                                          size: size.height * 0.125,
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.05,
+                                        ),
+                                        Text(
+                                          'Doctor Edited',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: size.height * 0.04,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ).show(context);
                               }
                             },
                           ),

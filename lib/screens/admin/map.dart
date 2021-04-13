@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'package:clinic/screens/admin/branches.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart' as geoco;
 import 'package:geolocator/geolocator.dart' as go;
+import 'package:ndialog/ndialog.dart';
 import '../shared/constants.dart';
 
 class MapSelect extends StatefulWidget {
@@ -135,6 +138,38 @@ class _MapSelectState extends State<MapSelect> {
                 longitude: longitude,
                 latitude: latitude,
               );
+              Navigator.popUntil(context, ModalRoute.withName(Branches.id));
+              await NDialog(
+                dialogStyle: DialogStyle(
+                  backgroundColor: kPrimaryColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                content: Container(
+                  height: size.height * 0.5,
+                  width: size.width * 0.8,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.checkCircle,
+                        color: Colors.white,
+                        size: size.height * 0.125,
+                      ),
+                      SizedBox(
+                        height: size.height * 0.05,
+                      ),
+                      Text(
+                        'Branch Added',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: size.height * 0.04,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ).show(context);
             } else {
               setState(() {
                 error = 'Please select a location';

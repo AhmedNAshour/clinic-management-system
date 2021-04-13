@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clinic/models/appointment.dart';
+import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/stringManipulation.dart';
 import 'package:clinic/services/database.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../screens/admin/cancel_appointment.dart';
 
 class AppointmentCard extends StatefulWidget {
   AppointmentCard({
@@ -149,101 +151,27 @@ class _AppointmentCardState extends State<AppointmentCard> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      AwesomeDialog(
-                        context: context,
-                        headerAnimationLoop: false,
-                        dialogType: DialogType.WARNING,
-                        animType: AnimType.BOTTOMSLIDE,
-                        title: "Cancel Appointment",
-                        desc:
-                            'Are you sure you want to cancel this appointment ?',
-                        btnCancelOnPress: () {},
-                        btnOkOnPress: () async {
-                          print('Client id: ${widget.appointment.clientID}');
-                          dynamic result;
-                          int old = await DatabaseService()
-                              .getSpecificClientRemainingSessions(
-                                  widget.appointment.clientID);
-                          print('Old : $old');
-                          await DatabaseService().updateClientRemainingSessions(
-                              numAppointments: old + 1,
-                              documentID: widget.appointment.clientID);
-                          result = await DatabaseService()
-                              .updateAppointmentStatus(
-                                  id: widget.appointment.docID,
-                                  status: 'canceled');
-
-                          if (result == null) {
-                            AwesomeDialog(
-                                context: context,
-                                headerAnimationLoop: false,
-                                dialogType: DialogType.ERROR,
-                                animType: AnimType.BOTTOMSLIDE,
-                                body: Align(
-                                  alignment: Alignment.center,
-                                  child: Center(
-                                    child: Text(
-                                      'COULD NOT CANCEL APPOINTMENT..',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+                  widget.appointment.status != 'canceled'
+                      ? GestureDetector(
+                          onTap: () {
+                            CustomBottomSheets().showDynamicCustomBottomSheet(
+                                size,
+                                CancelAppointment(
+                                  widget.appointment,
                                 ),
-                                onDissmissCallback: () {},
-                                btnOkOnPress: () {})
-                              ..show();
-                          } else {
-                            await DatabaseService().addAppointmentNotifications(
-                              clientID: widget.appointment.clientID,
-                              startTime: widget.appointment.startTime,
-                              doctorID: widget.appointment.doctorID,
-                              doctorFName: widget.appointment.doctorFName,
-                              doctorLName: widget.appointment.doctorLName,
-                              clientFName: widget.appointment.clientFName,
-                              clientLName: widget.appointment.clientLName,
-                              branch: widget.appointment.branch,
-                              clientPicURL:
-                                  widget.appointment.clientPicURL ?? '',
-                              doctorPicURL:
-                                  widget.appointment.doctorPicURL ?? '',
-                              status: 1,
-                              type: 0,
-                              //TODO: add appointment ID to notification
-                            );
-                            //Navigator.pop(context);
-                            AwesomeDialog(
-                                context: context,
-                                headerAnimationLoop: false,
-                                dialogType: DialogType.SUCCES,
-                                animType: AnimType.BOTTOMSLIDE,
-                                body: Center(
-                                  child: Text(
-                                    'Appointment Cancelled Successfully',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                onDissmissCallback: () {},
-                                btnOkOnPress: () {})
-                              ..show();
-                          }
-                        },
-                      )..show();
-                    },
-                    child: Icon(
-                      Icons.cancel,
-                      color: Color(0xFFB5020B),
-                    ),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.02,
-                  ),
+                                context);
+                          },
+                          child: Icon(
+                            Icons.cancel,
+                            color: Color(0xFFB5020B),
+                          ),
+                        )
+                      : Container(),
+                  widget.appointment.status != 'canceled'
+                      ? SizedBox(
+                          height: screenHeight * 0.02,
+                        )
+                      : Container(),
                   GestureDetector(
                     onTap: () {
                       launch("tel://${widget.appointment.clientPhoneNumber}");

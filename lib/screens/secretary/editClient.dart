@@ -7,6 +7,7 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
@@ -373,6 +374,7 @@ class _EditClientState extends State<EditClient> {
                                 setState(() {
                                   loading = false;
                                 });
+                                Navigator.pop(context);
                                 await NDialog(
                                   dialogStyle: DialogStyle(
                                     backgroundColor: kPrimaryColor,
@@ -385,12 +387,10 @@ class _EditClientState extends State<EditClient> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Container(
-                                          child: SvgPicture.asset(
-                                            'assets/images/check2.svg',
-                                            fit: BoxFit.none,
-                                            color: Colors.white,
-                                          ),
+                                        Icon(
+                                          FontAwesomeIcons.checkCircle,
+                                          color: Colors.white,
+                                          size: size.height * 0.125,
                                         ),
                                         SizedBox(
                                           height: size.height * 0.05,

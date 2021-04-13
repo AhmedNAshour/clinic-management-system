@@ -7,6 +7,7 @@ import 'package:clinic/screens/shared/stringManipulation.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/customBottomSheets.dart';
 import '../../screens/secretary/editClient.dart';
@@ -332,6 +333,44 @@ class _ClientCardState extends State<ClientCard> {
                                                             .numAppointments,
                                                     documentID:
                                                         widget.client.uid);
+                                            Navigator.pop(context);
+                                            await NDialog(
+                                              dialogStyle: DialogStyle(
+                                                backgroundColor: kPrimaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              content: Container(
+                                                height: size.height * 0.5,
+                                                width: size.width * 0.8,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      FontAwesomeIcons
+                                                          .checkCircle,
+                                                      color: Colors.white,
+                                                      size: size.height * 0.125,
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          size.height * 0.05,
+                                                    ),
+                                                    Text(
+                                                      'Sessions Added',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize:
+                                                            size.height * 0.04,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ).show(context);
                                           },
                                         ),
                                       ],

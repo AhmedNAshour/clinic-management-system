@@ -1,3 +1,4 @@
+import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -7,18 +8,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 
-class DisableUser extends StatefulWidget {
+class CancelAppointment extends StatefulWidget {
   static const id = 'DisableUser';
-  UserData userData;
-  DisableUser(UserData userData) {
-    this.userData = userData;
+  Appointment appointment;
+  CancelAppointment(Appointment appointment) {
+    this.appointment = appointment;
   }
 
   @override
-  _DisableUserState createState() => _DisableUserState();
+  _CancelAppointmentState createState() => _CancelAppointmentState();
 }
 
-class _DisableUserState extends State<DisableUser> {
+class _CancelAppointmentState extends State<CancelAppointment> {
   // text field state
 
   bool loading = false;
@@ -61,7 +62,7 @@ class _DisableUserState extends State<DisableUser> {
                   height: size.height * 0.02,
                 ),
                 Text(
-                  'Are you sure you want to disable ${widget.userData.fName} ${widget.userData.lName}\'s account ?',
+                  'Are you sure you want to cancel this appointment ?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
@@ -102,8 +103,31 @@ class _DisableUserState extends State<DisableUser> {
                       ),
                       child: TextButton(
                         onPressed: () async {
-                          await DatabaseService(uid: widget.userData.uid)
-                              .updateUserStatus(widget.userData.role, 0);
+                          dynamic result;
+                          int old = await DatabaseService()
+                              .getSpecificClientRemainingSessions(
+                                  widget.appointment.clientID);
+                          await DatabaseService().updateClientRemainingSessions(
+                              numAppointments: old + 1,
+                              documentID: widget.appointment.clientID);
+                          await DatabaseService().updateAppointmentStatus(
+                              id: widget.appointment.docID, status: 'canceled');
+
+                          await DatabaseService().addAppointmentNotifications(
+                            clientID: widget.appointment.clientID,
+                            startTime: widget.appointment.startTime,
+                            doctorID: widget.appointment.doctorID,
+                            doctorFName: widget.appointment.doctorFName,
+                            doctorLName: widget.appointment.doctorLName,
+                            clientFName: widget.appointment.clientFName,
+                            clientLName: widget.appointment.clientLName,
+                            branch: widget.appointment.branch,
+                            clientPicURL: widget.appointment.clientPicURL ?? '',
+                            doctorPicURL: widget.appointment.doctorPicURL ?? '',
+                            status: 1,
+                            type: 0,
+                            //TODO: add appointment ID to notification
+                          );
                           Navigator.pop(context);
                           await NDialog(
                             dialogStyle: DialogStyle(
@@ -125,7 +149,7 @@ class _DisableUserState extends State<DisableUser> {
                                     height: size.height * 0.05,
                                   ),
                                   Text(
-                                    'User Disabled',
+                                    'Appointment Cancelled',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: size.height * 0.04,

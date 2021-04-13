@@ -11,6 +11,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
@@ -351,7 +352,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                         ),
 
                                         RoundedButton(
-                                          text: 'Add',
+                                          text: 'Edit',
                                           press: () async {
                                             if (_formKey.currentState
                                                 .validate()) {
@@ -401,6 +402,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                               setState(() {
                                                 loading = false;
                                               });
+                                              Navigator.pop(context);
                                               await NDialog(
                                                 dialogStyle: DialogStyle(
                                                   backgroundColor:
@@ -416,12 +418,12 @@ class _EditSecretaryState extends State<EditSecretary> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      Container(
-                                                        child: SvgPicture.asset(
-                                                          'assets/images/check2.svg',
-                                                          fit: BoxFit.none,
-                                                          color: Colors.white,
-                                                        ),
+                                                      Icon(
+                                                        FontAwesomeIcons
+                                                            .checkCircle,
+                                                        color: Colors.white,
+                                                        size:
+                                                            size.height * 0.125,
                                                       ),
                                                       SizedBox(
                                                         height:

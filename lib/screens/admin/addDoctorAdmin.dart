@@ -485,7 +485,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),
                     ),
-                    SizedBox(width: size.width * 0.2),
+                    SizedBox(width: size.width * 0.24),
                     IconButton(
                       icon: Icon(
                         Icons.close,
