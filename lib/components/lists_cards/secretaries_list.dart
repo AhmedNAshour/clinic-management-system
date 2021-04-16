@@ -1,5 +1,5 @@
 import 'package:clinic/components/lists_cards/secretary_card.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/screens/shared/search_results/noResults.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class SecretaryList extends StatefulWidget {
 class _SecretaryListState extends State<SecretaryList> {
   @override
   Widget build(BuildContext context) {
-    final managers = Provider.of<List<Secretary>>(context) ?? [];
+    final managers = Provider.of<List<Manager>>(context) ?? [];
 
     if (widget.search == 'yes') {
       if (managers.isNotEmpty) {

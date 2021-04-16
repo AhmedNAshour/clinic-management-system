@@ -27,8 +27,8 @@ class _ProfileClientState extends State<ProfileClient> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final client = Provider.of<UserData>(context);
-    final userData = Provider.of<UserData>(context);
+    final client = Provider.of<UserModel>(context);
+    final userData = Provider.of<UserModel>(context);
     bookingNotifs = userData.bookingNotifs;
     cancellingNotifs = userData.cancellingNotifs;
     userLang =

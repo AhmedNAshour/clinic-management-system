@@ -33,7 +33,7 @@ class _DoctorProfileClientBookingState
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     doctorData = ModalRoute.of(context).settings.arguments;
 

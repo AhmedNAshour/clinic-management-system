@@ -200,7 +200,7 @@ class _AppointmentsAdminState extends State<AppointmentsAdmin> {
           child: Container(
             width: size.width * 0.9,
             child: StreamProvider.value(
-                value: DatabaseService().getAppointmentsBySearch(
+                value: DatabaseService().getAppointments(
                   status: getStatus(selectedType),
                   dateComparison: appointmentTypes[selectedType],
                 ),

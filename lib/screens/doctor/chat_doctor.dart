@@ -17,7 +17,7 @@ class _ChatDoctorState extends State<ChatDoctor> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     return Column(
       children: [
@@ -53,7 +53,7 @@ class _ChatDoctorState extends State<ChatDoctor> {
                             : DatabaseService(uid: user.uid).getChats(false),
                         initialData: [],
                       ),
-                      StreamProvider<UserData>.value(
+                      StreamProvider<UserModel>.value(
                         value: DatabaseService(uid: user.uid).userData,
                       ),
                     ],

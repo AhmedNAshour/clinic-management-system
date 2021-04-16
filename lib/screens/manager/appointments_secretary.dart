@@ -1,6 +1,6 @@
 import 'package:clinic/components/forms/secretary_search_appointments.dart';
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final secretary = Provider.of<Secretary>(context);
+    final secretary = Provider.of<Manager>(context);
 
     return Column(
       children: [
@@ -70,76 +70,62 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
                           topRight: Radius.circular(20.0)),
                     ),
                     builder: (context) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.9,
-                        child: DraggableScrollableSheet(
-                          initialChildSize: 1.0,
-                          maxChildSize: 1.0,
-                          minChildSize: 0.25,
-                          builder: (BuildContext context,
-                              ScrollController scrollController) {
-                            return StatefulBuilder(builder:
-                                (BuildContext context,
-                                    StateSetter insideState) {
-                              return Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: size.height * 0.02,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          left: size.width * 0.02,
-                                          right: size.width * 0.02,
-                                          bottom: size.height * 0.01),
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            width: size.height * 0.001,
-                                            color: kPrimaryLightColor,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            'Search',
-                                            style: TextStyle(
-                                                fontSize: size.width * 0.05,
-                                                color: kPrimaryTextColor),
-                                          ),
-                                          SizedBox(width: size.width * 0.28),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.close,
-                                              color: kPrimaryTextColor,
-                                              size: size.width * 0.085,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
+                      return StatefulBuilder(builder:
+                          (BuildContext context, StateSetter insideState) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: size.height * 0.02,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(
+                                    left: size.width * 0.02,
+                                    right: size.width * 0.02,
+                                    bottom: size.height * 0.01),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      width: size.height * 0.001,
+                                      color: kPrimaryLightColor,
                                     ),
-                                    // SizedBox(
-                                    //   height: size.height * 0.02,
-                                    // ),
-                                    Expanded(
-                                      child: Container(
-                                        child: SearchAppointmentsForm(),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Search',
+                                      style: TextStyle(
+                                          fontSize: size.width * 0.05,
+                                          color: kPrimaryTextColor),
+                                    ),
+                                    SizedBox(width: size.width * 0.28),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: kPrimaryTextColor,
+                                        size: size.width * 0.085,
                                       ),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
                                     ),
                                   ],
                                 ),
-                              );
-                            });
-                          },
-                        ),
-                      );
+                              ),
+                              // SizedBox(
+                              //   height: size.height * 0.02,
+                              // ),
+                              Container(
+                                child: SearchAppointmentsForm(),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
                     },
                     isScrollControlled: true,
                   );
@@ -198,7 +184,7 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
           child: Container(
             width: size.width * 0.9,
             child: StreamProvider.value(
-                value: DatabaseService().getAppointmentsBySearch(
+                value: DatabaseService().getAppointments(
                   status: getStatus(selectedType),
                   branch: secretary.branch,
                   dateComparison: appointmentTypes[selectedType],

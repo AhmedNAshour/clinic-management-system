@@ -1,6 +1,6 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/models/customBottomSheets.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/loading.dart';
@@ -13,8 +13,8 @@ import '../admin/edit_secretary.dart';
 
 class ManagerProfileAdmin extends StatefulWidget {
   static const id = 'ManagerProfileAdmin';
-  Secretary manager;
-  ManagerProfileAdmin(Secretary manager) {
+  Manager manager;
+  ManagerProfileAdmin(Manager manager) {
     this.manager = manager;
   }
 
@@ -33,7 +33,7 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     managerData = ModalRoute.of(context).settings.arguments;
 
@@ -41,7 +41,7 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
         ? Loading()
         : MultiProvider(
             providers: [
-              StreamProvider<UserData>.value(
+              StreamProvider<UserModel>.value(
                 value: DatabaseService(uid: user.uid).userData,
                 initialData: null,
               ),
@@ -102,7 +102,7 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
                         color: kPrimaryColor,
                         onPressed: () {
                           Navigator.pushNamed(context, ChatRoom.id, arguments: {
-                            'otherUser': UserData(
+                            'otherUser': UserModel(
                               fName: widget.manager.fName,
                               lName: widget.manager.lName,
                               uid: widget.manager.uid,
@@ -123,7 +123,7 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
                       CustomBottomSheets().showCustomBottomSheet(
                         size,
                         EditSecretary(
-                          secretary: widget.manager,
+                          manager: widget.manager,
                         ),
                         context,
                       );

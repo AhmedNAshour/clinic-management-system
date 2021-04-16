@@ -16,7 +16,7 @@ class _NotificationsDoctorState extends State<NotificationsDoctor> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     return Column(
       children: [
@@ -41,8 +41,8 @@ class _NotificationsDoctorState extends State<NotificationsDoctor> {
         Expanded(
           child: Container(
             width: size.width * 0.9,
-            child: StreamProvider<List<MyNotification>>.value(
-              value: DatabaseService(uid: user.uid).getNotificationsBySearch(
+            child: StreamProvider<List<NotificationModel>>.value(
+              value: DatabaseService(uid: user.uid).getNotifications(
                 status: 1,
               ),
               child: NotificationsList(),

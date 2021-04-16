@@ -1,17 +1,14 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
 import 'package:clinic/models/appointment.dart';
-import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/secretary/editClient.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AppointmentInfo extends StatefulWidget {
   static const id = 'ClientProfile';
@@ -36,7 +33,7 @@ class _AppointmentInfoState extends State<AppointmentInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
 
@@ -120,7 +117,7 @@ class _AppointmentInfoState extends State<AppointmentInfo> {
                           width: size.width * 0.9,
                           child: MultiProvider(
                             providers: [
-                              StreamProvider<UserData>.value(
+                              StreamProvider<UserModel>.value(
                                 value: DatabaseService(uid: user.uid).userData,
                               ),
                               StreamProvider<List<Note>>.value(

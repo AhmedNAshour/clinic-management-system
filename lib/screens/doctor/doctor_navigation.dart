@@ -26,7 +26,7 @@ class _DoctorNavigationState extends State<DoctorNavigation> {
   ];
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.maybeOf(context).size;
     return MultiProvider(
       providers: [

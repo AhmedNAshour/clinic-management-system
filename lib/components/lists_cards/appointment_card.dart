@@ -43,7 +43,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
     TaskSnapshot taskSnapshot = await task;
     taskSnapshot.ref.getDownloadURL().then(
           (value) => DatabaseService(uid: widget.appointment.docID)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
+              .updateUserProfilePicture(value.toString()),
         );
   }
 

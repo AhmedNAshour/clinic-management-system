@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 class NotificationSettingsDoctor extends StatefulWidget {
   static final id = 'NotificationSettingsDoctor';
-  UserData userData;
-  NotificationSettingsDoctor({UserData userData}) {
+  UserModel userData;
+  NotificationSettingsDoctor({UserModel userData}) {
     this.userData = userData;
   }
   @override

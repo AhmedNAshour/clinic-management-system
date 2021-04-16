@@ -1,25 +1,44 @@
-class Client {
-  final String uid;
-  final String fName;
-  final String lName;
-  final String phoneNumber;
-  final String gender;
+import 'package:clinic/models/user.dart';
+
+class Client extends UserModel {
   final int numAppointments;
-  final int age;
-  final String picURL;
-  final String email;
-  final int status;
 
   Client({
-    this.status,
-    this.email,
-    this.picURL,
-    this.uid,
-    this.fName,
-    this.lName,
-    this.phoneNumber,
     this.numAppointments,
-    this.gender,
-    this.age,
-  });
+    String uid,
+    String fName,
+    String lName,
+    String countryCode,
+    String countryDialCode,
+    String phoneNumber,
+    String gender,
+    int age,
+    String role,
+    String password,
+    String email,
+    String picURL,
+    String language,
+    String token,
+    bool cancellingNotifs,
+    bool bookingNotifs,
+    int status,
+  }) : super(
+          uid: uid,
+          fName: fName,
+          lName: lName,
+          countryDialCode: countryDialCode,
+          countryCode: countryCode,
+          phoneNumber: phoneNumber,
+          gender: gender,
+          age: age,
+          role: role,
+          password: password,
+          email: email,
+          picURL: picURL,
+          language: language,
+          token: token,
+          cancellingNotifs: cancellingNotifs,
+          bookingNotifs: bookingNotifs,
+          status: status,
+        );
 }

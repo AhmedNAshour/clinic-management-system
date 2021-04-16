@@ -1,6 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/models/client.dart';
-import 'package:clinic/screens/secretary/booking_step2.dart';
+import 'package:clinic/screens/manager/booking_step2.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -256,7 +256,7 @@ class _ClientCardSecretaryBookingState
                                         RoundedButton(
                                           text: 'ADD SESSIONS',
                                           press: () async {
-                                            await DatabaseService()
+                                            await DatabaseService
                                                 .updateClientRemainingSessions(
                                                     numAppointments: sessions +
                                                         widget.client

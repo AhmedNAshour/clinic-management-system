@@ -1,18 +1,15 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
-import 'package:clinic/components/forms/text_field_container.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:country_code_picker/country_code.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -29,17 +26,11 @@ class RegistrationRequest extends StatefulWidget {
 class _RegistrationRequestState extends State<RegistrationRequest> {
   AuthService _auth = AuthService();
 
-  // text field state
-  // String email = '';
-  // String password = '';
-  // String fName = '';
-  // String lName = '';
-  // String phoneNumber = '';
-  String email = 'testtest@gmail.test';
+  String email = '';
   String password = '';
-  String fName = 'testRegistration';
-  String lName = 'testRegistration';
-  String phoneNumber = '01003369055';
+  String fName = '';
+  String lName = '';
+  String phoneNumber = '';
   CountryCode countryCode;
   String error = '';
   int numAppointments = 0;
@@ -51,6 +42,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
   File newProfilePic;
   String initialCountry = 'NG';
   final _formKey = GlobalKey<FormState>();
+
   Future getImage() async {
     var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
     setState(() {
@@ -58,20 +50,9 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     return loading
         ? Loading()
@@ -272,6 +253,9 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                       countryCode = value;
                                     });
                                   },
+                                  onInit: (value) {
+                                    countryCode = value;
+                                  },
                                   // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                                   initialSelection: 'EG',
                                   // optional. Shows only country name and flag
@@ -291,7 +275,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                     onChanged: (val) {
                                       setState(() => phoneNumber = val);
                                     },
-                                    validator: (val) => val.length != 11
+                                    validator: (val) => val.isEmpty
                                         ? 'Enter a valid number'
                                         : null,
                                   ),
@@ -373,17 +357,10 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 //   'password': password,
                                 // });
 
-                                MyUser result =
+                                AuthUser result =
                                     await _auth.createUserWithEmailAndPasword(
-                                  email,
-                                  password,
-                                  fName,
-                                  lName,
-                                  phoneNumber,
-                                  gender == 0 ? 'male' : 'female',
-                                  'client',
-                                  '',
-                                  0,
+                                  email: email,
+                                  password: password,
                                 );
 
                                 if (result == null) {
@@ -392,34 +369,25 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                     loading = false;
                                   });
                                 } else {
-                                  String downloadUrl;
-                                  if (newProfilePic != null) {
-                                    final Reference firebaseStorageRef =
-                                        FirebaseStorage.instance.ref().child(
-                                            'profilePics/${result.uid}.jpg');
-                                    UploadTask task = firebaseStorageRef
-                                        .putFile(newProfilePic);
-                                    TaskSnapshot taskSnapshot = await task;
-                                    downloadUrl =
-                                        await taskSnapshot.ref.getDownloadURL();
-                                  }
-
-                                  // Add client to clients collectionab
+                                  String downloadUrl =
+                                      await DatabaseService(uid: result.uid)
+                                          .uploadImage(newProfilePic);
                                   DatabaseService db =
                                       DatabaseService(uid: result.uid);
                                   db.updateClientData(
-                                    fName: fName,
-                                    lName: lName,
-                                    phoneNumber: phoneNumber,
-                                    gender: gender == 0 ? 'male' : 'female',
                                     numAppointments: 0,
                                     age: age,
-                                    email: email,
+                                    fName: fName,
+                                    lName: lName,
+                                    countryDialCode: countryCode.dialCode,
+                                    countryCode: countryCode.name,
+                                    phoneNumber: phoneNumber,
+                                    gender: gender == 0 ? 'male' : 'female',
+                                    picURL: downloadUrl,
                                     status: 2,
+                                    role: 'client',
+                                    email: email,
                                   );
-                                  await db.updateUserProfilePicture(
-                                      newProfilePic != null ? downloadUrl : '',
-                                      'client');
 
                                   setState(() {
                                     loading = false;

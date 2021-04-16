@@ -16,12 +16,12 @@ class _ChatsListState extends State<ChatsList> {
   @override
   Widget build(BuildContext context) {
     final chats = Provider.of<List<ChatModel>>(context) ?? [];
-    final currentUser = Provider.of<MyUser>(context);
+    final currentUser = Provider.of<AuthUser>(context);
     if (chats.isNotEmpty) {
       return ListView.builder(
         itemCount: chats.length,
         itemBuilder: (context, index) {
-          return StreamBuilder<UserData>(
+          return StreamBuilder<UserModel>(
               stream: chats[index].user1ID == currentUser.uid
                   ? DatabaseService(uid: chats[index].user2ID).userData
                   : DatabaseService(uid: chats[index].user1ID).userData,

@@ -29,8 +29,8 @@ class _ProfileAdminState extends State<ProfileAdmin> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final admin = Provider.of<UserData>(context);
-    final userData = Provider.of<UserData>(context);
+    final admin = Provider.of<UserModel>(context);
+    final userData = Provider.of<UserModel>(context);
     userLang =
         langs.indexWhere((element) => element.value == userData.language);
 

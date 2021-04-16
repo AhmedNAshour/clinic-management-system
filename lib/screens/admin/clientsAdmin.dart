@@ -1,7 +1,7 @@
 import 'package:clinic/components/lists_cards/clients_list.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/customBottomSheets.dart';
-import 'package:clinic/screens/secretary/addClient.dart';
+import 'package:clinic/screens/manager/addClient.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +62,7 @@ class _ClientsAdminState extends State<ClientsAdmin> {
                   GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
+                        isScrollControlled: true,
                         context: context,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -69,87 +70,68 @@ class _ClientsAdminState extends State<ClientsAdmin> {
                               topRight: Radius.circular(20.0)),
                         ),
                         builder: (context) {
-                          return FractionallySizedBox(
-                            heightFactor: 0.9,
-                            child: DraggableScrollableSheet(
-                              initialChildSize: 1.0,
-                              maxChildSize: 1.0,
-                              minChildSize: 0.25,
-                              builder: (BuildContext context,
-                                  ScrollController scrollController) {
-                                return StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        StateSetter insideState) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: size.height * 0.02,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.02,
-                                              right: size.width * 0.02,
-                                              bottom: size.height * 0.01),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                width: size.height * 0.001,
-                                                color: kPrimaryLightColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                'Search',
-                                                style: TextStyle(
-                                                    fontSize: size.width * 0.05,
-                                                    color: kPrimaryTextColor),
-                                              ),
-                                              SizedBox(
-                                                  width: size.width * 0.28),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.close,
-                                                  color: kPrimaryTextColor,
-                                                  size: size.width * 0.085,
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          ),
+                          return StatefulBuilder(builder:
+                              (BuildContext context, StateSetter insideState) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: size.height * 0.02,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: size.width * 0.02,
+                                        right: size.width * 0.02,
+                                        bottom: size.height * 0.01),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          width: size.height * 0.001,
+                                          color: kPrimaryLightColor,
                                         ),
-                                        Expanded(
-                                          child: Container(
-                                            child: SearchClientsFormAdmin(
-                                              changeClientNameSearch:
-                                                  changeClientNameSearch,
-                                              changeClientNumberSearch:
-                                                  changeClientNumberSearch,
-                                              clientNameSearch:
-                                                  searchClientName,
-                                              clientNumberSearch:
-                                                  searchClientNumber,
-                                              showSearchButton: 'yes',
-                                            ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'Search',
+                                          style: TextStyle(
+                                              fontSize: size.width * 0.05,
+                                              color: kPrimaryTextColor),
+                                        ),
+                                        SizedBox(width: size.width * 0.28),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: kPrimaryTextColor,
+                                            size: size.width * 0.085,
                                           ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
                                         ),
                                       ],
                                     ),
-                                  );
-                                });
-                              },
-                            ),
-                          );
+                                  ),
+                                  Container(
+                                    child: SearchClientsFormAdmin(
+                                      changeClientNameSearch:
+                                          changeClientNameSearch,
+                                      changeClientNumberSearch:
+                                          changeClientNumberSearch,
+                                      clientNameSearch: searchClientName,
+                                      clientNumberSearch: searchClientNumber,
+                                      showSearchButton: 'yes',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
                         },
-                        isScrollControlled: true,
                       );
                     },
                     child: SvgPicture.asset(
@@ -166,9 +148,11 @@ class _ClientsAdminState extends State<ClientsAdmin> {
             Expanded(
               child: Container(
                 child: StreamProvider<List<Client>>.value(
-                  value: DatabaseService().getClientsBySearch(
-                      searchClientName, searchClientNumber, 1),
-                  initialData: [],
+                  value: DatabaseService().getClients(
+                    clientName: searchClientName,
+                    clientNumber: searchClientNumber,
+                    status: 1,
+                  ),
                   child: ClientList(
                     isSearch: 'yes',
                   ),
@@ -189,8 +173,9 @@ class _ClientsAdminState extends State<ClientsAdmin> {
             },
             backgroundColor: Colors.white,
             child: Icon(
-              FontAwesomeIcons.plus,
+              FontAwesomeIcons.userPlus,
               color: kPrimaryColor,
+              size: size.width * 0.07,
             ),
           ),
         ),

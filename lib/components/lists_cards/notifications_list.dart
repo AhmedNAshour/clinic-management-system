@@ -15,8 +15,8 @@ class NotificationsList extends StatefulWidget {
 class _NotificationsListState extends State<NotificationsList> {
   @override
   Widget build(BuildContext context) {
-    final notifications = Provider.of<List<MyNotification>>(context) ?? [];
-    final user = Provider.of<UserData>(context);
+    final notifications = Provider.of<List<NotificationModel>>(context) ?? [];
+    final user = Provider.of<UserModel>(context);
 
     if (notifications.isNotEmpty) {
       return ListView.builder(

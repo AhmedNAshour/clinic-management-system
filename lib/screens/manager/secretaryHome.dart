@@ -8,7 +8,7 @@ import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/secretary/booking_step1.dart';
+import 'package:clinic/screens/manager/booking_step1.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
@@ -19,7 +19,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../components/lists_cards/clients_list.dart';
-import '../../models/secretary.dart';
+import '../../models/manager.dart';
 import 'addDoctorSecretary.dart';
 import '../../services/auth.dart';
 import 'addClient.dart';
@@ -133,20 +133,19 @@ class _SecretaryHomeState extends State<SecretaryHome> {
   }
 
   List<Widget> displayTab(int selectedTab, double screenHeight,
-      double screenWidth, UserData user, Secretary secretary) {
+      double screenWidth, UserModel user, Manager secretary) {
     if (selectedTab == 0) {
-      return appointmentsTab(
-          screenHeight, screenWidth, user, secretary.branchName);
+      return appointmentsTab(screenHeight, screenWidth, user, secretary.branch);
     } else if (selectedTab == 1) {
-      return clientsTab(screenHeight, screenWidth, user, secretary.branchName);
+      return clientsTab(screenHeight, screenWidth, user, secretary.branch);
     } else {
-      return doctorsTab(screenHeight, screenWidth, user, secretary.branch,
-          secretary.branchName);
+      return doctorsTab(
+          screenHeight, screenWidth, user, secretary.branch, secretary.branch);
     }
   }
 
   List<Widget> doctorsTab(double screenHeight, double screenWidth,
-      UserData user, String branch, String branchName) {
+      UserModel user, String branch, String branchName) {
     return [
       Container(
         height: screenHeight * 0.3,
@@ -204,7 +203,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
   }
 
   List<Widget> clientsTab(double screenHeight, double screenWidth,
-      UserData user, String branchName) {
+      UserModel user, String branchName) {
     return [
       Container(
         height: screenHeight * 0.3,
@@ -264,7 +263,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
   }
 
   List<Widget> appointmentsTab(double screenHeight, double screenWidth,
-      UserData user, String branchName) {
+      UserModel user, String branchName) {
     return [
       Container(
         height: screenHeight * 0.3,
@@ -425,8 +424,8 @@ class _SecretaryHomeState extends State<SecretaryHome> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserData>(context);
-    final secretary = Provider.of<Secretary>(context);
+    final user = Provider.of<UserModel>(context);
+    final secretary = Provider.of<Manager>(context);
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
@@ -438,7 +437,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
             body: MultiProvider(
               providers: [
                 StreamProvider<List<Appointment>>.value(
-                  value: DatabaseService().getAppointmentsBySearch(
+                  value: DatabaseService().getAppointments(
                     day: dateSearch,
                     doctorName: searchDoctorNameAppointment,
                     clientName: searchClientNameAppointment,
@@ -449,17 +448,17 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                   initialData: [],
                 ),
                 StreamProvider<List<Doctor>>.value(
-                  value: DatabaseService().getDoctorsBySearch(
-                    secretary.branch,
-                    searchDoctorName,
+                  value: DatabaseService().getDoctors(
+                    branch: secretary.branch,
+                    doctorName: searchDoctorName,
                   ),
                   initialData: [],
                 ),
                 StreamProvider<List<Client>>.value(
-                  value: DatabaseService().getClientsBySearch(
-                    searchClientName,
-                    searchClientNumber,
-                    1,
+                  value: DatabaseService().getClients(
+                    clientName: searchClientName,
+                    clientNumber: searchClientNumber,
+                    status: 1,
                   ),
                   initialData: [],
                 ),

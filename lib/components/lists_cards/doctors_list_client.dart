@@ -23,9 +23,9 @@ class DoctorListClient extends StatefulWidget {
 class _DoctorListClientState extends State<DoctorListClient> {
   @override
   Widget build(BuildContext context) {
-    final userData = Provider.of<UserData>(context);
+    final userData = Provider.of<UserModel>(context);
     return StreamBuilder<Object>(
-        stream: DatabaseService().getDoctorsBybranch(widget.branchId),
+        stream: DatabaseService().getDoctors(branch: widget.branchId),
         builder: (context, snapshot) {
           List<Doctor> doctors = snapshot.data;
           if (snapshot.hasData) {

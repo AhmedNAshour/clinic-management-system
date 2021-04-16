@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:provider/provider.dart';
 
-class AcceptRequest extends StatefulWidget {
+class DenyRequest extends StatefulWidget {
   static const id = 'DisableUser';
-  UserData userData;
-  AcceptRequest(UserData userData) {
+  UserModel userData;
+  DenyRequest(UserModel userData) {
     this.userData = userData;
   }
 
   @override
-  _AcceptRequestState createState() => _AcceptRequestState();
+  _DenyRequestState createState() => _DenyRequestState();
 }
 
-class _AcceptRequestState extends State<AcceptRequest> {
+class _DenyRequestState extends State<DenyRequest> {
   // text field state
 
   bool loading = false;
@@ -28,7 +28,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
 
@@ -60,7 +60,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                   height: size.height * 0.02,
                 ),
                 Text(
-                  'Are you sure you want to accept ${widget.userData.fName} ${widget.userData.lName}\'s request ?',
+                  'Are you sure you want to deny ${widget.userData.fName} ${widget.userData.lName}\'s request ?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
@@ -103,7 +103,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                         onPressed: () async {
                           var result =
                               await DatabaseService(uid: widget.userData.uid)
-                                  .updateUserStatus(widget.userData.role, 1);
+                                  .updateUserStatus(widget.userData.role, 2);
                           if (result == 0) {
                             print('DIDNT WORK');
                           } else {

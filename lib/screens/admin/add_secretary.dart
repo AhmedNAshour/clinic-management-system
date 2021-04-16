@@ -6,7 +6,8 @@ import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:country_code_picker/country_code.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,8 +17,6 @@ import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 
 class AddSecretary extends StatefulWidget {
-  final Function toggleView;
-  AddSecretary({this.toggleView});
   @override
   _AddSecretaryState createState() => _AddSecretaryState();
 }
@@ -30,18 +29,18 @@ class _AddSecretaryState extends State<AddSecretary> {
   String password = '';
   String fName = '';
   String lName = '';
+  CountryCode countryCode;
   String phoneNumber = '';
   String error = '';
   int numAppointments = 0;
   int gender = 0;
   int age;
   bool loading = false;
-  Branch branch;
-  String branchName = '';
-  String dummyBranchName = '';
+  String branchID = '';
   String curEmail;
   String curPassword;
   File newProfilePic;
+  String downloadUrl;
 
   Future getImage() async {
     var tempImage = await ImagePicker().getImage(source: ImageSource.gallery);
@@ -50,37 +49,23 @@ class _AddSecretaryState extends State<AddSecretary> {
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
-        );
-  }
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     return loading
         ? Loading()
         : SafeArea(
-            child: StreamProvider<UserData>.value(
+            child: StreamProvider<UserModel>.value(
               value: DatabaseService(uid: user.uid).userData,
               builder: (context, child) {
                 return StreamBuilder<List<Branch>>(
-                    stream: DatabaseService().branches,
+                    stream: DatabaseService().getBranches(status: 1),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<Branch> branches = snapshot.data;
-                        if (branches.length != 0) {
-                          branch = branches[0];
-                        }
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -277,7 +262,6 @@ class _AddSecretaryState extends State<AddSecretary> {
                                         SizedBox(
                                           height: size.height * 0.02,
                                         ),
-
                                         Container(
                                           width: size.width * 0.8,
                                           child: DropdownButtonFormField(
@@ -289,16 +273,65 @@ class _AddSecretaryState extends State<AddSecretary> {
                                             ),
                                             items: branches.map((branch) {
                                               return DropdownMenuItem(
-                                                value: branch.name,
+                                                value: branch.docID,
                                                 child: Text('${branch.name}'),
                                               );
                                             }).toList(),
-                                            onChanged: (val) => setState(
-                                                () => branchName = val),
+                                            onChanged: (val) =>
+                                                setState(() => branchID = val),
                                           ),
                                         ),
                                         SizedBox(
-                                          height: 15,
+                                          height: size.height * 0.02,
+                                        ),
+                                        Container(
+                                          width: size.width * 0.8,
+                                          child: Row(
+                                            children: [
+                                              CountryCodePicker(
+                                                padding: EdgeInsets.zero,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    countryCode = value;
+                                                  });
+                                                },
+                                                onInit: (value) {
+                                                  countryCode = value;
+                                                }, // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                                initialSelection: 'EG',
+                                                // optional. Shows only country name and flag
+                                                showCountryOnly: false,
+                                                // optional. Shows only country name and flag when popup is closed.
+                                                showOnlyCountryWhenClosed:
+                                                    false,
+                                                // optional. aligns the flag and the Text left
+                                                alignLeft: false,
+                                              ),
+                                              Container(
+                                                margin:
+                                                    EdgeInsets.only(bottom: 20),
+                                                width: size.width * 0.55,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 5),
+                                                child: TextFormField(
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (val) {
+                                                    setState(() =>
+                                                        phoneNumber = val);
+                                                  },
+                                                  validator: (val) => val
+                                                          .isEmpty
+                                                      ? 'Enter a valid number'
+                                                      : null,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.02,
                                         ),
                                         RoundedInputField(
                                           initialValue: fName,
@@ -322,18 +355,6 @@ class _AddSecretaryState extends State<AddSecretary> {
                                           },
                                           validator: (val) => val.isEmpty
                                               ? 'Enter a name'
-                                              : null,
-                                        ),
-                                        RoundedInputField(
-                                          initialValue: phoneNumber,
-                                          obsecureText: false,
-                                          icon: Icons.phone,
-                                          hintText: 'Phone Number',
-                                          onChanged: (val) {
-                                            setState(() => phoneNumber = val);
-                                          },
-                                          validator: (val) => val.length != 11
-                                              ? 'Enter a valid number'
                                               : null,
                                         ),
                                         RoundedInputField(
@@ -367,65 +388,42 @@ class _AddSecretaryState extends State<AddSecretary> {
                                               setState(() {
                                                 loading = true;
                                               });
-
-                                              MyUser result = await _auth
+                                              AuthUser result = await _auth
                                                   .createUserWithEmailAndPasword(
-                                                email,
-                                                password,
-                                                fName,
-                                                lName,
-                                                phoneNumber,
-                                                gender == 0 ? 'male' : 'female',
-                                                'secretary',
-                                                '',
-                                                1,
+                                                email: email,
+                                                password: password,
                                               );
                                               if (result == null) {
                                                 setState(() {
-                                                  error = 'invalid credentials';
+                                                  error = 'invalid email';
                                                   loading = false;
                                                 });
                                               } else {
-                                                String downloadUrl;
-                                                if (newProfilePic != null) {
-                                                  final Reference
-                                                      firebaseStorageRef =
-                                                      FirebaseStorage.instance
-                                                          .ref()
-                                                          .child(
-                                                              'profilePics/${result.uid}.jpg');
-                                                  UploadTask task =
-                                                      firebaseStorageRef
-                                                          .putFile(
-                                                              newProfilePic);
-                                                  TaskSnapshot taskSnapshot =
-                                                      await task;
-                                                  downloadUrl =
-                                                      await taskSnapshot.ref
-                                                          .getDownloadURL();
-                                                }
-                                                // Add client to clients collectionab
+                                                downloadUrl =
+                                                    await DatabaseService(
+                                                            uid: result.uid)
+                                                        .uploadImage(
+                                                            newProfilePic);
                                                 DatabaseService db =
                                                     DatabaseService(
                                                         uid: result.uid);
-                                                await db.updateSecretaryData(
+                                                await db.updateManagerData(
                                                   fName: fName,
                                                   lName: lName,
+                                                  countryDialCode:
+                                                      countryCode.dialCode,
+                                                  countryCode: countryCode.code,
                                                   phoneNumber: phoneNumber,
                                                   gender: gender == 0
                                                       ? 'male'
                                                       : 'female',
-                                                  branchId: branch.docID,
-                                                  branchName: branch.name,
-                                                  picURL: '',
+                                                  branchID: branchID,
+                                                  picURL: downloadUrl,
+                                                  status: 1,
+                                                  role: 'manager',
+                                                  email: email,
+                                                  isBoss: false,
                                                 );
-                                                await db
-                                                    .updateUserProfilePicture(
-                                                        newProfilePic != null
-                                                            ? downloadUrl
-                                                            : '',
-                                                        'secretary');
-
                                                 setState(() {
                                                   loading = false;
                                                 });

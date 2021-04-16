@@ -17,8 +17,8 @@ class NotificationCard extends StatefulWidget {
     this.userData,
   }) : super(key: key);
 
-  final MyNotification notification;
-  final UserData userData;
+  final NotificationModel notification;
+  final UserModel userData;
 
   @override
   _NotificationCardState createState() => _NotificationCardState();

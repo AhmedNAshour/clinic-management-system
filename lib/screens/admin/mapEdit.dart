@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/customBottomSheets.dart';
+import 'package:clinic/screens/shared/wrapper.dart';
+import 'package:clinic/services/database.dart';
 import 'package:country_code_picker/country_code.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,13 +15,13 @@ import 'package:ndialog/ndialog.dart';
 import '../shared/constants.dart';
 import 'add_branchManager.dart';
 
-class MapSelect extends StatefulWidget {
-  static const id = 'MapSelect';
+class MapEdit extends StatefulWidget {
+  static const id = 'MapEdit';
   @override
-  _MapSelectState createState() => _MapSelectState();
+  _MapEditState createState() => _MapEditState();
 }
 
-class _MapSelectState extends State<MapSelect> {
+class _MapEditState extends State<MapEdit> {
   double latitude;
   double longitude;
   String error = '';
@@ -52,16 +55,11 @@ class _MapSelectState extends State<MapSelect> {
     newGoogleMapContoller.animateCamera(CameraUpdate.newCameraPosition(camera));
   }
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
   @override
   Widget build(BuildContext context) {
     Map branchData = ModalRoute.of(context).settings.arguments;
     Size size = MediaQuery.of(context).size;
-    countryCode = branchData['countryCode'];
+    Branch branch = branchData['branch'];
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -96,11 +94,15 @@ class _MapSelectState extends State<MapSelect> {
                         myLocationEnabled: true,
                         zoomGesturesEnabled: true,
                         zoomControlsEnabled: true,
-                        initialCameraPosition: _kGooglePlex,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(branch.latitude, branch.longitude),
+                          zoom: 14.4746,
+                        ),
                         onMapCreated: (GoogleMapController controller) {
                           _controller.complete(controller);
                           newGoogleMapContoller = controller;
                           locatePosition();
+                          getMarkers(branch.latitude, branch.longitude);
                         },
                         markers: Set<Marker>.of(markers.values),
                         onTap: (tapped) async {
@@ -132,26 +134,59 @@ class _MapSelectState extends State<MapSelect> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: RawMaterialButton(
           onPressed: () async {
-            if (latitude != null && longitude != null) {
-              CustomBottomSheets().showCustomBottomSheet(
-                  size,
-                  AddBranchManager(
-                    branch: Branch(
-                      name: branchData['name'],
-                      address: branchData['address'],
-                      countryCode: countryCode.code,
-                      countryDialCode: countryCode.dialCode,
-                      phoneNumber: branchData['phoneNumber'],
-                      longitude: longitude,
-                      latitude: latitude,
+            setState(() {
+              loading = true;
+            });
+            await DatabaseService().editBranchData(
+              oldName: branchData['oldName'],
+              branchName: branch.name,
+              address: branch.address,
+              countryCode: branch.countryCode,
+              countryDialCode: branch.countryDialCode,
+              phoneNumber: branch.phoneNumber,
+              longitude: longitude != null ? longitude : branch.longitude,
+              latitude: latitude != null ? latitude : branch.latitude,
+              managerID: branch.managerID,
+            );
+            await DatabaseService().updateBranchManager(
+                oldManager: branchData['oldManager'],
+                newManager: branch.managerID,
+                branchName: branch.name);
+            setState(() {
+              loading = false;
+            });
+            Navigator.popUntil(context, ModalRoute.withName('/'));
+            await NDialog(
+              dialogStyle: DialogStyle(
+                backgroundColor: kPrimaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              content: Container(
+                height: size.height * 0.5,
+                width: size.width * 0.8,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.checkCircle,
+                      color: Colors.white,
+                      size: size.height * 0.125,
                     ),
-                  ),
-                  context);
-            } else {
-              setState(() {
-                error = 'Please select a location';
-              });
-            }
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    Text(
+                      'Branch Edited',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size.height * 0.04,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ).show(context);
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(25),
@@ -161,7 +196,7 @@ class _MapSelectState extends State<MapSelect> {
               color: kPrimaryColor,
               child: Center(
                 child: Text(
-                  'Add Manager',
+                  'EDIT',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

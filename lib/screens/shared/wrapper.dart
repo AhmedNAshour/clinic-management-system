@@ -1,7 +1,8 @@
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/admin_navigation.dart';
 import 'package:clinic/screens/client/client_navigation.dart';
-import 'package:clinic/screens/secretary/secretary_navigation.dart';
+import 'package:clinic/screens/manager/secretary_navigation.dart';
+import 'package:clinic/screens/shared/awaitingApproval.dart';
 import '../doctor/doctor_navigation.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/screens/shared/login.dart';
@@ -26,18 +27,18 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     if (user == null) {
       return Login();
     } else {
       return MultiProvider(
         providers: [
-          StreamProvider<UserData>.value(
+          StreamProvider<UserModel>.value(
             value: DatabaseService(uid: user.uid).userData,
           ),
         ],
-        child: StreamBuilder<UserData>(
+        child: StreamBuilder<UserModel>(
             stream: DatabaseService(uid: user.uid).userData,
             builder: (context, userData) {
               if (userData.hasData) {
@@ -50,10 +51,10 @@ class _WrapperState extends State<Wrapper> {
                       if (role.connectionState != ConnectionState.done) {
                         return Loading();
                       } else {
-                        if (userData.data.role == 'secretary') {
+                        if (userData.data.role == 'manager') {
                           return FutureBuilder(
                             future: DatabaseService(uid: user.uid)
-                                .getSecretaryBranch(),
+                                .getManagerBranch(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 if (userData.data.bookingNotifs) {
@@ -72,10 +73,10 @@ class _WrapperState extends State<Wrapper> {
                           );
                         } else if (userData.data.role == 'client') {
                           //TODO: call notification function when secretary books or cancels for this client
-                          //TODO: subscirbe to notifications according to notification settings
+                          //TODO: subscribe to notifications according to notification settings
                           return ClientNavigation();
                         } else if (userData.data.role == 'admin') {
-                          //TODO: subscirbe to notifications according to notification settings
+                          //TODO: subscribe to notifications according to notification settings
                           return AdminNavigation();
                         } else {
                           if (userData.data.bookingNotifs) {
@@ -92,7 +93,7 @@ class _WrapperState extends State<Wrapper> {
                     },
                   );
                 } else {
-                  return Login();
+                  return AwaitingApproval();
                 }
               } else {
                 return Loading();

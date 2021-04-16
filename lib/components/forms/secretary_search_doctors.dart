@@ -23,6 +23,7 @@ class _SearchDoctorsFormState extends State<SearchDoctorsForm> {
   Widget build(BuildContext context) {
     return Form(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           SearchInputField(
             initialValue: widget.doctorNameSearch,

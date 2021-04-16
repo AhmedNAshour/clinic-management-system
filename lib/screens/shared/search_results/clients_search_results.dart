@@ -25,13 +25,13 @@ class _ClientsSearchresultsState extends State<ClientsSearchresults> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     searchData = ModalRoute.of(context).settings.arguments;
 
     // searchData =
 
     return FutureBuilder(
-      future: DatabaseService(uid: user.uid).getSecretaryBranch(),
+      future: DatabaseService(uid: user.uid).getManagerBranch(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String secretaryBranch = snapshot.data;
@@ -77,10 +77,10 @@ class _ClientsSearchresultsState extends State<ClientsSearchresults> {
                             EdgeInsets.symmetric(vertical: size.height * 0.02),
                         width: size.width * 0.9,
                         child: StreamProvider.value(
-                            value: DatabaseService().getClientsBySearch(
-                              searchData['clientName'],
-                              searchData['clientNumber'],
-                              1,
+                            value: DatabaseService().getClients(
+                              clientName: searchData['clientName'],
+                              clientNumber: searchData['clientNumber'],
+                              status: 1,
                             ),
                             initialData: [],
                             child: ClientList(

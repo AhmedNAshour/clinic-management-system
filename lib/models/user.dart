@@ -1,28 +1,34 @@
-class MyUser {
+class AuthUser {
   final String uid;
   final String email;
   final String role;
   final String picURL;
-  MyUser({this.uid, this.email, this.role, this.picURL});
+  AuthUser({this.uid, this.email, this.role, this.picURL});
 }
 
-class UserData {
+class UserModel {
   final String uid;
   final String fName;
   final String lName;
+  final String countryCode;
+  final String countryDialCode;
   final String phoneNumber;
   final String gender;
+  final int age;
   final String role;
   final String password;
   final String email;
   final String picURL;
-  final int status;
   final String language;
   final String token;
   final bool cancellingNotifs;
   final bool bookingNotifs;
+  final int status;
 
-  UserData({
+  UserModel({
+    this.countryDialCode,
+    this.age,
+    this.countryCode,
     this.cancellingNotifs,
     this.bookingNotifs,
     this.token,

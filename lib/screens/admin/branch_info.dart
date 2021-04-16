@@ -1,15 +1,22 @@
+import 'dart:async';
+
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
 import 'package:clinic/models/branch.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
+import 'package:clinic/screens/admin/edit_branch.dart';
 import 'package:clinic/screens/shared/loading.dart';
+import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BranchInfo extends StatefulWidget {
   static const id = 'BranchInfo';
@@ -36,9 +43,22 @@ class _BranchInfoState extends State<BranchInfo> {
   var geoLocator = Geolocator();
 
   GoogleMapController newGoogleMapContoller;
+  Completer<GoogleMapController> _controller = Completer();
+  void getMarkers(double lat, double long) {
+    MarkerId markerId = MarkerId(lat.toString() + long.toString());
+    Marker _marker = Marker(
+      markerId: markerId,
+      position: LatLng(lat, long),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(snippet: 'Address'),
+    );
+    setState(() {
+      markers[markerId] = _marker;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
     Size size = MediaQuery.of(context).size;
     branchData = ModalRoute.of(context).settings.arguments;
     CameraPosition selectedPosition = CameraPosition(
@@ -55,73 +75,114 @@ class _BranchInfoState extends State<BranchInfo> {
                   topRight: Radius.circular(20.0),
                 ),
                 child: Container(
-                  height: size.width * 0.3,
+                  height: size.width * 0.4,
                   child: GoogleMap(
                     mapType: MapType.terrain,
                     myLocationEnabled: false,
                     zoomGesturesEnabled: false,
                     zoomControlsEnabled: false,
                     initialCameraPosition: selectedPosition,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                      newGoogleMapContoller = controller;
+                      // locatePosition();
+                      getMarkers(
+                          widget.branch.latitude, widget.branch.longitude);
+                    },
                     markers: Set<Marker>.of(markers.values),
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                  right: size.width * 0.04,
-                  left: size.width * 0.04,
-                ),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: kPrimaryTextColor,
-                          size: size.width * 0.085,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+              FutureBuilder(
+                future:
+                    DatabaseService(uid: widget.branch.managerID).getManager(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    Manager branchManager = snapshot.data;
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        right: size.width * 0.04,
+                        left: size.width * 0.04,
                       ),
-                    ),
-                    SizedBox(height: size.height * 0.045),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: size.width * 0.046,
-                          backgroundImage: AssetImage('assets/images/call.png'),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.05,
-                        ),
-                        SvgPicture.asset(
-                          'assets/images/edit.svg',
-                          color: kPrimaryColor,
-                          height: size.height * 0.09,
-                          width: size.width * 0.09,
-                        ),
-                      ],
-                    ),
-                    InfoCard(
-                      title: 'Branch name',
-                      body: '${widget.branch.name}',
-                    ),
-                    InfoCard(
-                      title: 'Phone number',
-                      body: '${widget.branch.phoneNumber}',
-                    ),
-                    InfoCard(
-                      title: 'Address',
-                      body: '${widget.branch.address}',
-                    ),
-                    SizedBox(
-                      height: size.height * 0.02,
-                    ),
-                  ],
-                ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: kPrimaryTextColor,
+                                size: size.width * 0.085,
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                          SizedBox(height: size.height * 0.11),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.phone_android_rounded,
+                                  color: kPrimaryColor,
+                                  size: size.width * 0.075,
+                                ),
+                                onPressed: () {
+                                  launch(
+                                      "tel://${widget.branch.countryDialCode}${widget.branch.phoneNumber}");
+                                },
+                              ),
+                              SizedBox(
+                                width: size.width * 0.05,
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit_location_rounded,
+                                  color: kPrimaryColor,
+                                  size: size.width * 0.075,
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    EditBranch.id,
+                                    arguments: {
+                                      'branch': widget.branch,
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          InfoCard(
+                            title: 'Branch name',
+                            body: '${widget.branch.name}',
+                          ),
+                          InfoCard(
+                            title: 'Phone number',
+                            body: '${widget.branch.phoneNumber}',
+                          ),
+                          InfoCard(
+                            title: 'Address',
+                            body: '${widget.branch.address}',
+                          ),
+                          InfoCard(
+                            title: 'Manager',
+                            body:
+                                '${branchManager.fName} ${branchManager.lName}',
+                          ),
+                          SizedBox(
+                            height: size.height * 0.02,
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Loading();
+                  }
+                },
               ),
             ],
           );

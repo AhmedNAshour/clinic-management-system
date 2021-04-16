@@ -16,7 +16,7 @@ class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext context) {
     final messages = Provider.of<List<MessageModel>>(context) ?? [];
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;

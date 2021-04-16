@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/client.dart';
@@ -93,7 +92,7 @@ class _BookingStep3State extends State<BookingStep3> {
     Doctor doctor = data['doctor'];
     Client client = data['client'];
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     return StreamBuilder<List<WorkDay>>(
         stream: DatabaseService().getWorkDays(doctor.uid),
@@ -107,7 +106,7 @@ class _BookingStep3State extends State<BookingStep3> {
             );
             return StreamBuilder<List<Appointment>>(
               stream: DatabaseService().getDoctorAppointmentsForSelectedDay(
-                  doctor.uid, dummyStartDate),
+                  doctorID: doctor.uid, day: dummyStartDate),
               builder: (context, snapshot2) {
                 if (snapshot2.hasData) {
                   List<Appointment> appointments = snapshot2.data;
@@ -121,7 +120,7 @@ class _BookingStep3State extends State<BookingStep3> {
                   print('no data');
                 }
                 return FutureBuilder(
-                  future: DatabaseService(uid: user.uid).getSecretaryBranch(),
+                  future: DatabaseService(uid: user.uid).getManagerBranch(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       String secretaryBranch = snapshot.data;
@@ -325,7 +324,8 @@ class _BookingStep3State extends State<BookingStep3> {
                                             clientFName: client.fName,
                                             clientLName: client.lName,
                                             clientPhoneNumber:
-                                                client.phoneNumber,
+                                                client.countryDialCode +
+                                                    client.phoneNumber,
                                             clientGender: client.gender,
                                             branch: secretaryBranch,
                                             clientPicURL: client.picURL ?? '',
@@ -333,25 +333,30 @@ class _BookingStep3State extends State<BookingStep3> {
                                           );
                                           await DatabaseService(uid: client.uid)
                                               .addAppointmentNotifications(
-                                            clientID: client.uid,
-                                            startTime: startTimes[
-                                                selectedTimeSlotIndex],
-                                            doctorID: doctor.uid,
-                                            doctorFName: doctor.fName,
-                                            doctorLName: doctor.lName,
-                                            clientFName: client.fName,
-                                            clientLName: client.lName,
-                                            branch: doctor.branch,
-                                            clientPicURL: client.picURL ?? '',
+                                            appointment: Appointment(
+                                              clientID: client.uid,
+                                              startTime: startTimes[
+                                                  selectedTimeSlotIndex],
+                                              doctorID: doctor.uid,
+                                              doctorFName: doctor.fName,
+                                              doctorLName: doctor.lName,
+                                              clientFName: client.fName,
+                                              clientLName: client.lName,
+                                              clientPhoneNumber:
+                                                  client.countryDialCode +
+                                                      client.phoneNumber,
+                                              clientGender: client.gender,
+                                              branch: doctor.branch,
+                                              clientPicURL: client.picURL ?? '',
+                                              doctorPicURL: doctor.picURL ?? '',
+                                            ),
                                             status: 1,
                                             type: 1,
                                           );
-                                          await DatabaseService
-                                              .updateNumAppointments(
-                                                  numAppointments:
-                                                      client.numAppointments -
-                                                          1,
-                                                  documentID: client.uid);
+                                          await DatabaseService.updateClientRemainingSessions(
+                                              numAppointments:
+                                                  client.numAppointments - 1,
+                                              documentID: client.uid);
                                           Navigator.popUntil(context,
                                               ModalRoute.withName('/'));
                                           await NDialog(

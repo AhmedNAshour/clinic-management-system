@@ -46,6 +46,7 @@ class _SearchAppointmentsFormState extends State<SearchAppointmentsForm> {
     return SingleChildScrollView(
       child: Form(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             TextFieldContainer(
               child: TextFormField(

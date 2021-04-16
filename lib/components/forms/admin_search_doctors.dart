@@ -1,6 +1,5 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/search_input_field.dart';
-import 'package:clinic/screens/shared/search_results/doctors_search_results.dart';
 import 'package:flutter/material.dart';
 
 class SearchDoctorsFormAdmin extends StatefulWidget {
@@ -23,6 +22,7 @@ class _SearchDoctorsFormAdminState extends State<SearchDoctorsFormAdmin> {
   Widget build(BuildContext context) {
     return Form(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           SearchInputField(
             initialValue: widget.doctorNameSearch,

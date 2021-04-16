@@ -3,7 +3,7 @@ import 'package:clinic/components/lists_cards/notes_list.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/secretary/editClient.dart';
+import 'package:clinic/screens/manager/editClient.dart';
 import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -36,7 +36,7 @@ class _ClientProfileState extends State<ClientProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
     if (curSessions == null) {
@@ -46,7 +46,7 @@ class _ClientProfileState extends State<ClientProfile> {
         ? Loading()
         : MultiProvider(
             providers: [
-              StreamProvider<UserData>.value(
+              StreamProvider<UserModel>.value(
                   value: DatabaseService(uid: user.uid).userData),
               StreamProvider<List<Note>>.value(
                   value: DatabaseService(uid: user.uid)
@@ -78,7 +78,8 @@ class _ClientProfileState extends State<ClientProfile> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          launch("tel://${widget.client.phoneNumber}");
+                          launch(
+                              "tel://${widget.client.countryDialCode}${widget.client.phoneNumber}");
                         },
                         child: Icon(
                           Icons.phone_android_rounded,
@@ -106,7 +107,7 @@ class _ClientProfileState extends State<ClientProfile> {
                         color: kPrimaryColor,
                         onPressed: () {
                           Navigator.pushNamed(context, ChatRoom.id, arguments: {
-                            'otherUser': UserData(
+                            'otherUser': UserModel(
                               fName: widget.client.fName,
                               lName: widget.client.lName,
                               uid: widget.client.uid,

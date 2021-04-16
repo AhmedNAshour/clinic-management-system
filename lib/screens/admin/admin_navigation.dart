@@ -4,7 +4,6 @@ import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/screens/admin/admin_home.dart';
 import 'package:clinic/screens/admin/appointments_admin.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -33,23 +32,22 @@ class _AdminNavigationState extends State<AdminNavigation> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final AuthService _auth = AuthService();
     return MultiProvider(
       providers: [
         StreamProvider<List<Doctor>>.value(
-          value: DatabaseService().doctors,
+          value: DatabaseService().getDoctors(),
           initialData: [],
         ),
         StreamProvider<List<Appointment>>.value(
-          value: DatabaseService().appointments,
+          value: DatabaseService().getAppointments(),
           initialData: [],
         ),
         StreamProvider<List<Branch>>.value(
-          value: DatabaseService().branches,
+          value: DatabaseService().getBranches(status: 1),
           initialData: [],
         ),
         StreamProvider<List<Client>>.value(
-          value: DatabaseService().clients,
+          value: DatabaseService().getClients(),
           initialData: [],
         ),
       ],

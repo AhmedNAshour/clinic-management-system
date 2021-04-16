@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/customBottomSheets.dart';
-import '../../screens/secretary/accept-request.dart';
-import '../../screens/secretary/deny_request.dart';
+import '../../screens/manager/accept-request.dart';
+import '../../screens/manager/deny_request.dart';
 
 class RequestCard extends StatefulWidget {
   RequestCard({
@@ -113,7 +113,7 @@ class _RequestCardState extends State<RequestCard> {
                         CustomBottomSheets().showDynamicCustomBottomSheet(
                             size,
                             AcceptRequest(
-                              UserData(
+                              UserModel(
                                 fName: widget.client.fName,
                                 lName: widget.client.lName,
                                 uid: widget.client.uid,
@@ -132,7 +132,7 @@ class _RequestCardState extends State<RequestCard> {
                         CustomBottomSheets().showDynamicCustomBottomSheet(
                             size,
                             DenyRequest(
-                              UserData(
+                              UserModel(
                                 fName: widget.client.fName,
                                 lName: widget.client.lName,
                                 uid: widget.client.uid,

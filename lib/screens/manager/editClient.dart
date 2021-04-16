@@ -1,40 +1,41 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
-import 'package:clinic/models/doctor.dart';
+import 'package:clinic/models/client.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:ndialog/ndialog.dart';
 import 'dart:io';
 import '../shared/constants.dart';
+import 'package:ndialog/ndialog.dart';
 
-class EditDoctorSec extends StatefulWidget {
-  static const id = 'AddDoctorSec';
-
-  EditDoctorSec({this.doctor});
-  final Doctor doctor;
-
+class EditClient extends StatefulWidget {
+  EditClient({this.client});
+  final Client client;
   @override
-  _EditDoctorSecState createState() => _EditDoctorSecState();
+  _EditClientState createState() => _EditClientState();
 }
 
-class _EditDoctorSecState extends State<EditDoctorSec> {
+class _EditClientState extends State<EditClient> {
   AuthService _auth = AuthService();
 
   // text field state
+  String email = '';
   String fName = '';
   String lName = '';
+  CountryCode countryCode;
+  String codeName;
   String phoneNumber = '';
   String error = '';
-  String bio = '';
+  int numAppointments = 0;
   int gender = 0;
-  String specialty;
+  int age;
   bool loading = false;
   File newProfilePic;
 
@@ -42,17 +43,18 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fName = widget.doctor.fName;
-    lName = widget.doctor.lName;
-    phoneNumber = widget.doctor.phoneNumber;
-    bio = widget.doctor.about;
-    specialty = widget.doctor.proffesion;
-
-    if (widget.doctor.gender == 'male') {
+    codeName = widget.client.countryCode;
+    email = widget.client.email;
+    fName = widget.client.fName;
+    lName = widget.client.lName;
+    phoneNumber = widget.client.phoneNumber;
+    numAppointments = widget.client.numAppointments;
+    if (widget.client.gender == 'male') {
       gender = 0;
     } else {
       gender = 1;
     }
+    age = widget.client.age;
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -62,19 +64,6 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
       newProfilePic = File(tempImage.path);
     });
   }
-
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'doctor'),
-        );
-  }
-
-  Map secretaryData = {};
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +90,7 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Edit Dr.${widget.doctor.fName}',
+                      'Edit ${widget.client.fName}',
                       style: TextStyle(
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),
@@ -125,7 +114,6 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
               ),
               Expanded(
                 child: Container(
-                  // height: size.height * 0.5,
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
@@ -136,12 +124,12 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                             radius: size.width * 0.12,
                             backgroundImage: newProfilePic != null
                                 ? FileImage(newProfilePic)
-                                : widget.doctor.picURL == ''
+                                : widget.client.picURL == ''
                                     ? AssetImage(
                                         'assets/images/Default-image.png',
                                       )
                                     : NetworkImage(
-                                        widget.doctor.picURL,
+                                        widget.client.picURL,
                                       ),
                             child: Stack(
                               clipBehavior: Clip.none,
@@ -272,11 +260,56 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                           SizedBox(
                             height: size.height * 0.02,
                           ),
+                          Container(
+                            width: size.width * 0.8,
+                            child: Row(
+                              children: [
+                                CountryCodePicker(
+                                  padding: EdgeInsets.zero,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      countryCode = value;
+                                    });
+                                  },
+                                  onInit: (value) {
+                                    countryCode = value;
+                                  },
+                                  // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                  initialSelection: codeName,
+                                  // optional. Shows only country name and flag
+                                  showCountryOnly: false,
+                                  // optional. Shows only country name and flag when popup is closed.
+                                  showOnlyCountryWhenClosed: false,
+                                  // optional. aligns the flag and the Text left
+                                  alignLeft: false,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  width: size.width * 0.55,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 5),
+                                  child: TextFormField(
+                                    initialValue: phoneNumber,
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (val) {
+                                      setState(() => phoneNumber = val);
+                                    },
+                                    validator: (val) => val.length != 11
+                                        ? 'Enter a valid number'
+                                        : null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.02,
+                          ),
                           RoundedInputField(
-                            initialValue: widget.doctor.fName,
+                            initialValue: widget.client.fName,
                             obsecureText: false,
                             icon: Icons.person_add_alt,
-                            hintText: 'First Name',
+                            hintText: '${widget.client.fName}',
                             onChanged: (val) {
                               setState(() => fName = val);
                             },
@@ -284,7 +317,7 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
-                            initialValue: widget.doctor.lName,
+                            initialValue: widget.client.lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
                             hintText: 'Last Name',
@@ -295,71 +328,68 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
-                            initialValue: widget.doctor.proffesion,
+                            initialValue: widget.client.age.toString(),
                             obsecureText: false,
-                            icon: Icons.person,
-                            hintText: 'Specialty',
+                            icon: Icons.calendar_today,
+                            hintText: 'Age',
                             onChanged: (val) {
-                              setState(() => specialty = val);
+                              setState(() => age = int.parse(val));
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a specialty' : null,
+                                val.isEmpty ? 'Enter an age' : null,
+                          ),
+
+                          RoundedInputField(
+                            initialValue:
+                                widget.client.numAppointments.toString(),
+                            obsecureText: false,
+                            icon: Icons.add,
+                            hintText: 'Remaining Sessions',
+                            onChanged: (val) {
+                              setState(() => numAppointments = int.parse(val));
+                            },
                           ),
                           RoundedInputField(
-                            initialValue: widget.doctor.phoneNumber,
+                            initialValue: widget.client.email,
                             obsecureText: false,
-                            icon: Icons.phone,
-                            hintText: 'Phone Number',
+                            icon: Icons.email,
+                            hintText: 'Email',
                             onChanged: (val) {
-                              setState(() => phoneNumber = val);
+                              setState(() => email = val);
                             },
-                            validator: (val) => val.length != 11
-                                ? 'Enter a valid number'
-                                : null,
-                          ),
-                          RoundedInputField(
-                            initialValue: widget.doctor.about,
-                            obsecureText: false,
-                            icon: Icons.info,
-                            hintText: 'Bio',
-                            onChanged: (val) {
-                              setState(() => bio = val);
-                            },
+                            validator: (val) =>
+                                val.isEmpty ? 'Enter an email' : null,
                           ),
                           RoundedButton(
-                            text: 'EDIT',
+                            text: 'Edit',
                             press: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() {
                                   loading = true;
                                 });
 
-                                String downloadUrl;
-                                if (newProfilePic != null) {
-                                  final Reference firebaseStorageRef =
-                                      FirebaseStorage.instance.ref().child(
-                                          'profilePics/${widget.doctor.uid}.jpg');
-                                  UploadTask task =
-                                      firebaseStorageRef.putFile(newProfilePic);
-                                  TaskSnapshot taskSnapshot = await task;
-                                  downloadUrl =
-                                      await taskSnapshot.ref.getDownloadURL();
-                                }
+                                String downloadUrl = await DatabaseService(
+                                        uid: widget.client.uid)
+                                    .uploadImage(newProfilePic);
+
                                 DatabaseService db =
-                                    DatabaseService(uid: widget.doctor.uid);
-                                db.updateDoctorData(
+                                    DatabaseService(uid: widget.client.uid);
+                                db.updateClientData(
+                                  numAppointments: numAppointments,
+                                  age: age,
                                   fName: fName,
                                   lName: lName,
+                                  countryCode: countryCode.code,
+                                  countryDialCode: countryCode.dialCode,
                                   phoneNumber: phoneNumber,
                                   gender: gender == 0 ? 'male' : 'female',
-                                  about: bio,
-                                  profession: specialty,
-                                  branch: widget.doctor.branch,
+                                  picURL: downloadUrl != ''
+                                      ? downloadUrl
+                                      : widget.client.picURL,
+                                  email: email,
+                                  status: 1,
+                                  role: widget.client.role,
                                 );
-                                await db.updateDoctorWorkDays();
-                                await db.updateUserProfilePicture(
-                                    newProfilePic != null ? downloadUrl : '',
-                                    'doctor');
                                 setState(() {
                                   loading = false;
                                 });
@@ -385,7 +415,7 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
                                           height: size.height * 0.05,
                                         ),
                                         Text(
-                                          'Doctor Edited',
+                                          'Client Edited',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: size.height * 0.04,

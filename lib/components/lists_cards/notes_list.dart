@@ -14,7 +14,7 @@ class _NotesListState extends State<NotesList> {
   @override
   Widget build(BuildContext context) {
     final notes = Provider.of<List<Note>>(context) ?? [];
-    final userData = Provider.of<UserData>(context);
+    final userData = Provider.of<UserModel>(context);
     return ListView.builder(
       itemCount: notes.length,
       itemBuilder: (context, index) {

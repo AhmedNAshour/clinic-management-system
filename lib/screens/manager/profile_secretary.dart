@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_select/smart_select.dart';
-import '../../models/secretary.dart';
+import '../../models/manager.dart';
 import '../shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'changePassword.dart';
@@ -30,8 +30,8 @@ class _ProfileSecretaryState extends State<ProfileSecretary> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final secretary = Provider.of<Secretary>(context);
-    final userData = Provider.of<UserData>(context);
+    final secretary = Provider.of<Manager>(context);
+    final userData = Provider.of<UserModel>(context);
     bookingNotifs = userData.bookingNotifs;
     cancellingNotifs = userData.cancellingNotifs;
     userLang =

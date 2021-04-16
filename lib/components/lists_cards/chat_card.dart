@@ -16,7 +16,7 @@ class ChatCard extends StatefulWidget {
   }) : super(key: key);
 
   final ChatModel chat;
-  final UserData otherUser;
+  final UserModel otherUser;
   @override
   _ChatCardState createState() => _ChatCardState();
 }

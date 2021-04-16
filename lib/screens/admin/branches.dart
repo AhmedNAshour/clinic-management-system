@@ -56,7 +56,7 @@ class _BranchesState extends State<Branches> {
                 child: MultiProvider(
                   providers: [
                     StreamProvider<List<Branch>>.value(
-                      value: DatabaseService().branches,
+                      value: DatabaseService().getBranches(),
                       initialData: [],
                     ),
                   ],

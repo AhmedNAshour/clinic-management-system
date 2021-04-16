@@ -29,7 +29,7 @@ class _DoctorListState extends State<DoctorList> {
   @override
   Widget build(BuildContext context) {
     final doctors = Provider.of<List<Doctor>>(context) ?? [];
-    final userData = Provider.of<UserData>(context);
+    final userData = Provider.of<UserModel>(context);
     Size size = MediaQuery.of(context).size;
     if (widget.client != null || widget.isClientBooking) {
       return GridView.builder(

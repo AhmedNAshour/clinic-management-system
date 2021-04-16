@@ -3,7 +3,7 @@ import 'package:clinic/components/lists_cards/notes_list.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/secretary/doctorSchedule.dart';
+import 'package:clinic/screens/manager/doctorSchedule.dart';
 import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -36,7 +36,7 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     doctorData = ModalRoute.of(context).settings.arguments;
 
@@ -44,7 +44,7 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
         ? Loading()
         : MultiProvider(
             providers: [
-              StreamProvider<UserData>.value(
+              StreamProvider<UserModel>.value(
                   value: DatabaseService(uid: user.uid).userData),
               StreamProvider<List<Note>>.value(
                   value: DatabaseService(uid: user.uid)
@@ -103,7 +103,7 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                         color: kPrimaryColor,
                         onPressed: () {
                           Navigator.pushNamed(context, ChatRoom.id, arguments: {
-                            'otherUser': UserData(
+                            'otherUser': UserModel(
                               fName: widget.doctor.fName,
                               lName: widget.doctor.lName,
                               uid: widget.doctor.uid,

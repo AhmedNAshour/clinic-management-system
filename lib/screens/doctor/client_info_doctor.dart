@@ -36,7 +36,7 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
@@ -55,7 +55,7 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                         Doctor doctor = snapshot.data;
                         return MultiProvider(
                           providers: [
-                            StreamProvider<UserData>.value(
+                            StreamProvider<UserModel>.value(
                                 value: DatabaseService(uid: widget.clientId)
                                     .userData),
                             StreamProvider<List<Note>>.value(

@@ -1,6 +1,6 @@
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/disable_user.dart';
-import 'package:clinic/screens/secretary/editDoctorSecretary.dart';
+import 'package:clinic/screens/manager/editDoctorSecretary.dart';
 import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/stringManipulation.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/doctor.dart';
-import '../../screens/secretary/doctor_info.dart';
+import '../../screens/manager/doctor_info.dart';
 import '../../models/customBottomSheets.dart';
 
 class DoctorCardSec extends StatelessWidget {
@@ -88,7 +88,8 @@ class DoctorCardSec extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                launch("tel://${doctor.phoneNumber}");
+                                launch(
+                                    "tel://${doctor.countryDialCode}${doctor.phoneNumber}");
                               },
                               child: Icon(
                                 Icons.phone_android_rounded,
@@ -121,7 +122,7 @@ class DoctorCardSec extends StatelessWidget {
                               onPressed: () {
                                 Navigator.pushNamed(context, ChatRoom.id,
                                     arguments: {
-                                      'otherUser': UserData(
+                                      'otherUser': UserModel(
                                         fName: doctor.fName,
                                         lName: doctor.lName,
                                         uid: doctor.uid,
@@ -172,7 +173,7 @@ class DoctorCardSec extends StatelessWidget {
                                 CustomBottomSheets()
                                     .showDynamicCustomBottomSheet(
                                         size,
-                                        DisableUser(UserData(
+                                        DisableUser(UserModel(
                                           fName: doctor.fName,
                                           lName: doctor.lName,
                                           uid: doctor.uid,

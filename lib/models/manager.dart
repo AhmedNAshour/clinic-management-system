@@ -1,19 +1,17 @@
 import 'package:clinic/models/user.dart';
 
-class Doctor extends UserModel {
-  final String about;
-  final String proffesion;
+class Manager extends UserModel {
   final String branch;
+  final bool isBoss;
 
-  Doctor({
-    this.about,
-    this.proffesion,
+  Manager({
     this.branch,
+    this.isBoss,
     String uid,
     String fName,
     String lName,
-    String countryCode,
     String countryDialCode,
+    String countryCode,
     String phoneNumber,
     String gender,
     int age,

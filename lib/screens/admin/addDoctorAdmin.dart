@@ -5,12 +5,12 @@ import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import '../shared/constants.dart';
 import '../../models/workDay.dart';
@@ -33,6 +33,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
   String password = '';
   String fName = '';
   String lName = '';
+  CountryCode countryCode;
   String phoneNumber = '';
   String error = '';
   String bio = '';
@@ -44,7 +45,8 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
   File newProfilePic;
   bool readyToManageSchedule = false;
   String doctorId = '';
-  String branchName = '';
+  String branchID = '';
+  String downloadUrl;
 
   final _formKey = GlobalKey<FormState>();
   Future getImage() async {
@@ -54,29 +56,14 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'doctor'),
-        );
-  }
-
-  Map secretaryData = {};
-
   @override
   Widget build(BuildContext context) {
-    secretaryData = ModalRoute.of(context).settings.arguments;
-
     Size size = MediaQuery.of(context).size;
     return readyToManageSchedule == false
         ? loading
             ? Loading()
             : StreamBuilder<List<Branch>>(
-                stream: DatabaseService().branches,
+                stream: DatabaseService().getBranches(status: 1),
                 builder: (context, snapshot) {
                   List<Branch> branches = snapshot.data;
                   if (snapshot.hasData) {
@@ -283,13 +270,84 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                         ),
                                         items: branches.map((branch) {
                                           return DropdownMenuItem(
+                                            value: branch.docID,
+                                            child: Text('${branch.name}'),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) =>
+                                            setState(() => branchID = val),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.02,
+                                    ),
+                                    Container(
+                                      width: size.width * 0.8,
+                                      child: DropdownButtonFormField(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        hint: Text(
+                                          'Select branch',
+                                        ),
+                                        items: branches.map((branch) {
+                                          return DropdownMenuItem(
                                             value: branch.name,
                                             child: Text('${branch.name}'),
                                           );
                                         }).toList(),
                                         onChanged: (val) =>
-                                            setState(() => branchName = val),
+                                            setState(() => branchID = val),
                                       ),
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.02,
+                                    ),
+                                    Container(
+                                      width: size.width * 0.8,
+                                      child: Row(
+                                        children: [
+                                          CountryCodePicker(
+                                            padding: EdgeInsets.zero,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                countryCode = value;
+                                              });
+                                            },
+                                            onInit: (value) {
+                                              countryCode = value;
+                                            },
+                                            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                            initialSelection: 'EG',
+                                            // optional. Shows only country name and flag
+                                            showCountryOnly: false,
+                                            // optional. Shows only country name and flag when popup is closed.
+                                            showOnlyCountryWhenClosed: false,
+                                            // optional. aligns the flag and the Text left
+                                            alignLeft: false,
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: size.width * 0.55,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 5),
+                                            child: TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              onChanged: (val) {
+                                                setState(
+                                                    () => phoneNumber = val);
+                                              },
+                                              validator: (val) => val.isEmpty
+                                                  ? 'Enter a valid number'
+                                                  : null,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.02,
                                     ),
                                     RoundedInputField(
                                       initialValue: fName,
@@ -323,18 +381,6 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                       },
                                       validator: (val) => val.isEmpty
                                           ? 'Enter a specialty'
-                                          : null,
-                                    ),
-                                    RoundedInputField(
-                                      initialValue: phoneNumber,
-                                      obsecureText: false,
-                                      icon: Icons.phone,
-                                      hintText: 'Phone Number',
-                                      onChanged: (val) {
-                                        setState(() => phoneNumber = val);
-                                      },
-                                      validator: (val) => val.length != 11
-                                          ? 'Enter a valid number'
                                           : null,
                                     ),
                                     RoundedInputField(
@@ -375,17 +421,10 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           setState(() {
                                             loading = true;
                                           });
-                                          MyUser result = await _auth
+                                          AuthUser result = await _auth
                                               .createUserWithEmailAndPasword(
-                                            email,
-                                            password,
-                                            fName,
-                                            lName,
-                                            phoneNumber,
-                                            gender == 0 ? 'male' : 'female',
-                                            'doctor',
-                                            '',
-                                            1,
+                                            email: email,
+                                            password: password,
                                           );
                                           if (result == null) {
                                             setState(() {
@@ -393,45 +432,31 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                               loading = false;
                                             });
                                           } else {
-                                            String downloadUrl;
                                             doctorId = result.uid;
-                                            if (newProfilePic != null) {
-                                              final Reference
-                                                  firebaseStorageRef =
-                                                  FirebaseStorage.instance
-                                                      .ref()
-                                                      .child(
-                                                          'profilePics/$doctorId.jpg');
-                                              UploadTask task =
-                                                  firebaseStorageRef
-                                                      .putFile(newProfilePic);
-                                              TaskSnapshot taskSnapshot =
-                                                  await task;
-                                              downloadUrl = await taskSnapshot
-                                                  .ref
-                                                  .getDownloadURL();
-                                            }
-
-                                            // Add client to clients collectionab
+                                            downloadUrl = await DatabaseService(
+                                                    uid: doctorId)
+                                                .uploadImage(newProfilePic);
                                             DatabaseService db =
                                                 DatabaseService(uid: doctorId);
                                             db.updateDoctorData(
+                                              about: bio,
+                                              profession: specialty,
                                               fName: fName,
                                               lName: lName,
+                                              countryCode: countryCode.code,
+                                              countryDialCode:
+                                                  countryCode.dialCode,
                                               phoneNumber: phoneNumber,
                                               gender: gender == 0
                                                   ? 'male'
                                                   : 'female',
-                                              about: bio,
-                                              profession: specialty,
-                                              branch: branchName,
+                                              picURL: downloadUrl,
+                                              status: 1,
+                                              role: 'doctor',
+                                              email: email,
+                                              branchID: branchID,
                                             );
                                             await db.updateDoctorWorkDays();
-                                            await db.updateUserProfilePicture(
-                                                newProfilePic != null
-                                                    ? downloadUrl
-                                                    : '',
-                                                'doctor');
                                             setState(() {
                                               loading = false;
                                               readyToManageSchedule = true;

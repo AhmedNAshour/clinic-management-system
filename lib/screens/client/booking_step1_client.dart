@@ -1,5 +1,4 @@
 import 'package:clinic/components/lists_cards/doctors_list.dart';
-import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/constants.dart';
@@ -21,7 +20,7 @@ class _BookingStep1ClientState extends State<BookingStep1Client> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
 
     return SafeArea(
@@ -65,9 +64,10 @@ class _BookingStep1ClientState extends State<BookingStep1Client> {
                 child: MultiProvider(
                   providers: [
                     StreamProvider<List<Doctor>>.value(
-                      value: DatabaseService().getDoctorsBySearch('', ''),
+                      value: DatabaseService()
+                          .getDoctors(branch: '', doctorName: ''),
                     ),
-                    StreamProvider<UserData>.value(
+                    StreamProvider<UserModel>.value(
                       value: DatabaseService(uid: user.uid).userData,
                     ),
                   ],

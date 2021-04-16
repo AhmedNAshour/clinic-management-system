@@ -1,6 +1,6 @@
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/secretary/appointments_secretary.dart';
-import 'package:clinic/screens/secretary/secretaryHome.dart';
+import 'package:clinic/screens/manager/appointments_secretary.dart';
+import 'package:clinic/screens/manager/secretaryHome.dart';
 import 'package:clinic/services/database.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../models/secretary.dart';
+import '../../models/manager.dart';
 import 'notifications_secretary.dart';
 import 'profile_secretary.dart';
 import 'chat_secretary.dart';
@@ -30,12 +30,12 @@ class _SecretaryNavigationState extends State<SecretaryNavigation> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     return MultiProvider(
       providers: [
-        StreamProvider<Secretary>.value(
-          value: DatabaseService(uid: user.uid).secretary,
+        StreamProvider<Manager>.value(
+          value: DatabaseService(uid: user.uid).manager,
           initialData: null,
         ),
       ],

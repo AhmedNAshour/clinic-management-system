@@ -32,7 +32,7 @@ class _DoctorHomeState extends State<DoctorHome> {
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
-    final user = Provider.of<UserData>(context);
+    final user = Provider.of<UserModel>(context);
     final doctor = Provider.of<Doctor>(context);
 
     String getStatus(int selectedType) {
@@ -159,7 +159,7 @@ class _DoctorHomeState extends State<DoctorHome> {
                         child: Container(
                           width: size.width * 0.9,
                           child: StreamProvider.value(
-                            value: DatabaseService().getAppointmentsBySearch(
+                            value: DatabaseService().getAppointments(
                               status: getStatus(selectedType),
                               dateComparison: appointmentTypes[selectedType],
                               doctorId: doctor.uid,

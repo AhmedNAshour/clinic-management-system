@@ -25,16 +25,16 @@ class _DoctorsSearchResultsState extends State<DoctorsSearchResults> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     searchData = ModalRoute.of(context).settings.arguments;
 
     // searchData =
 
     return FutureBuilder(
-      future: DatabaseService(uid: user.uid).getSecretaryBranch(),
+      future: DatabaseService(uid: user.uid).getManagerBranch(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          String secretaryBranch = snapshot.data;
+          String branch = snapshot.data;
           return SafeArea(
             child: Scaffold(
               body: Column(
@@ -79,9 +79,9 @@ class _DoctorsSearchResultsState extends State<DoctorsSearchResults> {
                           child: MultiProvider(
                             providers: [
                               StreamProvider.value(
-                                value: DatabaseService().getDoctorsBySearch(
-                                  secretaryBranch,
-                                  searchData['doctorName'],
+                                value: DatabaseService().getDoctors(
+                                  branch: branch,
+                                  doctorName: searchData['doctorName'],
                                 ),
                                 initialData: [],
                               ),

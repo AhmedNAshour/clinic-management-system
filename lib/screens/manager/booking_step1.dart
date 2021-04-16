@@ -80,7 +80,7 @@ class _BookingStep1State extends State<BookingStep1> {
             Expanded(
               child: Container(
                 child: StreamProvider<List<Client>>.value(
-                  value: DatabaseService().clients,
+                  value: DatabaseService().getClients(),
                   initialData: [],
                   child: ClientListSecretaryBooking(
                       searchClientName, searchClientNumber),

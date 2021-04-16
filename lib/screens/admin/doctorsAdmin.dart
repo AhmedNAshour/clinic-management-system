@@ -7,6 +7,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../components/forms/admin_search_doctors.dart';
 
@@ -28,7 +29,7 @@ class _DoctorsAdminState extends State<DoctorsAdmin> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -64,80 +65,63 @@ class _DoctorsAdminState extends State<DoctorsAdmin> {
                               topRight: Radius.circular(20.0)),
                         ),
                         builder: (context) {
-                          return FractionallySizedBox(
-                            heightFactor: 0.9,
-                            child: DraggableScrollableSheet(
-                              initialChildSize: 1.0,
-                              maxChildSize: 1.0,
-                              minChildSize: 0.25,
-                              builder: (BuildContext context,
-                                  ScrollController scrollController) {
-                                return StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        StateSetter insideState) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: size.height * 0.02,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.02,
-                                              right: size.width * 0.02,
-                                              bottom: size.height * 0.01),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                width: size.height * 0.001,
-                                                color: kPrimaryLightColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                'Search',
-                                                style: TextStyle(
-                                                    fontSize: size.width * 0.05,
-                                                    color: kPrimaryTextColor),
-                                              ),
-                                              SizedBox(
-                                                  width: size.width * 0.28),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.close,
-                                                  color: kPrimaryTextColor,
-                                                  size: size.width * 0.085,
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          ),
+                          return StatefulBuilder(builder:
+                              (BuildContext context, StateSetter insideState) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: size.height * 0.02,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: size.width * 0.02,
+                                        right: size.width * 0.02,
+                                        bottom: size.height * 0.01),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          width: size.height * 0.001,
+                                          color: kPrimaryLightColor,
                                         ),
-                                        Expanded(
-                                          child: Container(
-                                            child: SearchDoctorsFormAdmin(
-                                              changeDoctorNameSearch:
-                                                  changeDoctorNameSearch,
-                                              doctorNameSearch:
-                                                  searchDoctorName,
-                                            ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'Search',
+                                          style: TextStyle(
+                                              fontSize: size.width * 0.05,
+                                              color: kPrimaryTextColor),
+                                        ),
+                                        SizedBox(width: size.width * 0.28),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: kPrimaryTextColor,
+                                            size: size.width * 0.085,
                                           ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
                                         ),
                                       ],
                                     ),
-                                  );
-                                });
-                              },
-                            ),
-                          );
+                                  ),
+                                  Container(
+                                    child: SearchDoctorsFormAdmin(
+                                      changeDoctorNameSearch:
+                                          changeDoctorNameSearch,
+                                      doctorNameSearch: searchDoctorName,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
                         },
                         isScrollControlled: true,
                       );
@@ -159,10 +143,10 @@ class _DoctorsAdminState extends State<DoctorsAdmin> {
                   providers: [
                     StreamProvider<List<Doctor>>.value(
                       value: DatabaseService()
-                          .getDoctorsBySearch('', searchDoctorName),
+                          .getDoctors(branch: '', doctorName: searchDoctorName),
                       initialData: [],
                     ),
-                    StreamProvider<UserData>.value(
+                    StreamProvider<UserModel>.value(
                       value: DatabaseService(uid: user.uid).userData,
                       initialData: null,
                     ),
@@ -187,9 +171,10 @@ class _DoctorsAdminState extends State<DoctorsAdmin> {
               // Navigator.pushNamed(context, '/secretaryAddClientScreen');
             },
             backgroundColor: Colors.white,
-            child: SvgPicture.asset(
-              'assets/images/addClient.svg',
+            child: Icon(
+              FontAwesomeIcons.userPlus,
               color: kPrimaryColor,
+              size: size.width * 0.07,
             ),
           ),
         ),

@@ -1,21 +1,19 @@
 import 'package:clinic/models/user.dart';
-import 'package:clinic/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // create user object from Firebase User
-  MyUser _userFromFirbaseUser(User user) {
+  AuthUser _userFromFirbaseUser(User user) {
     return user != null
-        ? MyUser(uid: user.uid, email: user.email, picURL: user.photoURL)
+        ? AuthUser(uid: user.uid, email: user.email, picURL: user.photoURL)
         : null;
   }
 
   // auth change user stream
-  Stream<MyUser> get user {
+  Stream<AuthUser> get user {
     return _auth.authStateChanges().map(_userFromFirbaseUser);
   }
 
@@ -32,17 +30,23 @@ class AuthService {
   }
 
   // register with email and password
-  Future registerWithEmailAndPasword(String email, password, fName, lName,
-      phoneNumber, gender, role, picURL, int status) async {
+  Future registerWithEmailAndPasword(
+      {String email,
+      password,
+      fName,
+      lName,
+      phoneNumber,
+      gender,
+      role,
+      picURL,
+      int status}) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user;
-      user.updateProfile(photoURL: picURL);
-
-      // create new document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData(fName, lName,
-          phoneNumber, gender, role, password, email, picURL, status);
+      // // create new document for the user with the uid
+      // await DatabaseService(uid: user.uid).updateUserData(fName, lName,
+      //     phoneNumber, gender, role, password, email, picURL, status);
 
       return _userFromFirbaseUser(user);
     } catch (e) {
@@ -50,8 +54,16 @@ class AuthService {
     }
   }
 
-  Future createUserWithEmailAndPasword(String email, password, fName, lName,
-      phoneNumber, gender, role, picURL, int status) async {
+  Future createUserWithEmailAndPasword(
+      {String email,
+      password,
+      fName,
+      lName,
+      phoneNumber,
+      gender,
+      role,
+      picURL,
+      int status}) async {
     try {
       FirebaseApp tempApp = await Firebase.initializeApp(
           name: 'temporaryregister', options: Firebase.app().options);
@@ -59,10 +71,9 @@ class AuthService {
           await FirebaseAuth.instanceFor(app: tempApp)
               .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user;
-      await user.updateProfile(photoURL: picURL);
       // create new document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData(fName, lName,
-          phoneNumber, gender, role, password, email, picURL, status);
+      // await DatabaseService(uid: user.uid).updateUserData(fName, lName,
+      //     phoneNumber, gender, role, password, email, picURL, status);
       await tempApp.delete();
       return Future.sync(() => _userFromFirbaseUser(user));
     } catch (e) {

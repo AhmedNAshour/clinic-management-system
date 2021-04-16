@@ -41,7 +41,7 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
 

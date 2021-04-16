@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/customBottomSheets.dart';
-import '../../screens/secretary/editClient.dart';
+import '../../screens/manager/editClient.dart';
 import '../../screens/shared/chat_room.dart';
 
 class ClientCard extends StatefulWidget {
@@ -94,7 +94,7 @@ class _ClientCardState extends State<ClientCard> {
                                 GestureDetector(
                                   onTap: () {
                                     launch(
-                                        "tel://${widget.client.phoneNumber}");
+                                        "tel://${widget.client.countryDialCode}${widget.client.phoneNumber}");
                                   },
                                   child: Icon(
                                     Icons.phone_android_rounded,
@@ -127,7 +127,7 @@ class _ClientCardState extends State<ClientCard> {
                                   onPressed: () {
                                     Navigator.pushNamed(context, ChatRoom.id,
                                         arguments: {
-                                          'otherUser': UserData(
+                                          'otherUser': UserModel(
                                             fName: widget.client.fName,
                                             lName: widget.client.lName,
                                             uid: widget.client.uid,
@@ -326,7 +326,7 @@ class _ClientCardState extends State<ClientCard> {
                                         RoundedButton(
                                           text: 'ADD SESSIONS',
                                           press: () async {
-                                            await DatabaseService()
+                                            await DatabaseService
                                                 .updateClientRemainingSessions(
                                                     numAppointments: sessions +
                                                         widget.client

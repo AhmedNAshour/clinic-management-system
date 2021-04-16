@@ -40,7 +40,7 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
     TaskSnapshot taskSnapshot = await task;
     taskSnapshot.ref.getDownloadURL().then(
           (value) => DatabaseService(uid: widget.appointment.docID)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
+              .updateUserProfilePicture(value.toString()),
         );
   }
 
@@ -164,10 +164,9 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
                                 .getSpecificClientRemainingSessions(
                                     widget.appointment.clientID);
                             print('Old : $old');
-                            await DatabaseService()
-                                .updateClientRemainingSessions(
-                                    numAppointments: old + 1,
-                                    documentID: widget.appointment.clientID);
+                            await DatabaseService.updateClientRemainingSessions(
+                                numAppointments: old + 1,
+                                documentID: widget.appointment.clientID);
                             result = await DatabaseService()
                                 .updateAppointmentStatus(
                                     id: widget.appointment.docID,
@@ -198,16 +197,7 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
                               //Navigator.pop(context);
                               await DatabaseService()
                                   .addAppointmentNotifications(
-                                clientID: widget.appointment.clientID,
-                                startTime: widget.appointment.startTime,
-                                doctorID: widget.appointment.doctorID,
-                                doctorFName: widget.appointment.doctorFName,
-                                doctorLName: widget.appointment.doctorLName,
-                                clientFName: widget.appointment.clientFName,
-                                clientLName: widget.appointment.clientLName,
-                                branch: widget.appointment.branch,
-                                clientPicURL:
-                                    widget.appointment.clientPicURL ?? '',
+                                appointment: widget.appointment,
                                 status: 1,
                                 type: 0,
                               );

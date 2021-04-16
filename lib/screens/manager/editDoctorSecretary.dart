@@ -1,43 +1,61 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
-import 'package:clinic/models/user.dart';
+import 'package:clinic/models/doctor.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:ndialog/ndialog.dart';
 import 'dart:io';
 import '../shared/constants.dart';
-import 'package:ndialog/ndialog.dart';
 
-class AddClient extends StatefulWidget {
-  AddClient();
+class EditDoctorSec extends StatefulWidget {
+  static const id = 'AddDoctorSec';
+
+  EditDoctorSec({this.doctor});
+  final Doctor doctor;
+
   @override
-  _AddClientState createState() => _AddClientState();
+  _EditDoctorSecState createState() => _EditDoctorSecState();
 }
 
-class _AddClientState extends State<AddClient> {
-  AuthService _auth = AuthService();
-
+class _EditDoctorSecState extends State<EditDoctorSec> {
   // text field state
-  String email = '';
-  String password = '';
   String fName = '';
   String lName = '';
+  CountryCode countryCode;
+  String codeName;
   String phoneNumber = '';
   String error = '';
-  int numAppointments = 0;
+  String bio = '';
   int gender = 0;
-  int age;
+  String specialty;
   bool loading = false;
-  String curEmail;
-  String curPassword;
   File newProfilePic;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fName = widget.doctor.fName;
+    lName = widget.doctor.lName;
+    codeName = widget.doctor.countryCode;
+    phoneNumber = widget.doctor.phoneNumber;
+    bio = widget.doctor.about;
+    specialty = widget.doctor.proffesion;
+
+    if (widget.doctor.gender == 'male') {
+      gender = 0;
+    } else {
+      gender = 1;
+    }
+  }
 
   final _formKey = GlobalKey<FormState>();
   Future getImage() async {
@@ -47,20 +65,10 @@ class _AddClientState extends State<AddClient> {
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'client'),
-        );
-  }
+  Map secretaryData = {};
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
     Size size = MediaQuery.of(context).size;
     return loading
         ? Loading()
@@ -84,7 +92,7 @@ class _AddClientState extends State<AddClient> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Add new client',
+                      'Edit Dr.${widget.doctor.fName}',
                       style: TextStyle(
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),
@@ -108,6 +116,7 @@ class _AddClientState extends State<AddClient> {
               ),
               Expanded(
                 child: Container(
+                  // height: size.height * 0.5,
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
@@ -118,9 +127,13 @@ class _AddClientState extends State<AddClient> {
                             radius: size.width * 0.12,
                             backgroundImage: newProfilePic != null
                                 ? FileImage(newProfilePic)
-                                : AssetImage(
-                                    'assets/images/Default-image.png',
-                                  ),
+                                : widget.doctor.picURL == ''
+                                    ? AssetImage(
+                                        'assets/images/Default-image.png',
+                                      )
+                                    : NetworkImage(
+                                        widget.doctor.picURL,
+                                      ),
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
@@ -250,8 +263,53 @@ class _AddClientState extends State<AddClient> {
                           SizedBox(
                             height: size.height * 0.02,
                           ),
+                          Container(
+                            width: size.width * 0.8,
+                            child: Row(
+                              children: [
+                                CountryCodePicker(
+                                  padding: EdgeInsets.zero,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      countryCode = value;
+                                    });
+                                  },
+                                  onInit: (value) {
+                                    countryCode = value;
+                                  },
+                                  // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                  initialSelection: codeName,
+                                  // optional. Shows only country name and flag
+                                  showCountryOnly: false,
+                                  // optional. Shows only country name and flag when popup is closed.
+                                  showOnlyCountryWhenClosed: false,
+                                  // optional. aligns the flag and the Text left
+                                  alignLeft: false,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  width: size.width * 0.55,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 5),
+                                  child: TextFormField(
+                                    initialValue: widget.doctor.phoneNumber,
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (val) {
+                                      setState(() => phoneNumber = val);
+                                    },
+                                    validator: (val) => val.length != 11
+                                        ? 'Enter a valid number'
+                                        : null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.02,
+                          ),
                           RoundedInputField(
-                            initialValue: fName,
+                            initialValue: widget.doctor.fName,
                             obsecureText: false,
                             icon: Icons.person_add_alt,
                             hintText: 'First Name',
@@ -262,7 +320,7 @@ class _AddClientState extends State<AddClient> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
-                            initialValue: lName,
+                            initialValue: widget.doctor.lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
                             hintText: 'Last Name',
@@ -273,164 +331,92 @@ class _AddClientState extends State<AddClient> {
                                 val.isEmpty ? 'Enter a name' : null,
                           ),
                           RoundedInputField(
-                            inputType: TextInputType.number,
-                            initialValue: age != null ? age.toString() : '',
+                            initialValue: widget.doctor.proffesion,
                             obsecureText: false,
-                            icon: Icons.calendar_today,
-                            hintText: 'Age',
+                            icon: Icons.person,
+                            hintText: 'Specialty',
                             onChanged: (val) {
-                              setState(() => age = int.parse(val));
+                              setState(() => specialty = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter an age' : null,
+                                val.isEmpty ? 'Enter a specialty' : null,
                           ),
                           RoundedInputField(
-                            initialValue: phoneNumber,
+                            initialValue: widget.doctor.about,
                             obsecureText: false,
-                            icon: Icons.phone,
-                            hintText: 'Phone Number',
+                            icon: Icons.info,
+                            hintText: 'Bio',
                             onChanged: (val) {
-                              setState(() => phoneNumber = val);
+                              setState(() => bio = val);
                             },
-                            validator: (val) => val.length != 11
-                                ? 'Enter a valid number'
-                                : null,
-                          ),
-                          RoundedInputField(
-                            inputType: TextInputType.number,
-                            initialValue:
-                                numAppointments != null ? age.toString() : '',
-                            obsecureText: false,
-                            icon: Icons.add,
-                            hintText: 'Remaining Sessions',
-                            onChanged: (val) {
-                              setState(() => numAppointments = int.parse(val));
-                            },
-                          ),
-                          RoundedInputField(
-                            initialValue: email,
-                            obsecureText: false,
-                            icon: Icons.email,
-                            hintText: 'Email',
-                            onChanged: (val) {
-                              setState(() => email = val);
-                            },
-                            validator: (val) =>
-                                val.isEmpty ? 'Enter an email' : null,
-                          ),
-                          RoundedInputField(
-                            obsecureText: true,
-                            icon: Icons.lock,
-                            hintText: 'Password',
-                            onChanged: (val) {
-                              setState(() => password = val);
-                            },
-                            validator: (val) => val.length < 6
-                                ? ' Enter a password 6+ chars long '
-                                : null,
                           ),
                           RoundedButton(
-                            text: 'Add',
+                            text: 'EDIT',
                             press: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() {
                                   loading = true;
                                 });
-                                MyUser result =
-                                    await _auth.createUserWithEmailAndPasword(
-                                  email,
-                                  password,
-                                  fName,
-                                  lName,
-                                  phoneNumber,
-                                  gender == 0 ? 'male' : 'female',
-                                  'client',
-                                  '',
-                                  1,
+
+                                String downloadUrl = await DatabaseService(
+                                        uid: widget.doctor.uid)
+                                    .uploadImage(newProfilePic);
+
+                                DatabaseService db =
+                                    DatabaseService(uid: widget.doctor.uid);
+                                db.updateDoctorData(
+                                  about: bio,
+                                  profession: specialty,
+                                  fName: fName,
+                                  lName: lName,
+                                  countryCode: countryCode.code,
+                                  countryDialCode: countryCode.dialCode,
+                                  phoneNumber: phoneNumber,
+                                  gender: gender == 0 ? 'male' : 'female',
+                                  branchID: widget.doctor.branch,
+                                  picURL: downloadUrl != ''
+                                      ? downloadUrl
+                                      : widget.doctor.picURL,
+                                  email: widget.doctor.email,
+                                  role: widget.doctor.role,
                                 );
-                                if (result == null) {
-                                  setState(() {
-                                    error = 'invalid credentials';
-                                    loading = false;
-                                  });
-                                } else {
-                                  String downloadUrl;
-                                  if (newProfilePic != null) {
-                                    final Reference firebaseStorageRef =
-                                        FirebaseStorage.instance.ref().child(
-                                            'profilePics/${result.uid}.jpg');
-                                    UploadTask task = firebaseStorageRef
-                                        .putFile(newProfilePic);
-                                    TaskSnapshot taskSnapshot = await task;
-                                    downloadUrl =
-                                        await taskSnapshot.ref.getDownloadURL();
-                                  }
-
-                                  // Add client to clients collectionab
-                                  DatabaseService db =
-                                      DatabaseService(uid: result.uid);
-                                  db.updateClientData(
-                                    fName: fName,
-                                    lName: lName,
-                                    phoneNumber: phoneNumber,
-                                    gender: gender == 0 ? 'male' : 'female',
-                                    numAppointments: numAppointments,
-                                    age: age,
-                                    email: email,
-                                    status: 1,
-                                  );
-                                  await db.updateUserProfilePicture(
-                                      newProfilePic != null ? downloadUrl : '',
-                                      'client');
-
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                  Navigator.pop(context);
-                                  await NDialog(
-                                    dialogStyle: DialogStyle(
-                                      backgroundColor: kPrimaryColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    content: Container(
-                                      height: size.height * 0.5,
-                                      width: size.width * 0.8,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            FontAwesomeIcons.checkCircle,
+                                await db.updateDoctorWorkDays();
+                                setState(() {
+                                  loading = false;
+                                });
+                                Navigator.pop(context);
+                                await NDialog(
+                                  dialogStyle: DialogStyle(
+                                    backgroundColor: kPrimaryColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  content: Container(
+                                    height: size.height * 0.5,
+                                    width: size.width * 0.8,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          FontAwesomeIcons.checkCircle,
+                                          color: Colors.white,
+                                          size: size.height * 0.125,
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.05,
+                                        ),
+                                        Text(
+                                          'Doctor Edited',
+                                          style: TextStyle(
                                             color: Colors.white,
-                                            size: size.height * 0.125,
+                                            fontSize: size.height * 0.04,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          SizedBox(
-                                            height: size.height * 0.05,
-                                          ),
-                                          Text(
-                                            'Client Added',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: size.height * 0.04,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: size.height * 0.02,
-                                          ),
-                                          Text(
-                                            'Client can now sign in',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: size.height * 0.025,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ).show(context);
-                                }
+                                  ),
+                                ).show(context);
                               }
                             },
                           ),

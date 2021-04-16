@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/doctor.dart';
-import '../../screens/secretary/doctor_info.dart';
+import '../../screens/manager/doctor_info.dart';
 import '../../models/customBottomSheets.dart';
 import '../../screens/admin/editDoctorAdmin.dart';
 
@@ -88,7 +88,8 @@ class DoctorCardAdmin extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                launch("tel://${doctor.phoneNumber}");
+                                launch(
+                                    "tel://${doctor.countryDialCode}${doctor.phoneNumber}");
                               },
                               child: Icon(
                                 Icons.phone_android_rounded,
@@ -121,7 +122,7 @@ class DoctorCardAdmin extends StatelessWidget {
                               onPressed: () {
                                 Navigator.pushNamed(context, ChatRoom.id,
                                     arguments: {
-                                      'otherUser': UserData(
+                                      'otherUser': UserModel(
                                         fName: doctor.fName,
                                         lName: doctor.lName,
                                         uid: doctor.uid,
@@ -173,7 +174,7 @@ class DoctorCardAdmin extends StatelessWidget {
                                     .showDynamicCustomBottomSheet(
                                         size,
                                         DisableUser(
-                                          UserData(
+                                          UserModel(
                                             fName: doctor.fName,
                                             lName: doctor.lName,
                                             uid: doctor.uid,

@@ -31,7 +31,7 @@ class _CancelAppointmentState extends State<CancelAppointment> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
 
@@ -107,23 +107,14 @@ class _CancelAppointmentState extends State<CancelAppointment> {
                           int old = await DatabaseService()
                               .getSpecificClientRemainingSessions(
                                   widget.appointment.clientID);
-                          await DatabaseService().updateClientRemainingSessions(
+                          await DatabaseService.updateClientRemainingSessions(
                               numAppointments: old + 1,
                               documentID: widget.appointment.clientID);
                           await DatabaseService().updateAppointmentStatus(
                               id: widget.appointment.docID, status: 'canceled');
 
                           await DatabaseService().addAppointmentNotifications(
-                            clientID: widget.appointment.clientID,
-                            startTime: widget.appointment.startTime,
-                            doctorID: widget.appointment.doctorID,
-                            doctorFName: widget.appointment.doctorFName,
-                            doctorLName: widget.appointment.doctorLName,
-                            clientFName: widget.appointment.clientFName,
-                            clientLName: widget.appointment.clientLName,
-                            branch: widget.appointment.branch,
-                            clientPicURL: widget.appointment.clientPicURL ?? '',
-                            doctorPicURL: widget.appointment.doctorPicURL ?? '',
+                            appointment: widget.appointment,
                             status: 1,
                             type: 0,
                             //TODO: add appointment ID to notification

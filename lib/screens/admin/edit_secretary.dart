@@ -2,12 +2,13 @@ import 'dart:io';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
 import 'package:clinic/models/branch.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:country_code_picker/country_code.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,8 +18,8 @@ import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 
 class EditSecretary extends StatefulWidget {
-  final Secretary secretary;
-  EditSecretary({this.secretary});
+  final Manager manager;
+  EditSecretary({this.manager});
   @override
   _EditSecretaryState createState() => _EditSecretaryState();
 }
@@ -29,24 +30,26 @@ class _EditSecretaryState extends State<EditSecretary> {
   // text field state
   String fName = '';
   String lName = '';
+  CountryCode countryCode;
+  String codeName;
   String phoneNumber = '';
   String error = '';
   int gender = 0;
   int age;
   bool loading = false;
-  Branch branch;
-  String branchName = '';
+  String branchID = '';
   File newProfilePic;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    fName = widget.secretary.fName;
-    lName = widget.secretary.lName;
-    phoneNumber = widget.secretary.phoneNumber;
-    branchName = widget.secretary.branch;
-    if (widget.secretary.gender == 'male') {
+    fName = widget.manager.fName;
+    lName = widget.manager.lName;
+    codeName = widget.manager.countryCode;
+    phoneNumber = widget.manager.phoneNumber;
+    branchID = widget.manager.branch;
+    if (widget.manager.gender == 'male') {
       gender = 0;
     } else {
       gender = 1;
@@ -60,37 +63,23 @@ class _EditSecretaryState extends State<EditSecretary> {
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'secretary'),
-        );
-  }
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     return loading
         ? Loading()
         : SafeArea(
-            child: StreamProvider<UserData>.value(
+            child: StreamProvider<UserModel>.value(
               value: DatabaseService(uid: user.uid).userData,
               builder: (context, child) {
                 return StreamBuilder<List<Branch>>(
-                    stream: DatabaseService().branches,
+                    stream: DatabaseService().getBranches(status: 1),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<Branch> branches = snapshot.data;
-                        if (branches.length != 0) {
-                          branch = branches[0];
-                        }
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -111,7 +100,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    'Edit ${widget.secretary.fName}',
+                                    'Edit ${widget.manager.fName}',
                                     style: TextStyle(
                                         fontSize: size.width * 0.05,
                                         color: kPrimaryTextColor),
@@ -145,12 +134,12 @@ class _EditSecretaryState extends State<EditSecretary> {
                                           radius: size.width * 0.12,
                                           backgroundImage: newProfilePic != null
                                               ? FileImage(newProfilePic)
-                                              : widget.secretary.picURL == ''
+                                              : widget.manager.picURL == ''
                                                   ? AssetImage(
                                                       'assets/images/Default-image.png',
                                                     )
                                                   : NetworkImage(
-                                                      widget.secretary.picURL,
+                                                      widget.manager.picURL,
                                                     ),
                                           child: Stack(
                                             clipBehavior: Clip.none,
@@ -302,19 +291,71 @@ class _EditSecretaryState extends State<EditSecretary> {
                                             ),
                                             items: branches.map((branch) {
                                               return DropdownMenuItem(
-                                                value: branch.name,
+                                                value: branch.docID,
                                                 child: Text('${branch.name}'),
                                               );
                                             }).toList(),
-                                            onChanged: (val) => setState(
-                                                () => branchName = val),
+                                            onChanged: (val) =>
+                                                setState(() => branchID = val),
                                           ),
                                         ),
                                         SizedBox(
-                                          height: 15,
+                                          height: size.height * 0.02,
+                                        ),
+                                        Container(
+                                          width: size.width * 0.8,
+                                          child: Row(
+                                            children: [
+                                              CountryCodePicker(
+                                                padding: EdgeInsets.zero,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    countryCode = value;
+                                                  });
+                                                },
+                                                onInit: (value) {
+                                                  countryCode = value;
+                                                },
+                                                // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                                initialSelection: codeName,
+                                                // optional. Shows only country name and flag
+                                                showCountryOnly: false,
+                                                // optional. Shows only country name and flag when popup is closed.
+                                                showOnlyCountryWhenClosed:
+                                                    false,
+                                                // optional. aligns the flag and the Text left
+                                                alignLeft: false,
+                                              ),
+                                              Container(
+                                                margin:
+                                                    EdgeInsets.only(bottom: 20),
+                                                width: size.width * 0.55,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 5),
+                                                child: TextFormField(
+                                                  initialValue: phoneNumber,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (val) {
+                                                    setState(() =>
+                                                        phoneNumber = val);
+                                                  },
+                                                  validator: (val) => val
+                                                              .length !=
+                                                          11
+                                                      ? 'Enter a valid number'
+                                                      : null,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.02,
                                         ),
                                         RoundedInputField(
-                                          initialValue: widget.secretary.fName,
+                                          initialValue: widget.manager.fName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt,
                                           hintText: 'First Name',
@@ -326,7 +367,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                               : null,
                                         ),
                                         RoundedInputField(
-                                          initialValue: widget.secretary.lName,
+                                          initialValue: widget.manager.lName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt_1,
                                           hintText: 'Last Name',
@@ -337,20 +378,6 @@ class _EditSecretaryState extends State<EditSecretary> {
                                               ? 'Enter a name'
                                               : null,
                                         ),
-                                        RoundedInputField(
-                                          initialValue:
-                                              widget.secretary.phoneNumber,
-                                          obsecureText: false,
-                                          icon: Icons.phone,
-                                          hintText: 'Phone Number',
-                                          onChanged: (val) {
-                                            setState(() => phoneNumber = val);
-                                          },
-                                          validator: (val) => val.length != 11
-                                              ? 'Enter a valid number'
-                                              : null,
-                                        ),
-
                                         RoundedButton(
                                           text: 'Edit',
                                           press: () async {
@@ -359,45 +386,32 @@ class _EditSecretaryState extends State<EditSecretary> {
                                               setState(() {
                                                 loading = true;
                                               });
-
-                                              String downloadUrl;
-                                              if (newProfilePic != null) {
-                                                final Reference
-                                                    firebaseStorageRef =
-                                                    FirebaseStorage.instance
-                                                        .ref()
-                                                        .child(
-                                                            'profilePics/${widget.secretary.uid}.jpg');
-                                                UploadTask task =
-                                                    firebaseStorageRef
-                                                        .putFile(newProfilePic);
-                                                TaskSnapshot taskSnapshot =
-                                                    await task;
-                                                downloadUrl = await taskSnapshot
-                                                    .ref
-                                                    .getDownloadURL();
-                                              }
-                                              // Add client to clients collectionab
+                                              String downloadUrl =
+                                                  await DatabaseService(
+                                                          uid: widget
+                                                              .manager.uid)
+                                                      .uploadImage(
+                                                          newProfilePic);
                                               DatabaseService db =
                                                   DatabaseService(
-                                                      uid:
-                                                          widget.secretary.uid);
-                                              await db.updateSecretaryData(
+                                                      uid: widget.manager.uid);
+                                              await db.updateManagerData(
                                                 fName: fName,
                                                 lName: lName,
+                                                countryCode: countryCode.code,
+                                                countryDialCode:
+                                                    countryCode.dialCode,
                                                 phoneNumber: phoneNumber,
                                                 gender: gender == 0
                                                     ? 'male'
                                                     : 'female',
-                                                branchId: branch.docID,
-                                                branchName: branch.name,
-                                                picURL: '',
+                                                branchID: branchID,
+                                                picURL: downloadUrl != ''
+                                                    ? downloadUrl
+                                                    : widget.manager.picURL,
+                                                email: widget.manager.email,
+                                                role: widget.manager.role,
                                               );
-                                              await db.updateUserProfilePicture(
-                                                  newProfilePic != null
-                                                      ? downloadUrl
-                                                      : '',
-                                                  'secretary');
 
                                               setState(() {
                                                 loading = false;

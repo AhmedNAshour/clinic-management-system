@@ -1,5 +1,5 @@
 import 'package:clinic/models/customBottomSheets.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/chat_room.dart';
 import 'package:clinic/screens/shared/constants.dart';
@@ -19,7 +19,7 @@ class SecretaryCard extends StatelessWidget {
     @required this.manager,
   }) : super(key: key);
 
-  final Secretary manager;
+  final Manager manager;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,8 @@ class SecretaryCard extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            launch("tel://${manager.phoneNumber}");
+                            launch(
+                                "tel://${manager.countryDialCode}${manager.phoneNumber}");
                           },
                           child: Icon(
                             Icons.phone_android_rounded,
@@ -121,7 +122,7 @@ class SecretaryCard extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushNamed(context, ChatRoom.id,
                                 arguments: {
-                                  'otherUser': UserData(
+                                  'otherUser': UserModel(
                                     fName: manager.fName,
                                     lName: manager.lName,
                                     uid: manager.uid,
@@ -153,7 +154,7 @@ class SecretaryCard extends StatelessWidget {
                       CustomBottomSheets().showCustomBottomSheet(
                         size,
                         EditSecretary(
-                          secretary: manager,
+                          manager: manager,
                         ),
                         context,
                       );
@@ -171,7 +172,7 @@ class SecretaryCard extends StatelessWidget {
                           onTap: () async {
                             CustomBottomSheets().showDynamicCustomBottomSheet(
                                 size,
-                                DisableUser(UserData(
+                                DisableUser(UserModel(
                                   fName: manager.fName,
                                   lName: manager.lName,
                                   uid: manager.uid,

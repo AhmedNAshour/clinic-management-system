@@ -1,4 +1,4 @@
-class MyNotification {
+class NotificationModel {
   final DateTime startTime;
   final DateTime endTime;
   final String doctorID;
@@ -17,7 +17,7 @@ class MyNotification {
   final String clientPicURL;
   final int type;
 
-  MyNotification({
+  NotificationModel({
     this.type,
     this.clientPicURL,
     this.doctorPicURL,

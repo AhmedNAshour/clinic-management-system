@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 
 class DisableUser extends StatefulWidget {
   static const id = 'DisableUser';
-  UserData userData;
-  DisableUser(UserData userData) {
+  UserModel userData;
+  DisableUser(UserModel userData) {
     this.userData = userData;
   }
 
@@ -30,7 +30,7 @@ class _DisableUserState extends State<DisableUser> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
 

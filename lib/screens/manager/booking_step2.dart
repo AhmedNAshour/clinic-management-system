@@ -22,12 +22,12 @@ class _BookingStep2State extends State<BookingStep2> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     Client client = ModalRoute.of(context).settings.arguments;
 
     return FutureBuilder(
-      future: DatabaseService(uid: user.uid).getSecretaryBranch(),
+      future: DatabaseService(uid: user.uid).getManagerBranch(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String secretaryBranch = snapshot.data;
@@ -82,10 +82,10 @@ class _BookingStep2State extends State<BookingStep2> {
                       child: MultiProvider(
                         providers: [
                           StreamProvider<List<Doctor>>.value(
-                            value: DatabaseService()
-                                .getDoctorsBySearch(secretaryBranch, ''),
+                            value: DatabaseService().getDoctors(
+                                branch: secretaryBranch, doctorName: ''),
                           ),
-                          StreamProvider<UserData>.value(
+                          StreamProvider<UserModel>.value(
                             value: DatabaseService(uid: user.uid).userData,
                           ),
                         ],

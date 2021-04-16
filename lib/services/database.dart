@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/note.dart';
-import 'package:clinic/models/secretary.dart';
+import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/models/workDay.dart';
 import 'package:clinic/models/chat.dart';
@@ -11,6 +13,7 @@ import 'package:clinic/models/message.dart';
 import 'package:clinic/models/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 
 class DatabaseService {
@@ -29,12 +32,6 @@ class DatabaseService {
   // collection references
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-  final CollectionReference clientsCollection =
-      FirebaseFirestore.instance.collection('clients');
-  final CollectionReference doctorsCollection =
-      FirebaseFirestore.instance.collection('doctors');
-  final CollectionReference secretariesCollection =
-      FirebaseFirestore.instance.collection('secretaries');
   final CollectionReference appointmentsCollection =
       FirebaseFirestore.instance.collection('appointments');
   final CollectionReference notesCollection =
@@ -46,16 +43,16 @@ class DatabaseService {
   final CollectionReference chatsCollection =
       FirebaseFirestore.instance.collection('chats');
 
-  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
+  UserModel _userDataFromSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data();
-    return UserData(
+    return UserModel(
       uid: uid,
       fName: data['fName'] ?? '',
       lName: data['lName'] ?? '',
       gender: data['gender'] ?? '',
       role: data['role'] ?? '',
+      countryCode: data['countryCode'] ?? '',
       phoneNumber: data['phoneNumber'] ?? '',
-      password: data['password'] ?? '',
       email: data['email'] ?? '',
       picURL: data['picURL'] ?? '',
       status: data['status'] ?? 1,
@@ -66,76 +63,140 @@ class DatabaseService {
     );
   }
 
-  Secretary _secretaryFromSnapshot(DocumentSnapshot snapshot) {
+  Stream<UserModel> get userData {
+    return usersCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
+  }
+
+  Manager _managerFromSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data();
-    return Secretary(
-      uid: uid,
-      fName: data['fName'],
-      lName: data['lName'],
-      gender: data['gender'],
-      phoneNumber: data['phoneNumber'],
-      picURL: data['picURL'],
-      token: data['token'],
+    return Manager(
       branch: data['branch'],
-      branchName: data['branchName'],
+      uid: uid,
+      fName: data['fName'] ?? '',
+      lName: data['lName'] ?? '',
+      gender: data['gender'] ?? '',
+      role: data['role'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+      countryCode: data['countryCode'] ?? '',
+      countryDialCode: data['countryDialCode'] ?? '',
+      email: data['email'] ?? '',
+      picURL: data['picURL'] ?? '',
       status: data['status'] ?? 1,
+      language: data['lang'] ?? 'en',
+      // token: data['token'] ?? '',
+      bookingNotifs: data['bookingNotifs'] ?? true,
+      cancellingNotifs: data['cancellingNotifs'] ?? true,
+      isBoss: data['isBoss'] ?? true,
     );
   }
 
-  Stream<Secretary> get secretary {
-    return secretariesCollection
-        .doc(uid)
-        .snapshots()
-        .map(_secretaryFromSnapshot);
+  Stream<Manager> get manager {
+    return usersCollection.doc(uid).snapshots().map(_managerFromSnapshot);
   }
 
   Client _clientFromSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data();
     return Client(
+      numAppointments: data['numAppointments'] ?? 0,
       uid: uid,
       fName: data['fName'] ?? '',
       lName: data['lName'] ?? '',
       gender: data['gender'] ?? '',
+      role: data['role'] ?? '',
       phoneNumber: data['phoneNumber'] ?? '',
+      countryCode: data['countryCode'] ?? '',
+      countryDialCode: data['countryDialCode'] ?? '',
+
+      email: data['email'] ?? '',
       picURL: data['picURL'] ?? '',
-      numAppointments: data['numAppointments'] ?? 0,
-      age: data['age'] ?? 0,
       status: data['status'] ?? 1,
+      language: data['lang'] ?? 'en',
+      // token: data['token'] ?? '',
+      bookingNotifs: data['bookingNotifs'] ?? true,
+      cancellingNotifs: data['cancellingNotifs'] ?? true,
     );
   }
 
   Stream<Client> get client {
-    return clientsCollection.doc(uid).snapshots().map(_clientFromSnapshot);
+    return usersCollection.doc(uid).snapshots().map(_clientFromSnapshot);
   }
 
   Doctor _doctorFromSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data();
     return Doctor(
+      branch: data['branch'] ?? '',
+      proffesion: data['profession'] ?? '',
+      about: data['about'] ?? '',
       uid: uid,
       fName: data['fName'] ?? '',
       lName: data['lName'] ?? '',
       gender: data['gender'] ?? '',
+      role: data['role'] ?? '',
       phoneNumber: data['phoneNumber'] ?? '',
+      countryCode: data['countryCode'] ?? '',
+      countryDialCode: data['countryDialCode'] ?? '',
+      email: data['email'] ?? '',
       picURL: data['picURL'] ?? '',
-      branch: data['branch'] ?? '',
-      proffesion: data['profession'] ?? '',
-      about: data['about'] ?? '',
       status: data['status'] ?? 1,
+      language: data['lang'] ?? 'en',
+      // token: data['token'] ?? '',
+      bookingNotifs: data['bookingNotifs'] ?? true,
+      cancellingNotifs: data['cancellingNotifs'] ?? true,
     );
   }
 
   Stream<Doctor> get doctor {
-    return doctorsCollection.doc(uid).snapshots().map(_doctorFromSnapshot);
+    return usersCollection.doc(uid).snapshots().map(_doctorFromSnapshot);
   }
 
-  Stream<UserData> get userData {
-    return usersCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
+  Future updateUserProfilePicture(String picURL) async {
+    await usersCollection.doc(uid).update({
+      'picURL': picURL,
+    });
   }
 
-  // create or update user
-  Future updateUserData(
+  Future updateManagerData({
+    String branchID,
     String fName,
     String lName,
+    String countryDialCode,
+    String countryCode,
+    String phoneNumber,
+    String gender,
+    String role,
+    String password,
+    String email,
+    String picURL,
+    bool isBoss,
+    int status,
+  }) async {
+    return await usersCollection.doc(uid).set({
+      'branch': branchID,
+      'fName': fName,
+      'lName': lName,
+      'countryDialCode': countryDialCode,
+      'countryCode': countryCode,
+      'phoneNumber': phoneNumber,
+      'gender': gender,
+      'role': role,
+      'email': email,
+      'picURL': picURL,
+      'status': status,
+      'isBoss': isBoss,
+      'lang': 'en',
+      'bookingNotifs': true,
+      'cancellingNotifs': true,
+    });
+  }
+
+  Future updateDoctorData({
+    String about,
+    String profession,
+    String branchID,
+    String fName,
+    String lName,
+    String countryDialCode,
+    String countryCode,
     String phoneNumber,
     String gender,
     String role,
@@ -143,142 +204,187 @@ class DatabaseService {
     String email,
     String picURL,
     int status,
-  ) async {
+  }) async {
     return await usersCollection.doc(uid).set({
+      'about': about,
+      'profession': profession,
+      'branch': branchID,
       'fName': fName,
       'lName': lName,
+      'countryDialCode': countryDialCode,
+      'countryCode': countryCode,
       'phoneNumber': phoneNumber,
       'gender': gender,
       'role': role,
-      'password': password,
       'email': email,
       'picURL': picURL,
       'status': status,
+      'lang': 'en',
+      'bookingNotifs': true,
+      'cancellingNotifs': true,
     });
   }
 
-  static Future updateManagerStatus({
-    int status,
-    String documentID,
-  }) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(documentID)
-          .update({
-        'status': status,
-      });
-      return 1;
-    } catch (error) {
-      print(error.toString());
-      return null;
-    }
-  }
-
-  Future updateUserProfilePicture(String picURL, role) async {
-    await usersCollection.doc(uid).update({
-      'picURL': picURL,
-    });
-    if (role == 'secretary') {
-      await secretariesCollection.doc(uid).update({
-        'picURL': picURL,
-      });
-    } else if (role == 'client') {
-      await clientsCollection.doc(uid).update({
-        'picURL': picURL,
-      });
-    } else if (role == 'doctor') {
-      await doctorsCollection.doc(uid).update({
-        'picURL': picURL,
-      });
-    }
-  }
-
-  Future editToken(String token, role) async {
-    if (role == 'doctor') {
-      return await doctorsCollection.doc(uid).set({
-        'token': token,
-      });
-    } else if (role == 'client') {
-      return await clientsCollection.doc(uid).set({
-        'token': token,
-      });
-    } else if (role == 'secretary') {
-      return await secretariesCollection.doc(uid).set({
-        'token': token,
-      });
-    }
-  }
-
-  Future updateSecretaryData({
+  Future updateClientData({
+    int numAppointments,
+    int age,
     String fName,
     String lName,
+    String countryDialCode,
+    String countryCode,
     String phoneNumber,
     String gender,
-    String branchId,
-    String branchName,
+    String role,
+    String password,
+    String email,
     String picURL,
     int status,
   }) async {
-    return await secretariesCollection.doc(uid).set({
+    return await usersCollection.doc(uid).set({
+      'numAppointments': numAppointments,
+      'age': age,
       'fName': fName,
       'lName': lName,
+      'countryDialCode': countryDialCode,
+      'countryCode': countryCode,
       'phoneNumber': phoneNumber,
       'gender': gender,
-      'branch': branchId,
-      'branchName': branchName,
+      'role': role,
+      'email': email,
       'picURL': picURL,
-      'status': 1,
+      'status': status,
+      'lang': 'en',
+      'bookingNotifs': true,
+      'cancellingNotifs': true,
     });
   }
 
-  Future updateDoctorData({
-    String fName,
-    lName,
-    phoneNumber,
-    gender,
-    about,
-    profession,
-    branch,
-    picURL,
-    int status,
-  }) async {
-    return await doctorsCollection.doc(uid).set({
-      'fName': fName,
-      'lName': lName,
-      'phoneNumber': phoneNumber,
-      'gender': gender,
-      'about': about,
-      'profession': profession,
-      'branch': branch,
-      'status': 1,
-      'picURL': picURL,
-    });
-  }
-
-  Future addBranch({
+  Future updateBranchData({
     String branchName,
+    String countryDialCode,
+    String countryCode,
     String phoneNumber,
     String address,
+    String managerID,
     double longitude,
     double latitude,
     int status,
   }) async {
     return await branchesCollection.doc(branchName).set({
       'name': branchName,
+      'countryDialCode': countryDialCode,
+      'countryCode': countryCode,
       'phoneNumber': phoneNumber,
       'address': address,
-      'logitude': longitude,
+      'longitude': longitude,
       'latitude': latitude,
+      'manager': managerID,
       'status': 1,
     });
+  }
+
+  Future updateBranchManager({
+    String branchName,
+    String oldManager,
+    String newManager,
+  }) async {
+    await usersCollection.doc(oldManager).update({
+      'isBoss': false,
+    });
+    await usersCollection.doc(newManager).update({
+      'isBoss': true,
+    });
+  }
+
+  Future editBranchData({
+    String oldName,
+    String branchName,
+    String countryDialCode,
+    String countryCode,
+    String phoneNumber,
+    String address,
+    String managerID,
+    double longitude,
+    double latitude,
+    int status,
+  }) async {
+    if (oldName != branchName) {
+      await branchesCollection.doc(oldName).delete();
+      await branchesCollection.doc(branchName).set({
+        'name': branchName,
+        'countryCode': countryCode,
+        'countryDialCode': countryDialCode,
+        'phoneNumber': phoneNumber,
+        'address': address,
+        'longitude': longitude,
+        'latitude': latitude,
+        'manager': managerID,
+        'status': 1,
+      });
+      Query appointmentsQuery = appointmentsCollection;
+      Future<QuerySnapshot> appointments =
+          appointmentsQuery.where('branch', isEqualTo: oldName).get();
+      List<Appointment> appointmentsList =
+          await appointments.then((value) => value.docs.map((doc) {
+                return Appointment(docID: doc.id);
+              }).toList());
+
+      for (int i = 0; i < appointmentsList.length; i++) {
+        await appointmentsCollection.doc(appointmentsList[i].docID).update({
+          'branch': branchName,
+        });
+      }
+
+      Query doctorsQuery = usersCollection
+          .where('role', isEqualTo: 'doctor')
+          .where('branch', isEqualTo: oldName);
+      Future<QuerySnapshot> doctors = doctorsQuery.get();
+      List<Doctor> doctorsList =
+          await doctors.then((value) => value.docs.map((doc) {
+                return Doctor(uid: doc.id);
+              }).toList());
+
+      for (int i = 0; i < doctorsList.length; i++) {
+        await usersCollection.doc(doctorsList[i].uid).update({
+          'branch': branchName,
+        });
+      }
+
+      Query managersQuery = usersCollection
+          .where('role', isEqualTo: 'manager')
+          .where('branch', isEqualTo: oldName);
+      Future<QuerySnapshot> managers = managersQuery.get();
+      List<Manager> managersList =
+          await managers.then((value) => value.docs.map((doc) {
+                return Manager(uid: doc.id);
+              }).toList());
+
+      for (int i = 0; i < managersList.length; i++) {
+        await usersCollection.doc(managersList[i].uid).update({
+          'branch': branchName,
+        });
+      }
+    } else {
+      await branchesCollection.doc(oldName).update({
+        'countryCode': countryCode,
+        'phoneNumber': phoneNumber,
+        'address': address,
+        'longitude': longitude,
+        'latitude': latitude,
+        'manager': managerID,
+        'status': 1,
+      });
+    }
   }
 
   List<Branch> _branchesListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Branch(
         name: doc.data()['name'] ?? '',
+        managerID: doc.data()['manager'] ?? '',
         address: doc.data()['address'] ?? '',
+        countryCode: doc.data()['countryCode'] ?? '',
+        countryDialCode: doc['countryDialCode'] ?? '',
         phoneNumber: doc.data()['phoneNumber'] ?? '',
         longitude: doc.data()['longitude'] ?? 0,
         latitude: doc.data()['latitude'] ?? 0,
@@ -288,8 +394,13 @@ class DatabaseService {
     }).toList();
   }
 
-  Stream<List<Branch>> get branches {
-    return branchesCollection.snapshots().map(_branchesListFromSnapshot);
+  Stream<List<Branch>> getBranches({int status}) {
+    Query query = branchesCollection;
+
+    if (status != null) {
+      query = query.where('status', isEqualTo: status);
+    }
+    return query.snapshots().map(_branchesListFromSnapshot);
   }
 
   List<MessageModel> _messagesFromSnapshot(QuerySnapshot snapshot) {
@@ -326,7 +437,6 @@ class DatabaseService {
         body: doc.data()['message'] ?? '',
       );
     }).toList();
-    print(messages.last.body);
     return messages.last;
   }
 
@@ -389,8 +499,9 @@ class DatabaseService {
     }).toList();
   }
 
+  //TODO: Replace with getAppointments() with sufficient searching parameters
   Stream<List<Appointment>> getDoctorAppointmentsForSelectedDay(
-      String doctorID, day) {
+      {String doctorID, day}) {
     return appointmentsCollection
         .where('doctorID', isEqualTo: doctorID)
         .where('day', isEqualTo: day)
@@ -398,16 +509,9 @@ class DatabaseService {
         .map(_appointmentsListFromSnapshot);
   }
 
-  Stream<List<Doctor>> getDoctorsByBranch(branch) {
-    return doctorsCollection
-        .where('branch', isEqualTo: branch)
-        .snapshots()
-        .map(_doctorsListFromSnapshot);
-  }
-
-  Stream<List<Client>> getClientsBySearch(
-      String clientName, String clientNumber, int status) {
-    Query query = FirebaseFirestore.instance.collection('clients');
+  Stream<List<Client>> getClients(
+      {String clientName, String clientNumber, int status}) {
+    Query query = usersCollection.where('role', isEqualTo: 'client');
     if (clientName != '') {
       query = query.where(
         'fName',
@@ -423,21 +527,19 @@ class DatabaseService {
     return query.snapshots().map(_clientListFromSnapshot);
   }
 
-  Stream<List<Doctor>> getDoctorsBySearch(
-      String secretaryBranch, String doctorName) {
-    Query query = FirebaseFirestore.instance.collection('doctors');
+  Stream<List<Doctor>> getDoctors({String branch, String doctorName}) {
+    Query query = usersCollection.where('role', isEqualTo: 'doctor');
     if (doctorName != '') {
       query = query.where(
         'fName',
         isEqualTo: doctorName,
       );
     }
-    if (secretaryBranch != '')
-      query = query.where('branch', isEqualTo: secretaryBranch);
+    if (branch != '') query = query.where('branch', isEqualTo: branch);
     return query.snapshots().map(_doctorsListFromSnapshot);
   }
 
-  Stream<List<Appointment>> getAppointmentsBySearch({
+  Stream<List<Appointment>> getAppointments({
     String day,
     String doctorName,
     String doctorId,
@@ -448,7 +550,7 @@ class DatabaseService {
     String status,
     String dateComparison,
   }) {
-    Query query = FirebaseFirestore.instance.collection('appointments');
+    Query query = appointmentsCollection;
     if (day != '') {
       query = query.where('day', isEqualTo: day);
     }
@@ -483,26 +585,6 @@ class DatabaseService {
     }
 
     return query.snapshots().map(_appointmentsListFromSnapshot);
-  }
-
-  Stream<List<Appointment>> getAppointmentsForSelectedDay(String day) {
-    return appointmentsCollection
-        .where('day', isEqualTo: day)
-        .snapshots()
-        .map(_appointmentsListFromSnapshot);
-  }
-
-  Stream<List<Appointment>> getAppointmentsForClient() {
-    return appointmentsCollection
-        .where('clientID', isEqualTo: uid)
-        .snapshots()
-        .map(_appointmentsListFromSnapshot);
-  }
-
-  Stream<List<Appointment>> get appointments {
-    return appointmentsCollection
-        .snapshots()
-        .map(_appointmentsListFromSnapshot);
   }
 
   Future addAppointment({
@@ -542,64 +624,55 @@ class DatabaseService {
   }
 
   Future addAppointmentNotifications({
-    DateTime startTime,
-    String doctorID,
-    String clientID,
-    String clientFName,
-    String clientLName,
-    String clientPicURL,
-    String doctorPicURL,
-    String doctorFName,
-    String doctorLName,
-    String branch,
+    Appointment appointment,
     int status,
     int type,
   }) async {
     if (type == 0) {
       await FirebaseFirestore.instance
-          .collection("users/" + clientID + "/notifications")
+          .collection("users/" + appointment.clientID + "/notifications")
           .doc()
           .set({
-        'startTime': startTime,
-        'endTime': startTime.add(Duration(minutes: 30)),
-        'clientID': clientID,
-        'doctorID': doctorID,
-        'day': DateFormat("yyyy-MM-dd").format(startTime),
-        'clientFName': clientFName,
-        'clientLName': clientLName,
-        'doctorFName': doctorFName,
-        'doctorLName': doctorLName,
-        'branch': branch,
-        'clientPicURL': clientPicURL,
-        'doctorPicURL': doctorPicURL,
+        'startTime': appointment.startTime,
+        'endTime': appointment.startTime.add(Duration(minutes: 30)),
+        'clientID': appointment.clientID,
+        'doctorID': appointment.doctorID,
+        'day': DateFormat("yyyy-MM-dd").format(appointment.startTime),
+        'clientFName': appointment.clientFName,
+        'clientLName': appointment.clientLName,
+        'doctorFName': appointment.doctorFName,
+        'doctorLName': appointment.doctorLName,
+        'branch': appointment.branch,
+        'clientPicURL': appointment.clientPicURL ?? '',
+        'doctorPicURL': appointment.doctorPicURL,
         'status': status,
         'type': type,
       });
     }
     await FirebaseFirestore.instance
-        .collection("users/" + doctorID + "/notifications")
+        .collection("users/" + appointment.doctorID + "/notifications")
         .doc()
         .set({
-      'startTime': startTime,
-      'endTime': startTime.add(Duration(minutes: 30)),
-      'clientID': clientID,
-      'doctorID': doctorID,
-      'day': DateFormat("yyyy-MM-dd").format(startTime),
-      'clientFName': clientFName,
-      'clientLName': clientLName,
-      'doctorFName': doctorFName,
-      'doctorLName': doctorLName,
-      'branch': branch,
-      'clientPicURL': clientPicURL,
+      'startTime': appointment.startTime,
+      'endTime': appointment.startTime.add(Duration(minutes: 30)),
+      'clientID': appointment.clientID,
+      'doctorID': appointment.doctorID,
+      'day': DateFormat("yyyy-MM-dd").format(appointment.startTime),
+      'clientFName': appointment.clientFName,
+      'clientLName': appointment.clientLName,
+      'doctorFName': appointment.doctorFName,
+      'doctorLName': appointment.doctorLName,
+      'branch': appointment.branch,
+      'clientPicURL': appointment.clientPicURL,
       'status': status,
       'type': type,
     });
-    Query query = FirebaseFirestore.instance.collection('secretaries');
+    Query query = usersCollection.where('role', isEqualTo: 'manager');
     Future<QuerySnapshot> managers =
-        query.where('branch', isEqualTo: branch).get();
-    List<Secretary> secretaries =
+        query.where('branch', isEqualTo: appointment.branch).get();
+    List<Manager> managersList =
         await managers.then((value) => value.docs.map((doc) {
-              return Secretary(
+              return Manager(
                 fName: doc.data()['fName'] ?? '',
                 lName: doc.data()['lName'] ?? '',
                 phoneNumber: doc.data()['phoneNumber'] ?? '',
@@ -611,31 +684,32 @@ class DatabaseService {
               );
             }).toList());
 
-    for (int i = 0; i < secretaries.length; i++) {
+    for (int i = 0; i < managersList.length; i++) {
       await FirebaseFirestore.instance
-          .collection("users/" + secretaries[i].uid + "/notifications")
+          .collection("users/" + managersList[i].uid + "/notifications")
           .doc()
           .set({
-        'startTime': startTime,
-        'endTime': startTime.add(Duration(minutes: 30)),
-        'clientID': clientID,
-        'doctorID': doctorID,
-        'day': DateFormat("yyyy-MM-dd").format(startTime),
-        'clientFName': clientFName,
-        'clientLName': clientLName,
-        'doctorFName': doctorFName,
-        'doctorLName': doctorLName,
-        'branch': branch,
-        'clientPicURL': clientPicURL,
+        'startTime': appointment.startTime,
+        'endTime': appointment.startTime.add(Duration(minutes: 30)),
+        'clientID': appointment.clientID,
+        'doctorID': appointment.doctorID,
+        'day': DateFormat("yyyy-MM-dd").format(appointment.startTime),
+        'clientFName': appointment.clientFName,
+        'clientLName': appointment.clientLName,
+        'doctorFName': appointment.doctorFName,
+        'doctorLName': appointment.doctorLName,
+        'branch': appointment.branch,
+        'clientPicURL': appointment.clientPicURL,
         'status': status,
         'type': type,
       });
     }
   }
 
-  List<MyNotification> _notificationsListFromSnapshot(QuerySnapshot snapshot) {
+  List<NotificationModel> _notificationsListFromSnapshot(
+      QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return MyNotification(
+      return NotificationModel(
         startTime:
             DateTime.parse(doc.data()['startTime'].toDate().toString()) ??
                 '' ??
@@ -660,7 +734,7 @@ class DatabaseService {
     }).toList();
   }
 
-  Stream<List<MyNotification>> getNotificationsBySearch({int status}) {
+  Stream<List<NotificationModel>> getNotifications({int status}) {
     Query query = FirebaseFirestore.instance
         .collection("users/" + uid + "/notifications");
     if (status != null) {
@@ -705,11 +779,7 @@ class DatabaseService {
     }).toList();
   }
 
-  Stream<List<Note>> get notes {
-    return appointmentsCollection.snapshots().map(_notesListFromSnapshot);
-  }
-
-  // get doctors stream
+//TODO: Merge both functions into getNotes()
   Stream<List<Note>> getClientNotes(String clientId) {
     return notesCollection
         .where('clientID', isEqualTo: clientId)
@@ -729,10 +799,7 @@ class DatabaseService {
     String appointmentID,
   }) async {
     try {
-      await FirebaseFirestore.instance
-          .collection("appointments")
-          .doc(appointmentID)
-          .update({
+      await DatabaseService().appointmentsCollection.doc(appointmentID).update({
         'note': note,
       });
       return 1;
@@ -743,7 +810,6 @@ class DatabaseService {
   }
 
   Future addNote({
-    // DateTime submissionTime,
     String day,
     String doctorID,
     String clientID,
@@ -769,37 +835,10 @@ class DatabaseService {
     });
   }
 
-  Future addAppointmentSecretary({
-    DateTime startTime,
-    String doctorID,
-    String clientFName,
-    String clientLName,
-    String clientPhoneNumber,
-    String clientGender,
-    String doctorFName,
-    String doctorLName,
-    String clientID,
-  }) async {
-    return await appointmentsCollection.doc().set({
-      'startTime': startTime,
-      'endTime': startTime.add(Duration(minutes: 30)),
-      'clientID': clientID,
-      'doctorID': doctorID,
-      'day': DateFormat("yyyy-MM-dd").format(startTime),
-      'clientFName': clientFName,
-      'clientLName': clientLName,
-      'clientGender': clientGender,
-      'clientPhoneNumber': clientPhoneNumber,
-      'doctorFName': doctorFName,
-      'doctorLName': doctorLName,
-      'status': 'pending',
-    });
-  }
-
   Future updateDoctorWorkDays() async {
     workDaysList.forEach((element) {
       FirebaseFirestore.instance
-          .collection("doctors/" + uid + "/workDays")
+          .collection("users/" + uid + "/workDays")
           .doc(element['name'])
           .set({
         'working': false,
@@ -812,75 +851,84 @@ class DatabaseService {
     });
   }
 
-  Future updateClientData({
-    String fName,
-    String lName,
-    String phoneNumber,
-    String gender,
-    String email,
-    int numAppointments,
-    int age,
-    int status,
-  }) async {
-    return await clientsCollection.doc(uid).set({
-      'fName': fName,
-      'lName': lName,
-      'phoneNumber': phoneNumber,
-      'gender': gender,
-      'numAppointments': numAppointments,
-      'age': age,
-      'email': email,
-      'status': status,
-    });
-  }
-
   // clients list from snapshot
   List<Client> _clientListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Client(
-        fName: doc.data()['fName'] ?? '',
-        lName: doc.data()['lName'] ?? '',
-        phoneNumber: doc.data()['phoneNumber'] ?? '',
         numAppointments: doc.data()['numAppointments'] ?? 0,
-        gender: doc.data()['gender'] ?? '',
-        age: doc.data()['age'] ?? '',
+        age: doc.data()['age'] ?? 0,
         uid: doc.id,
-        picURL: doc.data()['picURL'] ?? '',
-        email: doc.data()['email'] ?? '',
-        status: doc.data()['status'] ?? 1,
+        fName: doc['fName'] ?? '',
+        lName: doc['lName'] ?? '',
+        gender: doc['gender'] ?? '',
+        role: doc['role'] ?? '',
+        countryDialCode: doc['countryDialCode'] ?? '',
+        countryCode: doc['countryCode'] ?? '',
+        phoneNumber: doc['phoneNumber'] ?? '',
+        email: doc['email'] ?? '',
+        picURL: doc['picURL'] ?? '',
+        status: doc['status'] ?? 1,
+        language: doc['lang'] ?? 'en',
+        // token: doc['token'] ?? '',
+        bookingNotifs: doc['bookingNotifs'] ?? true,
+        cancellingNotifs: doc['cancellingNotifs'] ?? true,
       );
     }).toList();
-  }
-
-  // get clients stream
-  Stream<List<Client>> get clients {
-    return clientsCollection.snapshots().map(_clientListFromSnapshot);
   }
 
   // Secretaries list from snapshot
-  List<Secretary> _secretariesListFromSnapshot(QuerySnapshot snapshot) {
+  List<Manager> _managersListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return Secretary(
-        fName: doc.data()['fName'] ?? '',
-        lName: doc.data()['lName'] ?? '',
-        phoneNumber: doc.data()['phoneNumber'] ?? '',
-        gender: doc.data()['gender'] ?? '',
-        branch: doc.data()['branch'] ?? '',
+      return Manager(
+        isBoss: doc['isBoss'] ?? true,
+        branch: doc['branch'] ?? '',
         uid: doc.id,
-        picURL: doc.data()['picURL'] ?? '',
-        status: doc.data()['status'] ?? 1,
+        fName: doc['fName'] ?? '',
+        lName: doc['lName'] ?? '',
+        gender: doc['gender'] ?? '',
+        role: doc['role'] ?? '',
+        countryCode: doc['countryCode'] ?? '',
+        countryDialCode: doc['countryDialCode'] ?? '',
+        phoneNumber: doc['phoneNumber'] ?? '',
+        email: doc['email'] ?? '',
+        picURL: doc['picURL'] ?? '',
+        status: doc['status'] ?? 1,
+        language: doc['lang'] ?? 'en',
+        // token: doc['token'] ?? '',
+        bookingNotifs: doc['bookingNotifs'] ?? true,
+        cancellingNotifs: doc['cancellingNotifs'] ?? true,
       );
     }).toList();
   }
 
-  // get secretaries stream
-  Stream<List<Secretary>> get secretaries {
-    return secretariesCollection.snapshots().map(_secretariesListFromSnapshot);
+  List<Doctor> _doctorsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Doctor(
+        about: doc.data()['about'] ?? '',
+        proffesion: doc.data()['profession'] ?? '',
+        uid: doc.id,
+        fName: doc['fName'] ?? '',
+        lName: doc['lName'] ?? '',
+        gender: doc['gender'] ?? '',
+        role: doc['role'] ?? '',
+        countryCode: doc['countryCode'] ?? '',
+        countryDialCode: doc['countryDialCode'] ?? '',
+
+        phoneNumber: doc['phoneNumber'] ?? '',
+        email: doc['email'] ?? '',
+        picURL: doc['picURL'] ?? '',
+        status: doc['status'] ?? 1,
+        language: doc['lang'] ?? 'en',
+        // token: doc['token'] ?? '',
+        bookingNotifs: doc['bookingNotifs'] ?? true,
+        cancellingNotifs: doc['cancellingNotifs'] ?? true,
+      );
+    }).toList();
   }
 
-  Stream<List<Secretary>> getManagersBySearch(
-      String managerName, String managerNumber) {
-    Query query = FirebaseFirestore.instance.collection('secretaries');
+  Stream<List<Manager>> getManagers(
+      {String managerName, String managerNumber, String branch}) {
+    Query query = usersCollection.where('role', isEqualTo: 'manager');
     if (managerName != '') {
       query = query.where(
         'fName',
@@ -890,40 +938,12 @@ class DatabaseService {
     if (managerNumber != '') {
       query = query.where('phoneNumber', isEqualTo: managerNumber);
     }
-    return query.snapshots().map(_secretariesListFromSnapshot);
-  }
 
-  // doctors list from snapshot
-  List<Doctor> _doctorsListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      return Doctor(
-        uid: doc.id,
-        fName: doc.data()['fName'] ?? '',
-        lName: doc.data()['lName'] ?? '',
-        phoneNumber: doc.data()['phoneNumber'] ?? '',
-        about: doc.data()['about'] ?? '',
-        proffesion: doc.data()['profession'] ?? '',
-        level: doc.data()['about'] ?? 'level',
-        branch: doc.data()['branch'] ?? '',
-        gender: doc.data()['gender'] ?? '',
-        token: doc.data()['token'] ?? '',
-        status: doc.data()['status'] ?? 1,
-        picURL: doc.data()['picURL'] ?? '',
-      );
-    }).toList();
-  }
+    if (branch != '') {
+      query = query.where('branch', isEqualTo: branch);
+    }
 
-  // get doctors stream
-  Stream<List<Doctor>> get doctors {
-    return doctorsCollection.snapshots().map(_doctorsListFromSnapshot);
-  }
-
-  // get doctors stream
-  Stream<List<Doctor>> getDoctorsBybranch(String branch) {
-    return doctorsCollection
-        .where('branch', isEqualTo: branch)
-        .snapshots()
-        .map(_doctorsListFromSnapshot);
+    return query.snapshots().map(_managersListFromSnapshot);
   }
 
   // workDays list from snapshot
@@ -943,7 +963,7 @@ class DatabaseService {
   // get workDays stream
   Stream<List<WorkDay>> getWorkDays(String doctorID) {
     return FirebaseFirestore.instance
-        .collection("doctors/" + doctorID + "/workDays")
+        .collection("users/" + doctorID + "/workDays")
         .snapshots()
         .map(_workDaysListFromSnapshot);
   }
@@ -958,7 +978,7 @@ class DatabaseService {
   }) async {
     try {
       await FirebaseFirestore.instance
-          .collection("doctors/" + doctorID + "/workDays")
+          .collection("users/" + doctorID + "/workDays")
           .doc(documentID)
           .update({
         'working': true,
@@ -981,7 +1001,7 @@ class DatabaseService {
   }) async {
     try {
       await FirebaseFirestore.instance
-          .collection("doctors/" + doctorID + "/workDays")
+          .collection("users/" + doctorID + "/workDays")
           .doc(documentID)
           .update({
         'working': working,
@@ -993,27 +1013,12 @@ class DatabaseService {
     }
   }
 
-  Future updateDoctorStatus({
-    int working,
-    String doctorID,
-  }) async {
-    try {
-      await doctorsCollection.doc(doctorID).update({
-        'status': working,
-      });
-      return 1;
-    } catch (error) {
-      print(error.toString());
-      return null;
-    }
-  }
-
-  Future updateClientRemainingSessions({
+  static Future updateClientRemainingSessions({
     int numAppointments,
     String documentID,
   }) async {
     try {
-      await clientsCollection.doc(documentID).update({
+      await DatabaseService().usersCollection.doc(documentID).update({
         'numAppointments': numAppointments,
       });
       return 1;
@@ -1023,71 +1028,27 @@ class DatabaseService {
     }
   }
 
-  static Future updateNumAppointments({
-    int numAppointments,
-    String documentID,
-  }) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("clients")
-          .doc(documentID)
-          .update({
-        'numAppointments': numAppointments,
-      });
-      return 1;
-    } catch (error) {
-      print(error.toString());
-      return null;
-    }
-  }
-
-  // get user role
   Future setToken(String role) async {
     FirebaseMessaging _messaging = FirebaseMessaging.instance;
     String deviceToken = await _messaging.getToken();
     await usersCollection.doc(uid).update({
       'token': deviceToken,
     });
-    if (role == 'doctor') {
-      await doctorsCollection.doc(uid).update({
-        'token': deviceToken,
-      });
-    } else if (role == 'client') {
-      await clientsCollection.doc(uid).update({
-        'token': deviceToken,
-      });
-    } else if (role == 'secretary') {
-      await secretariesCollection.doc(uid).update({
-        'token': deviceToken,
-      });
-    }
   }
 
   // get user role
   Future<int> getSpecificClientRemainingSessions(String id) async {
-    DocumentSnapshot s = await clientsCollection.doc(id).get();
+    DocumentSnapshot s = await usersCollection.doc(id).get();
     return s.data()['numAppointments'];
   }
 
-  // get user role
-  Future<int> getClientRemainingSessions() async {
-    DocumentSnapshot s = await clientsCollection.doc(uid).get();
-    return s.data()['numAppointments'];
-  }
-
-  Future<String> getSecretaryBranch() async {
-    DocumentSnapshot s = await secretariesCollection.doc(uid).get();
+  Future<String> getManagerBranch() async {
+    DocumentSnapshot s = await usersCollection.doc(uid).get();
     return s.data()['branch'];
   }
 
-  // get user role
-  Future<int> getClientEmail() async {
-    DocumentSnapshot s = await usersCollection.doc(uid).get();
-    return s.data()['email'];
-  }
-
   Future<Client> getClient() async {
-    DocumentSnapshot s = await clientsCollection.doc(uid).get();
+    DocumentSnapshot s = await usersCollection.doc(uid).get();
     Client client = Client(
       fName: s.data()['fName'],
       lName: s.data()['lName'],
@@ -1098,6 +1059,20 @@ class DatabaseService {
       age: s.data()['age'],
     );
     return client;
+  }
+
+  Future<Manager> getManager() async {
+    DocumentSnapshot s = await usersCollection.doc(uid).get();
+    Manager manager = Manager(
+      fName: s.data()['fName'],
+      lName: s.data()['lName'],
+      phoneNumber: s.data()['phoneNumber'],
+      gender: s.data()['gender'],
+      uid: uid,
+      branch: s.data()['branch'],
+      picURL: s.data()['picURL'],
+    );
+    return manager;
   }
 
   Future<Appointment> getAppointment(String id) async {
@@ -1123,19 +1098,6 @@ class DatabaseService {
     );
 
     return appointment;
-  }
-
-  Future<UserData> getUser() async {
-    DocumentSnapshot s = await clientsCollection.doc(uid).get();
-    UserData client = UserData(
-      fName: s.data()['fName'],
-      lName: s.data()['lName'],
-      phoneNumber: s.data()['phoneNumber'],
-      gender: s.data()['gender'],
-      role: s.data()['role'],
-      uid: uid,
-    );
-    return client;
   }
 
   Future<String> getChat(String user1, String user2) async {
@@ -1185,7 +1147,6 @@ class DatabaseService {
     String message,
     String existingChatID,
   }) async {
-    String chatID = '';
     try {
       await FirebaseFirestore.instance
           .collection("chats/" + existingChatID + "/messages")
@@ -1196,18 +1157,6 @@ class DatabaseService {
         'message': message,
         'time': FieldValue.serverTimestamp(),
       });
-    } catch (error) {
-      print(error.toString());
-      return null;
-    }
-  }
-
-  Future cancelAppointment(String id) async {
-    try {
-      await appointmentsCollection.doc(id).update({
-        'status': 'canceled',
-      });
-      return 1;
     } catch (error) {
       print(error.toString());
       return null;
@@ -1252,16 +1201,17 @@ class DatabaseService {
           });
         }
 
-        Query doctorsQuery = doctorsCollection;
-        Future<QuerySnapshot> doctors =
-            doctorsQuery.where('branch', isEqualTo: id).get();
+        Query doctorsQuery = usersCollection
+            .where('role', isEqualTo: 'doctor')
+            .where('branch', isEqualTo: id);
+        Future<QuerySnapshot> doctors = doctorsQuery.get();
         List<Doctor> doctorsList =
             await doctors.then((value) => value.docs.map((doc) {
                   return Doctor(uid: doc.id);
                 }).toList());
 
         for (int i = 0; i < doctorsList.length; i++) {
-          await doctorsCollection.doc(doctorsList[i].uid).update({
+          await usersCollection.doc(doctorsList[i].uid).update({
             'status': 0,
           });
           await usersCollection.doc(doctorsList[i].uid).update({
@@ -1269,16 +1219,17 @@ class DatabaseService {
           });
         }
 
-        Query managersQuery = secretariesCollection;
-        Future<QuerySnapshot> managers =
-            managersQuery.where('branch', isEqualTo: id).get();
-        List<Secretary> managersList =
+        Query managersQuery = usersCollection
+            .where('role', isEqualTo: 'manager')
+            .where('branch', isEqualTo: id);
+        Future<QuerySnapshot> managers = managersQuery.get();
+        List<Manager> managersList =
             await managers.then((value) => value.docs.map((doc) {
-                  return Secretary(uid: doc.id);
+                  return Manager(uid: doc.id);
                 }).toList());
 
         for (int i = 0; i < managersList.length; i++) {
-          await secretariesCollection.doc(managersList[i].uid).update({
+          await usersCollection.doc(managersList[i].uid).update({
             'status': 0,
           });
           await usersCollection.doc(managersList[i].uid).update({
@@ -1299,10 +1250,6 @@ class DatabaseService {
         'status': status,
       });
       if (role == 'client') {
-        await clientsCollection.doc(uid).update({
-          'status': status,
-          //ADD FUCNTION THAT CANCELS ALL CLIENT APPOINTMENTS IN ADMIN SDK
-        });
         if (status == 0) {
           Query query = appointmentsCollection;
           Future<QuerySnapshot> appointments =
@@ -1318,14 +1265,7 @@ class DatabaseService {
             });
           }
         }
-      } else if (role == 'secretary') {
-        await secretariesCollection.doc(uid).update({
-          'status': status,
-        });
-      } else {
-        await doctorsCollection.doc(uid).update({
-          'status': status,
-        });
+      } else if (role == 'doctor') {
         if (status == 0) {
           Query query = appointmentsCollection;
           Future<QuerySnapshot> appointments =
@@ -1354,7 +1294,6 @@ class DatabaseService {
       await usersCollection.doc(uid).update({
         'lang': lang,
       });
-
       return 1;
     } catch (error) {
       print(error.toString());
@@ -1377,6 +1316,19 @@ class DatabaseService {
     } catch (error) {
       print(error.toString());
       return null;
+    }
+  }
+
+  Future<String> uploadImage(File newProfilePic) async {
+    if (newProfilePic != null) {
+      final Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
+      UploadTask task = firebaseStorageRef.putFile(newProfilePic);
+      TaskSnapshot taskSnapshot = await task;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } else {
+      return '';
     }
   }
 }

@@ -5,12 +5,12 @@ import 'package:clinic/models/doctor.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ndialog/ndialog.dart';
 import 'dart:io';
 import '../shared/constants.dart';
@@ -31,6 +31,8 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
   // text field state
   String fName = '';
   String lName = '';
+  CountryCode countryCode;
+  String codeName;
   String phoneNumber = '';
   String error = '';
   String bio = '';
@@ -38,7 +40,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
   String specialty;
   bool loading = false;
   File newProfilePic;
-  String branchName = '';
+  String branchID = '';
 
   @override
   void initState() {
@@ -46,10 +48,11 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
     super.initState();
     fName = widget.doctor.fName;
     lName = widget.doctor.lName;
+    codeName = widget.doctor.countryCode;
     phoneNumber = widget.doctor.phoneNumber;
     bio = widget.doctor.about;
     specialty = widget.doctor.proffesion;
-    branchName = widget.doctor.branch;
+    branchID = widget.doctor.branch;
     if (widget.doctor.gender == 'male') {
       gender = 0;
     } else {
@@ -65,17 +68,6 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
     });
   }
 
-  uploadImage(String uid) async {
-    final Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
-    UploadTask task = firebaseStorageRef.putFile(newProfilePic);
-    TaskSnapshot taskSnapshot = await task;
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => DatabaseService(uid: uid)
-              .updateUserProfilePicture(value.toString(), 'doctor'),
-        );
-  }
-
   Map secretaryData = {};
 
   @override
@@ -86,7 +78,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
     return loading
         ? Loading()
         : StreamBuilder<List<Branch>>(
-            stream: DatabaseService().branches,
+            stream: DatabaseService().getBranches(status: 1),
             builder: (context, snapshot) {
               List<Branch> branches = snapshot.data;
               if (snapshot.hasData) {
@@ -297,13 +289,62 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                     ),
                                     items: branches.map((branch) {
                                       return DropdownMenuItem(
-                                        value: branch.name,
+                                        value: branch.docID,
                                         child: Text('${branch.name}'),
                                       );
                                     }).toList(),
                                     onChanged: (val) =>
-                                        setState(() => branchName = val),
+                                        setState(() => branchID = val),
                                   ),
+                                ),
+                                SizedBox(
+                                  height: size.height * 0.02,
+                                ),
+                                Container(
+                                  width: size.width * 0.8,
+                                  child: Row(
+                                    children: [
+                                      CountryCodePicker(
+                                        padding: EdgeInsets.zero,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            countryCode = value;
+                                          });
+                                        },
+                                        onInit: (value) {
+                                          countryCode = value;
+                                        },
+                                        // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                        initialSelection: codeName,
+                                        // optional. Shows only country name and flag
+                                        showCountryOnly: false,
+                                        // optional. Shows only country name and flag when popup is closed.
+                                        showOnlyCountryWhenClosed: false,
+                                        // optional. aligns the flag and the Text left
+                                        alignLeft: false,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 20),
+                                        width: size.width * 0.55,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 5),
+                                        child: TextFormField(
+                                          initialValue:
+                                              widget.doctor.phoneNumber,
+                                          keyboardType: TextInputType.number,
+                                          onChanged: (val) {
+                                            setState(() => phoneNumber = val);
+                                          },
+                                          validator: (val) => val.length != 11
+                                              ? 'Enter a valid number'
+                                              : null,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: size.height * 0.02,
                                 ),
                                 RoundedInputField(
                                   initialValue: widget.doctor.fName,
@@ -339,18 +380,6 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                       val.isEmpty ? 'Enter a specialty' : null,
                                 ),
                                 RoundedInputField(
-                                  initialValue: widget.doctor.phoneNumber,
-                                  obsecureText: false,
-                                  icon: Icons.phone,
-                                  hintText: 'Phone Number',
-                                  onChanged: (val) {
-                                    setState(() => phoneNumber = val);
-                                  },
-                                  validator: (val) => val.length != 11
-                                      ? 'Enter a valid number'
-                                      : null,
-                                ),
-                                RoundedInputField(
                                   initialValue: widget.doctor.about,
                                   obsecureText: false,
                                   icon: Icons.info,
@@ -367,34 +396,29 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                         loading = true;
                                       });
 
-                                      String downloadUrl;
-                                      if (newProfilePic != null) {
-                                        final Reference firebaseStorageRef =
-                                            FirebaseStorage.instance.ref().child(
-                                                'profilePics/${widget.doctor.uid}.jpg');
-                                        UploadTask task = firebaseStorageRef
-                                            .putFile(newProfilePic);
-                                        TaskSnapshot taskSnapshot = await task;
-                                        downloadUrl = await taskSnapshot.ref
-                                            .getDownloadURL();
-                                      }
+                                      String downloadUrl =
+                                          await DatabaseService(
+                                                  uid: widget.doctor.uid)
+                                              .uploadImage(newProfilePic);
                                       DatabaseService db = DatabaseService(
                                           uid: widget.doctor.uid);
                                       db.updateDoctorData(
-                                        fName: fName,
-                                        lName: lName,
-                                        phoneNumber: phoneNumber,
-                                        gender: gender == 0 ? 'male' : 'female',
                                         about: bio,
                                         profession: specialty,
-                                        branch: branchName,
+                                        fName: fName,
+                                        lName: lName,
+                                        countryCode: countryCode.code,
+                                        countryDialCode: countryCode.dialCode,
+                                        phoneNumber: phoneNumber,
+                                        gender: gender == 0 ? 'male' : 'female',
+                                        branchID: branchID,
+                                        picURL: downloadUrl != ''
+                                            ? downloadUrl
+                                            : widget.doctor.picURL,
+                                        email: widget.doctor.email,
+                                        role: widget.doctor.role,
                                       );
                                       await db.updateDoctorWorkDays();
-                                      await db.updateUserProfilePicture(
-                                          newProfilePic != null
-                                              ? downloadUrl
-                                              : '',
-                                          'doctor');
                                       setState(() {
                                         loading = false;
                                       });

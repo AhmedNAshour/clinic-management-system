@@ -28,9 +28,9 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     otherUsersData = ModalRoute.of(context).settings.arguments;
-    final UserData otherUser = otherUsersData['otherUser'];
+    final UserModel otherUser = otherUsersData['otherUser'];
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
@@ -40,7 +40,7 @@ class _ChatRoomState extends State<ChatRoom> {
           stream: DatabaseService(uid: user.uid).userData,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              UserData currentUser = snapshot.data;
+              UserModel currentUser = snapshot.data;
               return FutureBuilder<String>(
                   future:
                       DatabaseService().getChat(currentUser.uid, otherUser.uid),

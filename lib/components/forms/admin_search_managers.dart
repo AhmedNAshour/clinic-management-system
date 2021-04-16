@@ -31,6 +31,7 @@ class _SearchManagersFormAdminState extends State<SearchManagersFormAdmin> {
   Widget build(BuildContext context) {
     return Form(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           SearchInputField(
             initialValue: clientNameSearch,

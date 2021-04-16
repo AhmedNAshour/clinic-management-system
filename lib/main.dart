@@ -2,19 +2,19 @@ import 'package:clinic/screens/admin/add_secretary.dart';
 import 'package:clinic/screens/admin/branches.dart';
 import 'package:clinic/screens/admin/appointments_admin.dart';
 import 'package:clinic/screens/admin/map.dart';
-import 'package:clinic/screens/client/book_appointment.dart';
+import './screens/admin/mapEdit.dart';
 import 'package:clinic/screens/client/client_home.dart';
-import 'package:clinic/screens/secretary/addClient.dart';
-import 'package:clinic/screens/secretary/addDoctorSecretary.dart';
-import 'package:clinic/screens/secretary/appLanguage.dart';
-import 'package:clinic/screens/secretary/appointments_secretary.dart';
-import 'package:clinic/screens/secretary/booking_step1.dart';
-import 'package:clinic/screens/secretary/booking_step2.dart';
-import 'package:clinic/screens/secretary/booking_step3.dart';
-import 'package:clinic/screens/secretary/doctorSchedule.dart';
-import 'package:clinic/screens/secretary/notificationSettings.dart';
-import 'package:clinic/screens/secretary/secretaryHome.dart';
-import 'package:clinic/screens/secretary/secretary_navigation.dart';
+import 'package:clinic/screens/manager/addClient.dart';
+import 'package:clinic/screens/manager/addDoctorSecretary.dart';
+import 'package:clinic/screens/manager/appLanguage.dart';
+import 'package:clinic/screens/manager/appointments_secretary.dart';
+import 'package:clinic/screens/manager/booking_step1.dart';
+import 'package:clinic/screens/manager/booking_step2.dart';
+import 'package:clinic/screens/manager/booking_step3.dart';
+import 'package:clinic/screens/manager/doctorSchedule.dart';
+import 'package:clinic/screens/manager/notificationSettings.dart';
+import 'package:clinic/screens/manager/secretaryHome.dart';
+import 'package:clinic/screens/manager/secretary_navigation.dart';
 import 'package:clinic/screens/shared/login.dart';
 import 'package:clinic/screens/shared/reset_password.dart';
 import 'package:clinic/screens/shared/search_results/appointments_search_results.dart';
@@ -27,14 +27,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:clinic/screens/admin/addDoctorAdmin.dart';
-import 'package:clinic/screens/secretary/changePassword.dart';
+import 'package:clinic/screens/manager/changePassword.dart';
 import './screens/admin/clientsAdmin.dart';
 import './screens/admin/doctorsAdmin.dart';
 import './screens/admin/managersAdmin.dart';
 import './screens/admin/add_branch.dart';
 import './screens/admin/notificationSettings_admin.dart';
-import './screens/admin/appColor.dart';
 import 'models/user.dart';
+import 'screens/admin/edit_branch.dart';
 import './screens/client/booking_step1_client.dart';
 import './screens/client/booking_step2_client.dart';
 import './screens/doctor/notificationSettings_doctor.dart';
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<MyUser>.value(
+        StreamProvider<AuthUser>.value(
           value: AuthService().user,
           initialData: null,
         ),
@@ -91,9 +91,10 @@ class MyApp extends StatelessWidget {
           '/secretaryAddClientScreen': (context) => AddClient(),
           AddDoctorSec.id: (context) => AddDoctorSec(),
           '/adminAddDoctorScreen': (context) => AddDoctorAdmin(),
-          '/bookingScreen': (context) => BookAppointment(),
           AddBranch.id: (context) => AddBranch(),
+          EditBranch.id: (context) => EditBranch(),
           MapSelect.id: (context) => MapSelect(),
+          MapEdit.id: (context) => MapEdit(),
           '/appointmentsScreenAdmin': (context) => AppointmentsAdmin(),
           '/appointmentsScreenSecretary': (context) => AppointmentsSecretary(),
           Branches.id: (context) => Branches(),
@@ -106,7 +107,6 @@ class MyApp extends StatelessWidget {
           BookingStep2Client.id: (context) => BookingStep2Client(),
           ResetPassword.id: (context) => ResetPassword(),
           ChangePassword.id: (context) => ChangePassword(),
-          ChangeAppColor.id: (context) => ChangeAppColor(),
           ChatRoom.id: (context) => ChatRoom(),
           NotificationSettingsManager.id: (context) =>
               NotificationSettingsManager(),

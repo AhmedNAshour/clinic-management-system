@@ -26,7 +26,7 @@ class _ClientNavigationState extends State<ClientNavigation> {
   ];
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.maybeOf(context).size;
     return MultiProvider(
       providers: [

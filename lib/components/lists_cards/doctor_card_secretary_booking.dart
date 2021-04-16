@@ -1,5 +1,5 @@
 import 'package:clinic/models/client.dart';
-import 'package:clinic/screens/secretary/booking_step3.dart';
+import 'package:clinic/screens/manager/booking_step3.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/material.dart';
 import '../../models/doctor.dart';

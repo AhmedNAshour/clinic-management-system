@@ -26,13 +26,13 @@ class _AppointmentsSearchResultsState extends State<AppointmentsSearchResults> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<MyUser>(context);
+    final user = Provider.of<AuthUser>(context);
     searchData = ModalRoute.of(context).settings.arguments;
 
     // searchData =
 
     return FutureBuilder(
-      future: DatabaseService(uid: user.uid).getSecretaryBranch(),
+      future: DatabaseService(uid: user.uid).getManagerBranch(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String secretaryBranch = snapshot.data;
@@ -78,7 +78,7 @@ class _AppointmentsSearchResultsState extends State<AppointmentsSearchResults> {
                             EdgeInsets.symmetric(vertical: size.height * 0.02),
                         width: size.width * 0.9,
                         child: StreamProvider.value(
-                            value: DatabaseService().getAppointmentsBySearch(
+                            value: DatabaseService().getAppointments(
                               branch: secretaryBranch,
                               clientName: searchData['clientName'],
                               doctorName: searchData['doctorName'],

@@ -30,7 +30,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final doctor = Provider.of<Doctor>(context);
-    final userData = Provider.of<UserData>(context);
+    final userData = Provider.of<UserModel>(context);
     bookingNotifs = userData.bookingNotifs;
     cancellingNotifs = userData.cancellingNotifs;
     userLang =
