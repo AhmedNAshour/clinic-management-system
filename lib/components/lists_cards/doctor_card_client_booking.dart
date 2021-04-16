@@ -48,18 +48,12 @@ class DoctorCardClientBooking extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(
-                    height: screenHeight * 0.01,
-                  ),
                   Text(
                     doctor.proffesion,
                     style: TextStyle(
                       color: kPrimaryLightColor,
                       fontSize: screenWidth * 0.04,
                     ),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.01,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -72,13 +66,13 @@ class DoctorCardClientBooking extends StatelessWidget {
                       SizedBox(
                         width: screenWidth * 0.02,
                       ),
-                      // Text(
-                      //   '${doctor.branch}',
-                      //   style: TextStyle(
-                      //     color: kPrimaryTextColor,
-                      //     fontSize: screenWidth * 0.045,
-                      //   ),
-                      // ),
+                      Text(
+                        '${doctor.branch}',
+                        style: TextStyle(
+                          color: kPrimaryTextColor,
+                          fontSize: screenWidth * 0.045,
+                        ),
+                      ),
                     ],
                   ),
                 ],

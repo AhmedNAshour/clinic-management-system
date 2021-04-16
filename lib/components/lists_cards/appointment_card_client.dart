@@ -1,8 +1,10 @@
 import 'dart:io';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clinic/models/appointment.dart';
+import 'package:clinic/models/customBottomSheets.dart';
+import 'package:clinic/screens/admin/client_cancel_appointment.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,6 +51,10 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
+    HttpsCallable notifyManagersAboutCancellation =
+        FirebaseFunctions.instance.httpsCallable(
+      'secretaryCancellingTrigger',
+    );
     return GestureDetector(
       child: Card(
         elevation: 5,
@@ -148,79 +154,12 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
                       widget.appointment.status != 'canceled'
                   ? GestureDetector(
                       onTap: () {
-                        AwesomeDialog(
-                          context: context,
-                          headerAnimationLoop: false,
-                          dialogType: DialogType.WARNING,
-                          animType: AnimType.BOTTOMSLIDE,
-                          title: "Cancel Appointment",
-                          desc:
-                              'Are you sure you want to cancel this appointment ?',
-                          btnCancelOnPress: () {},
-                          btnOkOnPress: () async {
-                            print('Client id: ${widget.appointment.clientID}');
-                            dynamic result;
-                            int old = await DatabaseService()
-                                .getSpecificClientRemainingSessions(
-                                    widget.appointment.clientID);
-                            print('Old : $old');
-                            await DatabaseService.updateClientRemainingSessions(
-                                numAppointments: old + 1,
-                                documentID: widget.appointment.clientID);
-                            result = await DatabaseService()
-                                .updateAppointmentStatus(
-                                    id: widget.appointment.docID,
-                                    status: 'canceled');
-
-                            if (result == null) {
-                              AwesomeDialog(
-                                  context: context,
-                                  headerAnimationLoop: false,
-                                  dialogType: DialogType.ERROR,
-                                  animType: AnimType.BOTTOMSLIDE,
-                                  body: Align(
-                                    alignment: Alignment.center,
-                                    child: Center(
-                                      child: Text(
-                                        'COULD NOT CANCEL APPOINTMENT..',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                  onDissmissCallback: () {},
-                                  btnOkOnPress: () {})
-                                ..show();
-                            } else {
-                              //Navigator.pop(context);
-                              await DatabaseService()
-                                  .addAppointmentNotifications(
-                                appointment: widget.appointment,
-                                status: 1,
-                                type: 0,
-                              );
-                              AwesomeDialog(
-                                  context: context,
-                                  headerAnimationLoop: false,
-                                  dialogType: DialogType.SUCCES,
-                                  animType: AnimType.BOTTOMSLIDE,
-                                  body: Center(
-                                    child: Text(
-                                      'Appointment Cancelled Successfully',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  onDissmissCallback: () {},
-                                  btnOkOnPress: () {})
-                                ..show();
-                            }
-                          },
-                        )..show();
+                        CustomBottomSheets().showDynamicCustomBottomSheet(
+                            size,
+                            CancelAppointmentClient(
+                              widget.appointment,
+                            ),
+                            context);
                       },
                       child: Icon(
                         Icons.cancel,

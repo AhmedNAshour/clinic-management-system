@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/screens/shared/constants.dart';

@@ -493,6 +493,7 @@ class DatabaseService {
         doctorLName: doc.data()['doctorLName'] ?? '',
         status: doc.data()['status'] ?? '',
         docID: doc.id,
+        branch: doc.data()['branch'] ?? '',
         doctorPicURL: doc.data()['doctorPicURL'] ?? '',
         clientPicURL: doc.data()['clientPicURL'] ?? '',
       );
@@ -624,11 +625,12 @@ class DatabaseService {
   }
 
   Future addAppointmentNotifications({
+    bool forClient,
     Appointment appointment,
     int status,
     int type,
   }) async {
-    if (type == 0) {
+    if (forClient) {
       await FirebaseFirestore.instance
           .collection("users/" + appointment.clientID + "/notifications")
           .doc()
@@ -648,7 +650,46 @@ class DatabaseService {
         'status': status,
         'type': type,
       });
+    } else {
+      Query query = usersCollection.where('role', isEqualTo: 'manager');
+      Future<QuerySnapshot> managers =
+          query.where('branch', isEqualTo: appointment.branch).get();
+      List<Manager> managersList =
+          await managers.then((value) => value.docs.map((doc) {
+                return Manager(
+                  fName: doc.data()['fName'] ?? '',
+                  lName: doc.data()['lName'] ?? '',
+                  phoneNumber: doc.data()['phoneNumber'] ?? '',
+                  gender: doc.data()['gender'] ?? '',
+                  branch: doc.data()['branch'] ?? '',
+                  uid: doc.id,
+                  picURL: doc.data()['picURL'] ?? '',
+                  status: doc.data()['status'] ?? 1,
+                );
+              }).toList());
+
+      for (int i = 0; i < managersList.length; i++) {
+        await FirebaseFirestore.instance
+            .collection("users/" + managersList[i].uid + "/notifications")
+            .doc()
+            .set({
+          'startTime': appointment.startTime,
+          'endTime': appointment.startTime.add(Duration(minutes: 30)),
+          'clientID': appointment.clientID,
+          'doctorID': appointment.doctorID,
+          'day': DateFormat("yyyy-MM-dd").format(appointment.startTime),
+          'clientFName': appointment.clientFName,
+          'clientLName': appointment.clientLName,
+          'doctorFName': appointment.doctorFName,
+          'doctorLName': appointment.doctorLName,
+          'branch': appointment.branch,
+          'clientPicURL': appointment.clientPicURL,
+          'status': status,
+          'type': type,
+        });
+      }
     }
+
     await FirebaseFirestore.instance
         .collection("users/" + appointment.doctorID + "/notifications")
         .doc()
@@ -667,43 +708,6 @@ class DatabaseService {
       'status': status,
       'type': type,
     });
-    Query query = usersCollection.where('role', isEqualTo: 'manager');
-    Future<QuerySnapshot> managers =
-        query.where('branch', isEqualTo: appointment.branch).get();
-    List<Manager> managersList =
-        await managers.then((value) => value.docs.map((doc) {
-              return Manager(
-                fName: doc.data()['fName'] ?? '',
-                lName: doc.data()['lName'] ?? '',
-                phoneNumber: doc.data()['phoneNumber'] ?? '',
-                gender: doc.data()['gender'] ?? '',
-                branch: doc.data()['branch'] ?? '',
-                uid: doc.id,
-                picURL: doc.data()['picURL'] ?? '',
-                status: doc.data()['status'] ?? 1,
-              );
-            }).toList());
-
-    for (int i = 0; i < managersList.length; i++) {
-      await FirebaseFirestore.instance
-          .collection("users/" + managersList[i].uid + "/notifications")
-          .doc()
-          .set({
-        'startTime': appointment.startTime,
-        'endTime': appointment.startTime.add(Duration(minutes: 30)),
-        'clientID': appointment.clientID,
-        'doctorID': appointment.doctorID,
-        'day': DateFormat("yyyy-MM-dd").format(appointment.startTime),
-        'clientFName': appointment.clientFName,
-        'clientLName': appointment.clientLName,
-        'doctorFName': appointment.doctorFName,
-        'doctorLName': appointment.doctorLName,
-        'branch': appointment.branch,
-        'clientPicURL': appointment.clientPicURL,
-        'status': status,
-        'type': type,
-      });
-    }
   }
 
   List<NotificationModel> _notificationsListFromSnapshot(
@@ -913,7 +917,7 @@ class DatabaseService {
         role: doc['role'] ?? '',
         countryCode: doc['countryCode'] ?? '',
         countryDialCode: doc['countryDialCode'] ?? '',
-
+        branch: doc['branch'] ?? '',
         phoneNumber: doc['phoneNumber'] ?? '',
         email: doc['email'] ?? '',
         picURL: doc['picURL'] ?? '',

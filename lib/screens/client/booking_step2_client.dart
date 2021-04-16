@@ -7,6 +7,7 @@ import 'package:clinic/models/workDay.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -92,6 +93,10 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
     Doctor doctor = data['doctor'];
     Size size = MediaQuery.of(context).size;
     final user = Provider.of<AuthUser>(context);
+    HttpsCallable notifyManagersAboutBooking =
+        FirebaseFunctions.instance.httpsCallable(
+      'secretaryBookingTrigger',
+    );
 
     return StreamBuilder<List<WorkDay>>(
         stream: DatabaseService().getWorkDays(doctor.uid),
@@ -115,8 +120,6 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                   });
                   startTimes = [];
                   generateAvailableTimeSlots(workDays);
-                } else {
-                  print('no data');
                 }
                 return StreamBuilder(
                   stream: DatabaseService(uid: user.uid).client,
@@ -331,6 +334,7 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                                           );
                                           await DatabaseService(uid: client.uid)
                                               .addAppointmentNotifications(
+                                            forClient: false,
                                             appointment: Appointment(
                                               clientID: client.uid,
                                               startTime: startTimes[
@@ -355,6 +359,15 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                                               numAppointments:
                                                   client.numAppointments - 1,
                                               documentID: client.uid);
+
+                                          await notifyManagersAboutBooking
+                                              .call(<String, dynamic>{
+                                            'branch': doctor.branch,
+                                            'doctorName': doctor.fName +
+                                                ' ' +
+                                                doctor.lName,
+                                          });
+
                                           Navigator.popUntil(context,
                                               ModalRoute.withName('/'));
                                           await NDialog(

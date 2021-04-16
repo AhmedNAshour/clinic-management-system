@@ -7,6 +7,7 @@ import 'package:clinic/models/workDay.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -93,6 +94,10 @@ class _BookingStep3State extends State<BookingStep3> {
     Client client = data['client'];
     Size size = MediaQuery.of(context).size;
     final user = Provider.of<AuthUser>(context);
+    HttpsCallable notifyClientAboutBooking =
+        FirebaseFunctions.instance.httpsCallable(
+      'clientBookingTrigger',
+    );
 
     return StreamBuilder<List<WorkDay>>(
         stream: DatabaseService().getWorkDays(doctor.uid),
@@ -116,8 +121,6 @@ class _BookingStep3State extends State<BookingStep3> {
                   });
                   startTimes = [];
                   generateAvailableTimeSlots(workDays);
-                } else {
-                  print('no data');
                 }
                 return FutureBuilder(
                   future: DatabaseService(uid: user.uid).getManagerBranch(),
@@ -333,6 +336,7 @@ class _BookingStep3State extends State<BookingStep3> {
                                           );
                                           await DatabaseService(uid: client.uid)
                                               .addAppointmentNotifications(
+                                            forClient: true,
                                             appointment: Appointment(
                                               clientID: client.uid,
                                               startTime: startTimes[
@@ -357,6 +361,15 @@ class _BookingStep3State extends State<BookingStep3> {
                                               numAppointments:
                                                   client.numAppointments - 1,
                                               documentID: client.uid);
+                                          await notifyClientAboutBooking
+                                              .call(<String, dynamic>{
+                                            'client': client.uid,
+                                            'doctorName': doctor.fName +
+                                                ' ' +
+                                                doctor.lName,
+                                            'time':
+                                                '${DateFormat("MMM").format(startTimes[selectedTimeSlotIndex])} ${DateFormat("d").format(startTimes[selectedTimeSlotIndex])} - ${DateFormat("jm").format(startTimes[selectedTimeSlotIndex])}',
+                                          });
                                           Navigator.popUntil(context,
                                               ModalRoute.withName('/'));
                                           await NDialog(

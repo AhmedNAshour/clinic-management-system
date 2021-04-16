@@ -9,18 +9,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 
-class CancelAppointment extends StatefulWidget {
+class CancelAppointmentClient extends StatefulWidget {
   static const id = 'DisableUser';
   Appointment appointment;
-  CancelAppointment(Appointment appointment) {
+  CancelAppointmentClient(Appointment appointment) {
     this.appointment = appointment;
   }
 
   @override
-  _CancelAppointmentState createState() => _CancelAppointmentState();
+  _CancelAppointmentClientState createState() =>
+      _CancelAppointmentClientState();
 }
 
-class _CancelAppointmentState extends State<CancelAppointment> {
+class _CancelAppointmentClientState extends State<CancelAppointmentClient> {
   // text field state
 
   bool loading = false;
@@ -35,9 +36,9 @@ class _CancelAppointmentState extends State<CancelAppointment> {
     final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
-    HttpsCallable notifyClientAboutCancellation =
+    HttpsCallable notifyManagersAboutCancellation =
         FirebaseFunctions.instance.httpsCallable(
-      'clientCancellingTrigger',
+      'secretaryCancellingTrigger',
     );
     return loading
         ? Loading()
@@ -117,19 +118,21 @@ class _CancelAppointmentState extends State<CancelAppointment> {
                               id: widget.appointment.docID, status: 'canceled');
 
                           await DatabaseService().addAppointmentNotifications(
-                            forClient: true,
+                            forClient: false,
                             appointment: widget.appointment,
                             status: 1,
                             type: 0,
                             //TODO: add appointment ID to notification
                           );
-
-                          await notifyClientAboutCancellation
+                          await notifyManagersAboutCancellation
                               .call(<String, dynamic>{
-                            'client': widget.appointment.clientID,
                             'doctor': widget.appointment.doctorFName +
                                 ' ' +
                                 widget.appointment.doctorLName,
+                            'client': widget.appointment.clientFName +
+                                ' ' +
+                                widget.appointment.clientLName,
+                            'branch': widget.appointment.branch,
                           });
                           Navigator.pop(context);
                           await NDialog(

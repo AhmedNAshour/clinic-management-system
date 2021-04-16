@@ -7,8 +7,8 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class NotificationCard extends StatefulWidget {
-  NotificationCard({
+class NotificationCardClient extends StatefulWidget {
+  NotificationCardClient({
     Key key,
     this.notification,
     this.userData,
@@ -18,33 +18,13 @@ class NotificationCard extends StatefulWidget {
   final UserModel userData;
 
   @override
-  _NotificationCardState createState() => _NotificationCardState();
+  _NotificationCardClientState createState() => _NotificationCardClientState();
 }
 
-class _NotificationCardState extends State<NotificationCard> {
+class _NotificationCardClientState extends State<NotificationCardClient> {
   File newProfilePic;
   String note = '';
   String error = '';
-
-  String generateNotificationTitle(
-      NotificationModel notification, UserModel user) {
-    if (notification.type == 1) {
-      if (user.role == 'client') {
-        return 'An appointment was booked for you with Dr.${widget.notification.doctorFName} on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} at ${widget.notification.branch} branch';
-      } else if (user.role == 'doctor') {
-        return '${widget.notification.clientFName} booked an appointment on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)}';
-      } else {
-        return '${widget.notification.clientFName} booked an appointment with Dr.${widget.notification.doctorFName} on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}';
-      }
-    } else if (notification.type == 0) {
-      //TODO:
-      ////TODO:
-      /////TODO:
-      /////TODO:
-      /////TODO:
-      /////TODO:
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +58,11 @@ class _NotificationCardState extends State<NotificationCard> {
             children: [
               CircleAvatar(
                 radius: screenWidth * 0.11,
-                backgroundImage: widget.userData.role == 'client'
-                    ? widget.notification.doctorPicURL != null
+                backgroundImage: widget.notification.doctorPicURL != ''
+                    ? widget.userData.role == 'client'
                         ? NetworkImage(widget.notification.doctorPicURL)
-                        : AssetImage('assets/images/doctorPlaceholder.png')
-                    : widget.notification.clientPicURL != null
-                        ? NetworkImage(widget.notification.clientPicURL)
-                        : AssetImage('assets/images/userPlaceholder.png'),
+                        : NetworkImage(widget.notification.clientPicURL)
+                    : AssetImage('assets/images/userPlaceholder.png'),
               ),
               SizedBox(
                 width: screenWidth * 0.02,
@@ -103,9 +81,8 @@ class _NotificationCardState extends State<NotificationCard> {
                         ),
                         children: <TextSpan>[
                           TextSpan(
-                            text: widget.userData.role == 'client'
-                                ? 'Appointment Added'
-                                : '${widget.notification.clientFName} ${widget.notification.clientLName}',
+                            text:
+                                '${widget.notification.clientFName} ${widget.notification.clientLName}',
                           ),
                           // TextSpan(
                           //   text: '${widget.appointment.doctor}',
@@ -120,7 +97,7 @@ class _NotificationCardState extends State<NotificationCard> {
                     ),
                     Text(
                       widget.notification.type == 1
-                          ? widget.userData.role == 'client'
+                          ? widget.userData.role == 'secretary'
                               ? '${widget.notification.clientFName} booked an appointment with Dr.${widget.notification.doctorFName} on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}'
                               : '${widget.notification.clientFName} booked an appointment on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}'
                           : widget.userData.role == 'secretary'
