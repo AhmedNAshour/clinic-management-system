@@ -281,6 +281,7 @@ class _AddDoctorSecState extends State<AddDoctorSec> {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       child: TextFormField(
+                                        initialValue: phoneNumber,
                                         keyboardType: TextInputType.number,
                                         onChanged: (val) {
                                           setState(() => phoneNumber = val);
@@ -328,18 +329,6 @@ class _AddDoctorSecState extends State<AddDoctorSec> {
                                 },
                                 validator: (val) =>
                                     val.isEmpty ? 'Enter a specialty' : null,
-                              ),
-                              RoundedInputField(
-                                initialValue: phoneNumber,
-                                obsecureText: false,
-                                icon: Icons.phone,
-                                hintText: 'Phone Number',
-                                onChanged: (val) {
-                                  setState(() => phoneNumber = val);
-                                },
-                                validator: (val) => val.length != 11
-                                    ? 'Enter a valid number'
-                                    : null,
                               ),
                               RoundedInputField(
                                 initialValue: bio,
@@ -408,6 +397,8 @@ class _AddDoctorSecState extends State<AddDoctorSec> {
                                         phoneNumber: phoneNumber,
                                         gender: gender == 0 ? 'male' : 'female',
                                         picURL: downloadUrl,
+                                        profession: specialty,
+                                        about: bio,
                                         status: 1,
                                         role: 'doctor',
                                         email: email,

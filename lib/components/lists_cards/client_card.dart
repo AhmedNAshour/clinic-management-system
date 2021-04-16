@@ -193,66 +193,66 @@ class _ClientCardState extends State<ClientCard> {
                               return StatefulBuilder(builder:
                                   (BuildContext context,
                                       StateSetter insideState) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    insideState(() {
-                                      if (sessions != 0) {
-                                        sessions--;
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: size.height * 0.02),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.02,
-                                              right: size.width * 0.02,
-                                              bottom: size.height * 0.01),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                width: size.height * 0.001,
-                                                color: kPrimaryLightColor,
-                                              ),
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: size.height * 0.02),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            left: size.width * 0.02,
+                                            right: size.width * 0.02,
+                                            bottom: size.height * 0.01),
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              width: size.height * 0.001,
+                                              color: kPrimaryLightColor,
                                             ),
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                'Add Sessions',
-                                                style: TextStyle(
-                                                    fontSize: size.width * 0.05,
-                                                    color: kPrimaryTextColor),
-                                              ),
-                                              SizedBox(width: size.width * 0.2),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.close,
-                                                  color: kPrimaryTextColor,
-                                                  size: size.width * 0.085,
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          ),
                                         ),
-                                        SizedBox(
-                                          height: size.height * 0.04,
-                                        ),
-                                        Row(
+                                        child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.end,
                                           children: [
-                                            Container(
+                                            Text(
+                                              'Add Sessions',
+                                              style: TextStyle(
+                                                  fontSize: size.width * 0.05,
+                                                  color: kPrimaryTextColor),
+                                            ),
+                                            SizedBox(width: size.width * 0.2),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: kPrimaryTextColor,
+                                                size: size.width * 0.085,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: size.height * 0.04,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              insideState(() {
+                                                if (sessions != 0) {
+                                                  sessions--;
+                                                }
+                                              });
+                                            },
+                                            child: Container(
                                               height: size.height * 0.07,
                                               width: size.width * 0.14,
                                               decoration: BoxDecoration(
@@ -269,112 +269,111 @@ class _ClientCardState extends State<ClientCard> {
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            Container(
+                                          ),
+                                          Container(
+                                            height: size.height * 0.07,
+                                            width: size.width * 0.25,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                top: BorderSide(
+                                                  width: size.height * 0.001,
+                                                  color: kPrimaryLightColor,
+                                                ),
+                                                bottom: BorderSide(
+                                                  width: size.height * 0.001,
+                                                  color: kPrimaryLightColor,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                sessions.toString(),
+                                                style: TextStyle(
+                                                  color: Color(0xFF707070),
+                                                  fontSize: size.width * 0.05,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              insideState(() {
+                                                sessions++;
+                                              });
+                                            },
+                                            child: Container(
                                               height: size.height * 0.07,
-                                              width: size.width * 0.25,
+                                              width: size.width * 0.14,
                                               decoration: BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    width: size.height * 0.001,
-                                                    color: kPrimaryLightColor,
-                                                  ),
-                                                  bottom: BorderSide(
-                                                    width: size.height * 0.001,
-                                                    color: kPrimaryLightColor,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  sessions.toString(),
-                                                  style: TextStyle(
-                                                    color: Color(0xFF707070),
-                                                    fontSize: size.width * 0.05,
-                                                  ),
-                                                ),
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(10),
+                                                    bottomRight:
+                                                        Radius.circular(10),
+                                                  )),
+                                              child: Icon(
+                                                Icons.add,
+                                                color: Colors.white,
                                               ),
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                insideState(() {
-                                                  sessions++;
-                                                });
-                                              },
-                                              child: Container(
-                                                height: size.height * 0.07,
-                                                width: size.width * 0.14,
-                                                decoration: BoxDecoration(
-                                                    color: kPrimaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topRight:
-                                                          Radius.circular(10),
-                                                      bottomRight:
-                                                          Radius.circular(10),
-                                                    )),
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: size.height * 0.03,
+                                      ),
+                                      RoundedButton(
+                                        text: 'ADD SESSIONS',
+                                        press: () async {
+                                          await DatabaseService
+                                              .updateClientRemainingSessions(
+                                                  numAppointments: sessions +
+                                                      widget.client
+                                                          .numAppointments,
+                                                  documentID:
+                                                      widget.client.uid);
+                                          Navigator.pop(context);
+                                          await NDialog(
+                                            dialogStyle: DialogStyle(
+                                              backgroundColor: kPrimaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: size.height * 0.03,
-                                        ),
-                                        RoundedButton(
-                                          text: 'ADD SESSIONS',
-                                          press: () async {
-                                            await DatabaseService
-                                                .updateClientRemainingSessions(
-                                                    numAppointments: sessions +
-                                                        widget.client
-                                                            .numAppointments,
-                                                    documentID:
-                                                        widget.client.uid);
-                                            Navigator.pop(context);
-                                            await NDialog(
-                                              dialogStyle: DialogStyle(
-                                                backgroundColor: kPrimaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              content: Container(
-                                                height: size.height * 0.5,
-                                                width: size.width * 0.8,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      FontAwesomeIcons
-                                                          .checkCircle,
+                                            content: Container(
+                                              height: size.height * 0.5,
+                                              width: size.width * 0.8,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    FontAwesomeIcons
+                                                        .checkCircle,
+                                                    color: Colors.white,
+                                                    size: size.height * 0.125,
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.05,
+                                                  ),
+                                                  Text(
+                                                    'Sessions Added',
+                                                    style: TextStyle(
                                                       color: Colors.white,
-                                                      size: size.height * 0.125,
+                                                      fontSize:
+                                                          size.height * 0.04,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                                    SizedBox(
-                                                      height:
-                                                          size.height * 0.05,
-                                                    ),
-                                                    Text(
-                                                      'Sessions Added',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize:
-                                                            size.height * 0.04,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                            ).show(context);
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                            ),
+                                          ).show(context);
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 );
                               });

@@ -4,31 +4,43 @@ const { user } = require('firebase-functions/lib/providers/auth');
 admin.initializeApp(functions.config().firebase);
 
 
-exports.addUser = functions.https.onCall((data,context) => {
-    admin
-    .auth()
-    .createUser({
-      email: data.email,
-      password: data.password,
-      disabled: false,
-    })
-    .then((userRecord) => {
-      // See the UserRecord reference doc for the contents of userRecord.
-      return {'uid':userRecord.uid};
-    })
-    .catch((error) => {
-        return {'uid':'fail'};
-    });
-})
+// exports.addUser = functions.https.onCall((data,context) => {
+//     admin
+//     .auth()
+//     .createUser({
+//       email: data.email,
+//       password: data.password,
+//       disabled: false,
+//     })
+//     .then((userRecord) => {
+//       // See the UserRecord reference doc for the contents of userRecord.
+//       return {'uid':userRecord.uid};
+//     })
+//     .catch((error) => {
+//         return {'uid':'fail'};
+//     });
+// })
 
-exports.deleteUser = functions.https.onCall((data,context) => {
-    admin.auth().deleteUser(data.uid)
-    .then(function() {
-        console.log('Successfully deleted user');
-    }).catch(function(error) {
-        console.log('Error deleting user:', error);
-        });  
-})
+// exports.deleteUser = functions.https.onCall((data,context) => {
+//     admin.auth().deleteUser(data.uid)
+//     .then(function() {
+//         console.log('Successfully deleted user');
+//     }).catch(function(error) {
+//         console.log('Error deleting user:', error);
+//         });  
+// })
+
+exports.registrationRequestTrigger = functions.firestore.document('users/{userId}').onCreate
+(
+    async (snapshot , context) =>
+    {
+        if(user.role == 'client' && user.status == 2){
+            var payload = {notification: {title: 'Registration Request', body: 'A new registration request was made'}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
+            console.log(tokens[0]);
+            const response = await admin.messaging().sendToTopic('registrationRequests',payload)
+        }    
+    }
+)
 
 exports.doctorBookingTrigger = functions.firestore.document('appointments/{appointmentId}').onCreate
 (
