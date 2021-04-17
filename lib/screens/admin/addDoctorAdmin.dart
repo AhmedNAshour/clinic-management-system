@@ -435,7 +435,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                             doctorId = result.uid;
                                             downloadUrl = await DatabaseService(
                                                     uid: doctorId)
-                                                .uploadImage(newProfilePic);
+                                                .uploadUserImage(newProfilePic);
                                             DatabaseService db =
                                                 DatabaseService(uid: doctorId);
                                             db.updateDoctorData(

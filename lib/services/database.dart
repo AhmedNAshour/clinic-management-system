@@ -406,6 +406,7 @@ class DatabaseService {
   List<MessageModel> _messagesFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return MessageModel(
+        type: doc.data()['type'] ?? 0,
         body: doc.data()['message'] ?? '',
         sender: doc.data()['sender'] ?? '',
         reciever: doc.data()['reciever'] ?? '',
@@ -1143,21 +1144,37 @@ class DatabaseService {
   }
 
   Future sendMessage({
+    int type,
+    String messageID,
     String user1,
     String user2,
     String message,
     String existingChatID,
   }) async {
     try {
-      await FirebaseFirestore.instance
-          .collection("chats/" + existingChatID + "/messages")
-          .doc()
-          .set({
-        'sender': user1,
-        'reciever': user2,
-        'message': message,
-        'time': FieldValue.serverTimestamp(),
-      });
+      if (type == 0) {
+        await FirebaseFirestore.instance
+            .collection("chats/" + existingChatID + "/messages")
+            .doc()
+            .set({
+          'sender': user1,
+          'reciever': user2,
+          'message': message,
+          'time': FieldValue.serverTimestamp(),
+          'type': type,
+        });
+      } else if (type == 1) {
+        await FirebaseFirestore.instance
+            .collection("chats/" + existingChatID + "/messages")
+            .doc(messageID)
+            .set({
+          'sender': user1,
+          'reciever': user2,
+          'message': message,
+          'time': FieldValue.serverTimestamp(),
+          'type': type,
+        });
+      }
     } catch (error) {
       print(error.toString());
       return null;
@@ -1320,10 +1337,24 @@ class DatabaseService {
     }
   }
 
-  Future<String> uploadImage(File newProfilePic) async {
+  Future<String> uploadUserImage(File newProfilePic) async {
     if (newProfilePic != null) {
       final Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
+      UploadTask task = firebaseStorageRef.putFile(newProfilePic);
+      TaskSnapshot taskSnapshot = await task;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } else {
+      return '';
+    }
+  }
+
+  Future<String> uploadMessageImage(
+      File newProfilePic, String messageID) async {
+    if (newProfilePic != null) {
+      final Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('messages/$messageID.jpg');
       UploadTask task = firebaseStorageRef.putFile(newProfilePic);
       TaskSnapshot taskSnapshot = await task;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();

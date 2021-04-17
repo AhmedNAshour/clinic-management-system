@@ -370,7 +370,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                 } else {
                                   String downloadUrl =
                                       await DatabaseService(uid: result.uid)
-                                          .uploadImage(newProfilePic);
+                                          .uploadUserImage(newProfilePic);
                                   DatabaseService db =
                                       DatabaseService(uid: result.uid);
                                   db.updateClientData(

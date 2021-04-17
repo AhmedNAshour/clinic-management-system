@@ -398,7 +398,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                       String downloadUrl =
                                           await DatabaseService(
                                                   uid: widget.doctor.uid)
-                                              .uploadImage(newProfilePic);
+                                              .uploadUserImage(newProfilePic);
                                       DatabaseService db = DatabaseService(
                                           uid: widget.doctor.uid);
                                       db.updateDoctorData(

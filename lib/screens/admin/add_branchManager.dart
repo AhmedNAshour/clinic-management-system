@@ -360,7 +360,7 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                                   } else {
                                     downloadUrl =
                                         await DatabaseService(uid: result.uid)
-                                            .uploadImage(newProfilePic);
+                                            .uploadUserImage(newProfilePic);
                                     DatabaseService db =
                                         DatabaseService(uid: result.uid);
                                     await db.updateManagerData(

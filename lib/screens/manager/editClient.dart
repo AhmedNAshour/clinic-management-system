@@ -369,7 +369,7 @@ class _EditClientState extends State<EditClient> {
 
                                 String downloadUrl = await DatabaseService(
                                         uid: widget.client.uid)
-                                    .uploadImage(newProfilePic);
+                                    .uploadUserImage(newProfilePic);
 
                                 DatabaseService db =
                                     DatabaseService(uid: widget.client.uid);

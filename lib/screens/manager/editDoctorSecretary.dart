@@ -359,7 +359,7 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
 
                                 String downloadUrl = await DatabaseService(
                                         uid: widget.doctor.uid)
-                                    .uploadImage(newProfilePic);
+                                    .uploadUserImage(newProfilePic);
 
                                 DatabaseService db =
                                     DatabaseService(uid: widget.doctor.uid);

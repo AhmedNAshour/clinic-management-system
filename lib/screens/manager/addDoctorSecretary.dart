@@ -386,7 +386,7 @@ class _AddDoctorSecState extends State<AddDoctorSec> {
                                       doctorId = result.uid;
                                       String downloadUrl =
                                           await DatabaseService(uid: doctorId)
-                                              .uploadImage(newProfilePic);
+                                              .uploadUserImage(newProfilePic);
                                       DatabaseService db =
                                           DatabaseService(uid: doctorId);
                                       db.updateDoctorData(

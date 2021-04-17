@@ -402,7 +402,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                 downloadUrl =
                                                     await DatabaseService(
                                                             uid: result.uid)
-                                                        .uploadImage(
+                                                        .uploadUserImage(
                                                             newProfilePic);
                                                 DatabaseService db =
                                                     DatabaseService(

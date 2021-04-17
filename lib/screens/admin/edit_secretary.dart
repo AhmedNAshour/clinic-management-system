@@ -389,7 +389,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                                   await DatabaseService(
                                                           uid: widget
                                                               .manager.uid)
-                                                      .uploadImage(
+                                                      .uploadUserImage(
                                                           newProfilePic);
                                               DatabaseService db =
                                                   DatabaseService(

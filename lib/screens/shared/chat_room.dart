@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/screens/shared/loading.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../components/lists_cards/message_list.dart';
 import '../../models/message.dart';
 import 'package:clinic/services/database.dart';
@@ -14,16 +19,29 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
+  bool cameraLoading;
+  bool photoLibraryLoading;
   Map otherUsersData = {};
   String message = '';
   final _formKey = GlobalKey<FormState>();
   String chatId;
   TextEditingController textEditingController = new TextEditingController();
+  File imageFile;
+
+  Future getImage(ImageSource source) async {
+    var tempImage = await ImagePicker().getImage(source: source);
+    if (tempImage != null)
+      setState(() {
+        imageFile = File(tempImage.path);
+      });
+  }
 
   @override
   void initState() {
     super.initState();
     chatId = null;
+    cameraLoading = false;
+    photoLibraryLoading = false;
   }
 
   @override
@@ -103,25 +121,130 @@ class _ChatRoomState extends State<ChatRoom> {
                                 key: _formKey,
                                 child: Row(
                                   children: [
-                                    Container(
-                                      width: size.width * 0.85,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 5),
-                                      child: TextFormField(
-                                        controller: textEditingController,
-                                        validator: (val) => val.isEmpty
-                                            ? 'Cant send an empty message..'
-                                            : null,
-                                        onChanged: (val) {
-                                          setState(() => message = val);
-                                        },
-                                        decoration: InputDecoration(
-                                          hintText: 'Say something..',
-                                          focusColor: kPrimaryColor,
-                                          border: InputBorder.none,
+                                    Expanded(
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 5),
+                                        child: TextFormField(
+                                          controller: textEditingController,
+                                          validator: (val) => val.isEmpty
+                                              ? 'Cant send an empty message..'
+                                              : null,
+                                          onChanged: (val) {
+                                            setState(() => message = val);
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: 'Say something..',
+                                            focusColor: kPrimaryColor,
+                                            border: InputBorder.none,
+                                          ),
                                         ),
                                       ),
                                     ),
+                                    photoLibraryLoading == false
+                                        ? IconButton(
+                                            icon: Icon(
+                                              Icons.photo_library,
+                                            ),
+                                            onPressed: () async {
+                                              getImage(ImageSource.gallery);
+                                              if (imageFile != null) {
+                                                setState(() {
+                                                  photoLibraryLoading = true;
+                                                });
+                                                String messageID =
+                                                    FirebaseFirestore
+                                                        .instance
+                                                        .collection("chats/" +
+                                                            chatId +
+                                                            "/messages")
+                                                        .doc()
+                                                        .id;
+                                                String imageURL =
+                                                    await DatabaseService()
+                                                        .uploadMessageImage(
+                                                            imageFile,
+                                                            messageID);
+                                                if (imageURL != '') {
+                                                  await DatabaseService()
+                                                      .sendMessage(
+                                                    messageID: messageID,
+                                                    type: 1,
+                                                    message: imageURL,
+                                                    user1: currentUser.uid,
+                                                    user2: otherUser.uid,
+                                                    existingChatID: chatId,
+                                                  );
+                                                  setState(() {
+                                                    photoLibraryLoading = false;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    photoLibraryLoading = true;
+                                                  });
+                                                }
+                                              }
+                                              setState(() {
+                                                textEditingController.text = '';
+                                              });
+                                            },
+                                            color: kPrimaryColor,
+                                          )
+                                        : SpinKitDoubleBounce(
+                                            color: kPrimaryColor,
+                                          ),
+                                    cameraLoading == false
+                                        ? IconButton(
+                                            icon: Icon(
+                                              Icons.camera_alt,
+                                            ),
+                                            onPressed: () async {
+                                              getImage(ImageSource.camera);
+                                              if (imageFile != null) {
+                                                setState(() {
+                                                  cameraLoading = true;
+                                                });
+                                                String messageID =
+                                                    FirebaseFirestore
+                                                        .instance
+                                                        .collection("chats/" +
+                                                            chatId +
+                                                            "/messages")
+                                                        .doc()
+                                                        .id;
+                                                String imageURL =
+                                                    await DatabaseService()
+                                                        .uploadMessageImage(
+                                                            imageFile,
+                                                            messageID);
+                                                if (imageURL != '') {
+                                                  await DatabaseService()
+                                                      .sendMessage(
+                                                    messageID: messageID,
+                                                    type: 1,
+                                                    message: imageURL,
+                                                    user1: currentUser.uid,
+                                                    user2: otherUser.uid,
+                                                    existingChatID: chatId,
+                                                  );
+                                                  setState(() {
+                                                    cameraLoading = false;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    cameraLoading = false;
+                                                  });
+                                                }
+                                              }
+                                              setState(() {
+                                                textEditingController.text = '';
+                                              });
+                                            },
+                                            color: kPrimaryColor,
+                                          )
+                                        : SpinKitDoubleBounce(
+                                            color: kPrimaryColor,
+                                          ),
                                     IconButton(
                                       icon: Icon(
                                         Icons.send,
@@ -129,6 +252,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                       onPressed: () async {
                                         if (_formKey.currentState.validate()) {
                                           await DatabaseService().sendMessage(
+                                            type: 0,
                                             message: message,
                                             user1: currentUser.uid,
                                             user2: otherUser.uid,

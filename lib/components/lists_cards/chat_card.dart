@@ -105,13 +105,18 @@ class _ChatCardState extends State<ChatCard> {
                               ),
                             ],
                           ),
-                          Text(
-                            lastMessage.body,
-                            style: TextStyle(
-                              color: kPrimaryLightColor,
-                              fontSize: screenWidth * 0.035,
-                            ),
-                          ),
+                          lastMessage.type == 0
+                              ? Text(
+                                  lastMessage.body,
+                                  style: TextStyle(
+                                    color: kPrimaryLightColor,
+                                    fontSize: screenWidth * 0.035,
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.image,
+                                  color: kPrimaryColor,
+                                ),
                         ],
                       ),
                     ),
