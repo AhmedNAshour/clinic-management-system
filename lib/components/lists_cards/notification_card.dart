@@ -37,12 +37,15 @@ class _NotificationCardState extends State<NotificationCard> {
         return '${widget.notification.clientFName} booked an appointment with Dr.${widget.notification.doctorFName} on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}';
       }
     } else if (notification.type == 0) {
-      //TODO:
-      ////TODO:
-      /////TODO:
-      /////TODO:
-      /////TODO:
-      /////TODO:
+      if (user.role == 'client') {
+        return 'Your appointment with Dr.${widget.notification.doctorFName} on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} at ${widget.notification.branch} branch was cancelled';
+      } else if (user.role == 'doctor') {
+        return '${widget.notification.clientFName} cancelled an appointment that was on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)}';
+      } else {
+        return '${widget.notification.clientFName} cancelled an appointment with Dr.${widget.notification.doctorFName} that was on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}';
+      }
+    } else {
+      return '';
     }
   }
 
@@ -79,10 +82,10 @@ class _NotificationCardState extends State<NotificationCard> {
               CircleAvatar(
                 radius: screenWidth * 0.11,
                 backgroundImage: widget.userData.role == 'client'
-                    ? widget.notification.doctorPicURL != null
+                    ? widget.notification.doctorPicURL != ''
                         ? NetworkImage(widget.notification.doctorPicURL)
                         : AssetImage('assets/images/doctorPlaceholder.png')
-                    : widget.notification.clientPicURL != null
+                    : widget.notification.clientPicURL != ''
                         ? NetworkImage(widget.notification.clientPicURL)
                         : AssetImage('assets/images/userPlaceholder.png'),
               ),
@@ -119,13 +122,8 @@ class _NotificationCardState extends State<NotificationCard> {
                       ),
                     ),
                     Text(
-                      widget.notification.type == 1
-                          ? widget.userData.role == 'client'
-                              ? '${widget.notification.clientFName} booked an appointment with Dr.${widget.notification.doctorFName} on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}'
-                              : '${widget.notification.clientFName} booked an appointment on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}'
-                          : widget.userData.role == 'secretary'
-                              ? '${widget.notification.clientFName} cancelled his appointment with Dr.${widget.notification.doctorFName} which was on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}'
-                              : '${widget.notification.clientFName} cancelled his appointment which was on ${DateFormat("MMM").format(widget.notification.startTime)} ${DateFormat("d").format(widget.notification.startTime)} at ${DateFormat("jm").format(widget.notification.startTime)} - ${widget.notification.branch}',
+                      generateNotificationTitle(
+                          widget.notification, widget.userData),
                       style: TextStyle(
                         color: kPrimaryLightColor,
                         fontSize: screenWidth * 0.035,

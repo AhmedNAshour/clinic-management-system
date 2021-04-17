@@ -105,17 +105,6 @@ class _AdminHomeState extends State<AdminHome> {
                                     fontSize: screenWidth * 0.05,
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    await AuthService().signOut();
-                                  },
-                                  child: Text(
-                                    'Sign out',
-                                    style: TextStyle(
-                                        color: kPrimaryLightColor,
-                                        fontSize: 14),
-                                  ),
-                                ),
                               ],
                             ),
                           ),

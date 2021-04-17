@@ -1,8 +1,11 @@
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 
 class AcceptRequest extends StatefulWidget {
@@ -23,15 +26,16 @@ class _AcceptRequestState extends State<AcceptRequest> {
   Map clientData = {};
   int curSessions;
   int newSessions;
-  final _formKey = GlobalKey<FormState>();
   String error = '';
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthUser>(context);
     Size size = MediaQuery.of(context).size;
     clientData = ModalRoute.of(context).settings.arguments;
-
+    HttpsCallable notifyClientAboutRequestStatus =
+        FirebaseFunctions.instance.httpsCallable(
+      'requestStatusTrigger',
+    );
     return loading
         ? Loading()
         : Padding(
@@ -107,7 +111,43 @@ class _AcceptRequestState extends State<AcceptRequest> {
                           if (result == 0) {
                             print('DIDNT WORK');
                           } else {
+                            await notifyClientAboutRequestStatus
+                                .call(<String, dynamic>{
+                              'client': widget.userData.uid,
+                              'status': 1,
+                            });
                             Navigator.pop(context);
+                            await NDialog(
+                              dialogStyle: DialogStyle(
+                                backgroundColor: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              content: Container(
+                                height: size.height * 0.5,
+                                width: size.width * 0.8,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.checkCircle,
+                                      color: Colors.white,
+                                      size: size.height * 0.125,
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.05,
+                                    ),
+                                    Text(
+                                      'Request Accepted',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: size.height * 0.04,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ).show(context);
                           }
                         },
                         child: Text(

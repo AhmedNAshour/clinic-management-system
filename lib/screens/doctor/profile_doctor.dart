@@ -1,16 +1,14 @@
 import 'package:clinic/components/forms/rounded_button..dart';
-import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_select/smart_select.dart';
 import '../shared/constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../screens/admin/changeLanguage.dart';
 
 class ProfileDoctor extends StatefulWidget {
   static final id = 'ProfileDoctor';
@@ -402,7 +400,11 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    // Navigator.pushNamed(context, AppLanguage.id);
+                    FirebaseMessaging.instance.unsubscribeFromTopic(
+                        'reservationBookedForDoctor${userData.uid}');
+                    FirebaseMessaging.instance.unsubscribeFromTopic(
+                        'reservationCancelledForDoctor${userData.uid}');
+
                     await AuthService().signOut();
                   },
                   child: Container(

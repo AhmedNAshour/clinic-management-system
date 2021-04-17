@@ -41,7 +41,6 @@ class _EditDoctorSecState extends State<EditDoctorSec> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fName = widget.doctor.fName;
     lName = widget.doctor.lName;

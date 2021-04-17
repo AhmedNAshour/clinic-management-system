@@ -110,8 +110,8 @@ class _BookingStep3State extends State<BookingStep3> {
               },
             );
             return StreamBuilder<List<Appointment>>(
-              stream: DatabaseService().getDoctorAppointmentsForSelectedDay(
-                  doctorID: doctor.uid, day: dummyStartDate),
+              stream: DatabaseService()
+                  .getAppointments(doctorId: doctor.uid, day: dummyStartDate),
               builder: (context, snapshot2) {
                 if (snapshot2.hasData) {
                   List<Appointment> appointments = snapshot2.data;
@@ -243,7 +243,7 @@ class _BookingStep3State extends State<BookingStep3> {
                                           gridDelegate:
                                               SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 2,
-                                            childAspectRatio: 4 / 1.3,
+                                            childAspectRatio: 3.5 / 1.3,
                                           ),
                                           itemCount: startTimes.length,
                                           itemBuilder: (context, index) {

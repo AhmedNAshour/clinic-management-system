@@ -21,6 +21,7 @@ admin.initializeApp(functions.config().firebase);
 //     });
 // })
 
+
 exports.registrationRequestTrigger = functions.firestore.document('users/{userId}').onCreate
 (
     async (snapshot , context) =>
@@ -55,6 +56,19 @@ exports.doctorCancellingTrigger = functions.firestore.document('appointments/{ap
     }
 )
 
+exports.requestStatusTrigger = functions.https.onCall((data,context) => {
+    async (snapshot , context) =>
+    {
+        if(data.status == 1){
+            var payload = {notification: {title: 'Request Accepted', body: 'Your registration request was accepted.'}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
+        }else{
+            var payload = {notification: {title: 'Request Denied', body: 'Sorry, Your registration request was denied.'}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
+        }
+        const response = await admin.messaging().sendToTopic(data.client+'requestStatus',payload)
+    }
+})
+
+
 exports.secretaryBookingTrigger = functions.https.onCall((data,context) => {
     async (snapshot , context) =>
     {
@@ -75,7 +89,7 @@ exports.clientBookingTrigger = functions.https.onCall((data,context) => {
     async (snapshot , context) =>
     {
         var payload = {notification: {title: 'New Appointment', body: 'An appointment was booked with Dr. ' + data.doctorName + ' on ' + data.time}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
-        const response = await admin.messaging().sendToTopic('reservationForClient' + data.client + 'Branch',payload)
+        const response = await admin.messaging().sendToTopic('reservationForClient' + data.client,payload)
     }
 })
 
@@ -83,7 +97,7 @@ exports.clientCancellingTrigger = functions.https.onCall((data,context) => {
     async (snapshot , context) =>
     {
         var payload = {notification: {title: 'Your appointment with Dr. ' + data.doctor + ' was cancelled'}, data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}}
-        const response = await admin.messaging().sendToTopic('cancelledReservationForClient' + data.client + 'Branch',payload)
+        const response = await admin.messaging().sendToTopic('cancelledReservationForClient' + data.client,payload)
     }
 })
 

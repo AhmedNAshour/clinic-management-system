@@ -109,8 +109,8 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
               },
             );
             return StreamBuilder<List<Appointment>>(
-              stream: DatabaseService().getDoctorAppointmentsForSelectedDay(
-                  doctorID: doctor.uid, day: dummyStartDate),
+              stream: DatabaseService()
+                  .getAppointments(doctorId: doctor.uid, day: dummyStartDate),
               builder: (context, snapshot2) {
                 if (snapshot2.hasData) {
                   List<Appointment> appointments = snapshot2.data;

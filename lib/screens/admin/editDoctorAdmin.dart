@@ -44,7 +44,6 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fName = widget.doctor.fName;
     lName = widget.doctor.lName;

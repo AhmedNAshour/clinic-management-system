@@ -500,16 +500,6 @@ class DatabaseService {
     }).toList();
   }
 
-  //TODO: Replace with getAppointments() with sufficient searching parameters
-  Stream<List<Appointment>> getDoctorAppointmentsForSelectedDay(
-      {String doctorID, day}) {
-    return appointmentsCollection
-        .where('doctorID', isEqualTo: doctorID)
-        .where('day', isEqualTo: day)
-        .snapshots()
-        .map(_appointmentsListFromSnapshot);
-  }
-
   Stream<List<Client>> getClients(
       {String clientName, String clientNumber, int status}) {
     Query query = usersCollection.where('role', isEqualTo: 'client');
@@ -635,6 +625,7 @@ class DatabaseService {
           .collection("users/" + appointment.clientID + "/notifications")
           .doc()
           .set({
+        'appointmentID': appointment.docID,
         'startTime': appointment.startTime,
         'endTime': appointment.startTime.add(Duration(minutes: 30)),
         'clientID': appointment.clientID,
@@ -649,6 +640,7 @@ class DatabaseService {
         'doctorPicURL': appointment.doctorPicURL,
         'status': status,
         'type': type,
+        'time': FieldValue.serverTimestamp(),
       });
     } else {
       Query query = usersCollection.where('role', isEqualTo: 'manager');
@@ -714,6 +706,7 @@ class DatabaseService {
       QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return NotificationModel(
+        appointmentID: doc.data()['appointmentID'] ?? '',
         startTime:
             DateTime.parse(doc.data()['startTime'].toDate().toString()) ??
                 '' ??
@@ -729,6 +722,7 @@ class DatabaseService {
         clientPhoneNumber: doc.data()['clientPhoneNumber'] ?? '',
         doctorFName: doc.data()['doctorFName'] ?? '',
         doctorLName: doc.data()['doctorLName'] ?? '',
+        branch: doc.data()['branch'],
         status: doc.data()['status'] ?? 1,
         type: doc.data()['type'] ?? 1,
         docID: doc.id,
@@ -748,7 +742,10 @@ class DatabaseService {
       );
     }
 
-    return query.snapshots().map(_notificationsListFromSnapshot);
+    return query
+        .orderBy('time')
+        .snapshots()
+        .map(_notificationsListFromSnapshot);
   }
 
   Future updateNotificationStatus({int status, String docID}) async {

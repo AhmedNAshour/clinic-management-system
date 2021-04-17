@@ -33,12 +33,7 @@ class _NotificationCardClientState extends State<NotificationCardClient> {
     double screenWidth = size.width;
     return GestureDetector(
       onTap: () {
-        //TODO: Change according to user role
-        // widget.userData.role == 'doctor'
-        //     ? CustomBottomSheets().showCustomBottomSheet(size,
-        //         ClientProfileDoctor(widget.notification.clientID), context)
-        //     : CustomBottomSheets().showCustomBottomSheet(
-        //         size, AppointmentInfo(widget.notification.), context);
+        //TODO: Show Appointment or Client info according to role
       },
       child: Card(
         elevation: 5,

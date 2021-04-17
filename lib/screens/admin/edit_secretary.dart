@@ -42,7 +42,6 @@ class _EditSecretaryState extends State<EditSecretary> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fName = widget.manager.fName;
     lName = widget.manager.lName;

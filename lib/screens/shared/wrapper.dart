@@ -3,8 +3,7 @@ import 'package:clinic/screens/admin/admin_navigation.dart';
 import 'package:clinic/screens/client/client_navigation.dart';
 import 'package:clinic/screens/manager/secretary_navigation.dart';
 import 'package:clinic/screens/shared/awaitingApproval.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:ndialog/ndialog.dart';
+
 import '../doctor/doctor_navigation.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/screens/shared/login.dart';
@@ -13,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'constants.dart';
 
 class Wrapper extends StatefulWidget {
   @override
@@ -27,60 +25,6 @@ class _WrapperState extends State<Wrapper> {
   bool loading;
   bool isInit = true;
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      Size size = MediaQuery.of(context).size;
-      print("NOTIFICATION" + notification.title);
-      // NDialog(
-      //   dialogStyle: DialogStyle(
-      //     backgroundColor: kPrimaryColor,
-      //     borderRadius: BorderRadius.circular(10),
-      //   ),
-      //   content: Container(
-      //     height: size.height * 0.5,
-      //     width: size.width * 0.8,
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Icon(
-      //           FontAwesomeIcons.solidBell,
-      //           color: Colors.white,
-      //           size: size.height * 0.125,
-      //         ),
-      //         SizedBox(
-      //           height: size.height * 0.05,
-      //         ),
-      //         Text(
-      //           notification.title,
-      //           style: TextStyle(
-      //             color: Colors.white,
-      //             fontSize: size.height * 0.04,
-      //             fontWeight: FontWeight.bold,
-      //           ),
-      //         ),
-      //         SizedBox(
-      //           height: size.height * 0.02,
-      //         ),
-      //         Text(
-      //           notification.body,
-      //           style: TextStyle(
-      //             color: Colors.white,
-      //             fontSize: size.height * 0.025,
-      //           ),
-      //           textAlign: TextAlign.center,
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ).show(context);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthUser>(context);
@@ -130,11 +74,16 @@ class _WrapperState extends State<Wrapper> {
                             },
                           );
                         } else if (userData.data.role == 'client') {
-                          //TODO: call notification function when secretary books or cancels for this client
-                          //TODO: subscribe to notifications according to notification settings
+                          if (userData.data.bookingNotifs) {
+                            _fcm.subscribeToTopic(
+                                'reservationForClient' + user.uid);
+                          }
+                          if (userData.data.cancellingNotifs) {
+                            _fcm.subscribeToTopic(
+                                'cancelledReservationForClient' + user.uid);
+                          }
                           return ClientNavigation();
                         } else if (userData.data.role == 'admin') {
-                          //TODO: subscribe to notifications according to notification settings
                           return AdminNavigation();
                         } else {
                           if (userData.data.bookingNotifs) {
@@ -151,6 +100,10 @@ class _WrapperState extends State<Wrapper> {
                     },
                   );
                 } else {
+                  if (userData.data.role == 'client') {
+                    _fcm.subscribeToTopic('${userData.data.uid}requestStatus');
+                  }
+                  //TODO: Add account disabled screen.
                   return AwaitingApproval();
                 }
               } else {

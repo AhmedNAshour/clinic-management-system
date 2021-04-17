@@ -87,17 +87,6 @@ class _DoctorHomeState extends State<DoctorHome> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    await AuthService().signOut();
-                                  },
-                                  child: Text(
-                                    'Sign out',
-                                    style: TextStyle(
-                                        color: kPrimaryLightColor,
-                                        fontSize: 14),
-                                  ),
-                                ),
                               ],
                             ),
                           ),

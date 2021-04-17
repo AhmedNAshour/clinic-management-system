@@ -1,6 +1,7 @@
 class NotificationModel {
   final DateTime startTime;
   final DateTime endTime;
+  final String appointmentID;
   final String doctorID;
   final String clientID;
   final String day;
@@ -18,6 +19,7 @@ class NotificationModel {
   final int type;
 
   NotificationModel({
+    this.appointmentID,
     this.type,
     this.clientPicURL,
     this.doctorPicURL,

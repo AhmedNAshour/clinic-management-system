@@ -1,9 +1,8 @@
 import 'package:clinic/components/forms/rounded_button..dart';
-import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/admin/changeLanguage.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -391,7 +390,12 @@ class _ProfileClientState extends State<ProfileClient> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    // Navigator.pushNamed(context, AppLanguage.id);
+                    FirebaseMessaging.instance
+                        .unsubscribeFromTopic('${userData.uid}requestStatus');
+                    FirebaseMessaging.instance.unsubscribeFromTopic(
+                        'reservationForClient${userData.uid}');
+                    FirebaseMessaging.instance.unsubscribeFromTopic(
+                        'cancelledReservationForClient${userData.uid}');
                     await AuthService().signOut();
                   },
                   child: Container(

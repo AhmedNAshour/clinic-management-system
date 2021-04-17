@@ -1,7 +1,5 @@
 import 'package:clinic/components/forms/rounded_button..dart';
-import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/admin/changeLanguage.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_select/smart_select.dart';
 import '../shared/constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfileAdmin extends StatefulWidget {
   static final id = 'ProfileAdmin';

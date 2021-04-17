@@ -41,7 +41,6 @@ class _EditClientState extends State<EditClient> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     codeName = widget.client.countryCode;
     email = widget.client.email;

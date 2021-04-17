@@ -122,7 +122,6 @@ class _CancelAppointmentClientState extends State<CancelAppointmentClient> {
                             appointment: widget.appointment,
                             status: 1,
                             type: 0,
-                            //TODO: add appointment ID to notification
                           );
                           await notifyManagersAboutCancellation
                               .call(<String, dynamic>{

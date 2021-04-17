@@ -96,17 +96,6 @@ class _ClientHomeState extends State<ClientHome> {
                                     fontSize: screenWidth * 0.04,
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    await AuthService().signOut();
-                                  },
-                                  child: Text(
-                                    'Sign out',
-                                    style: TextStyle(
-                                        color: kPrimaryLightColor,
-                                        fontSize: 14),
-                                  ),
-                                ),
                               ],
                             ),
                           ),

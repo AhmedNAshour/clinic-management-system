@@ -2,7 +2,7 @@ import 'package:clinic/models/client.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/client/client_info.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:clinic/services/database.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,6 +30,7 @@ class _RequestCardState extends State<RequestCard> {
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [

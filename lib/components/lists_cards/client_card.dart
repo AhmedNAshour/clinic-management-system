@@ -152,7 +152,6 @@ class _ClientCardState extends State<ClientCard> {
                           ],
                         ),
                       ),
-                      //TODO: use icon buttons instead
                       GestureDetector(
                         onTap: () {
                           CustomBottomSheets().showCustomBottomSheet(

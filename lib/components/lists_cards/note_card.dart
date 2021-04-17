@@ -79,6 +79,7 @@ class _NoteCardState extends State<NoteCard> {
                     ),
                   ),
                   //TODO: Add delete note button
+                  //TODO: Add edit note button
                 ],
               ),
             ),
