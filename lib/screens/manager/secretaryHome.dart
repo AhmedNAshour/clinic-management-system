@@ -4,6 +4,7 @@ import 'package:clinic/components/forms/secretary_search_clients.dart';
 import 'package:clinic/components/forms/secretary_search_doctors.dart';
 import 'package:clinic/components/lists_cards/appointments_list_secretary.dart';
 import 'package:clinic/components/lists_cards/doctors_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
@@ -21,9 +22,9 @@ import 'package:provider/provider.dart';
 import '../../components/lists_cards/clients_list.dart';
 import '../../models/manager.dart';
 import 'addDoctorSecretary.dart';
-import '../../services/auth.dart';
 import 'addClient.dart';
 import '../../models/customBottomSheets.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SecretaryHome extends StatefulWidget {
   @override
@@ -60,6 +61,12 @@ class _SecretaryHomeState extends State<SecretaryHome> {
     'Appointments',
     'Clients',
     'Doctors',
+  ];
+
+  List<String> tabsAr = [
+    'مواعيد',
+    'عملاء',
+    'أطباء',
   ];
 
   changeDateSearch(newDate) {
@@ -170,7 +177,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Welcome ${user.fName}',
+                    '${LocaleKeys.welcome.tr()} ${user.fName}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.07,
@@ -178,7 +185,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     ),
                   ),
                   Text(
-                    '$branchName Branch',
+                    '$branchName',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.05,
@@ -228,7 +235,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Welcome ${user.fName}',
+                    '${LocaleKeys.welcome.tr()} ${user.fName}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.07,
@@ -236,7 +243,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     ),
                   ),
                   Text(
-                    '$branchName Branch',
+                    '$branchName',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.05,
@@ -288,7 +295,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Welcome ${user.fName}',
+                    '${LocaleKeys.welcome.tr()} ${user.fName}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.07,
@@ -296,7 +303,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     ),
                   ),
                   Text(
-                    '$branchName Branch',
+                    '$branchName',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth * 0.05,
@@ -526,7 +533,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                  'Search',
+                                                  LocaleKeys.search.tr(),
                                                   style: TextStyle(
                                                       fontSize:
                                                           size.width * 0.05,
@@ -602,14 +609,16 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                                                       ),
                                                       child: Center(
                                                         child: Text(
-                                                          tabs[index],
+                                                          context.locale
+                                                                      .toString() ==
+                                                                  'en'
+                                                              ? tabs[index]
+                                                              : tabsAr[index],
                                                           style: TextStyle(
                                                             color: selectedTab ==
                                                                     index
                                                                 ? Colors.white
                                                                 : kPrimaryLightColor,
-                                                            // fontSize:
-                                                            //     size.width * 0.04,
                                                           ),
                                                         ),
                                                       ),

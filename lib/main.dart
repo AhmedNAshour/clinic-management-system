@@ -10,13 +10,11 @@ import './screens/admin/mapEdit.dart';
 import 'package:clinic/screens/client/client_home.dart';
 import 'package:clinic/screens/manager/addClient.dart';
 import 'package:clinic/screens/manager/addDoctorSecretary.dart';
-import 'package:clinic/screens/manager/appLanguage.dart';
 import 'package:clinic/screens/manager/appointments_secretary.dart';
 import 'package:clinic/screens/manager/booking_step1.dart';
 import 'package:clinic/screens/manager/booking_step2.dart';
 import 'package:clinic/screens/manager/booking_step3.dart';
 import 'package:clinic/screens/manager/doctorSchedule.dart';
-import 'package:clinic/screens/manager/notificationSettings.dart';
 import 'package:clinic/screens/manager/secretaryHome.dart';
 import 'package:clinic/screens/manager/secretary_navigation.dart';
 import 'package:clinic/screens/shared/login.dart';
@@ -31,7 +29,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:clinic/screens/admin/addDoctorAdmin.dart';
-import 'package:clinic/screens/manager/changePassword.dart';
 import './screens/admin/clientsAdmin.dart';
 import './screens/admin/doctorsAdmin.dart';
 import './screens/admin/managersAdmin.dart';
@@ -185,11 +182,7 @@ class _MyAppState extends State<MyApp> {
           BookingStep1Client.id: (context) => BookingStep1Client(),
           BookingStep2Client.id: (context) => BookingStep2Client(),
           ResetPassword.id: (context) => ResetPassword(),
-          ChangePassword.id: (context) => ChangePassword(),
           ChatRoom.id: (context) => ChatRoom(),
-          NotificationSettingsManager.id: (context) =>
-              NotificationSettingsManager(),
-          AppLanguage.id: (context) => AppLanguage(),
           AppointmentsSearchResults.id: (context) =>
               AppointmentsSearchResults(),
           ClientsSearchresults.id: (context) => ClientsSearchresults(),

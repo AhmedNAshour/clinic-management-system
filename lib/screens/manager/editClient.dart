@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
@@ -10,10 +11,10 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import '../shared/constants.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EditClient extends StatefulWidget {
   EditClient({this.client});
@@ -89,7 +90,7 @@ class _EditClientState extends State<EditClient> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Edit ${widget.client.fName}',
+                      '${LocaleKeys.edit.tr()} ${widget.client.fName}',
                       style: TextStyle(
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),
@@ -165,7 +166,7 @@ class _EditClientState extends State<EditClient> {
                                   width: size.width * 0.02,
                                 ),
                                 Text(
-                                  'Gender',
+                                  LocaleKeys.gender.tr(),
                                   style: TextStyle(
                                     color: kPrimaryTextColor,
                                     fontSize: size.width * 0.06,
@@ -293,8 +294,8 @@ class _EditClientState extends State<EditClient> {
                                     onChanged: (val) {
                                       setState(() => phoneNumber = val);
                                     },
-                                    validator: (val) => val.length != 11
-                                        ? 'Enter a valid number'
+                                    validator: (val) => val.isEmpty
+                                        ? LocaleKeys.enterAValidNumber.tr()
                                         : null,
                                   ),
                                 ),
@@ -313,29 +314,29 @@ class _EditClientState extends State<EditClient> {
                               setState(() => fName = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a name' : null,
+                                val.isEmpty ? LocaleKeys.enterAName.tr() : null,
                           ),
                           RoundedInputField(
                             initialValue: widget.client.lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
-                            hintText: 'Last Name',
+                            hintText: '${widget.client.lName}',
                             onChanged: (val) {
                               setState(() => lName = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a name' : null,
+                                val.isEmpty ? LocaleKeys.enterAName : null,
                           ),
                           RoundedInputField(
                             initialValue: widget.client.age.toString(),
                             obsecureText: false,
                             icon: Icons.calendar_today,
-                            hintText: 'Age',
+                            hintText: LocaleKeys.age.tr(),
                             onChanged: (val) {
                               setState(() => age = int.parse(val));
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter an age' : null,
+                                val.isEmpty ? LocaleKeys.enterAge.tr() : null,
                           ),
 
                           RoundedInputField(
@@ -343,7 +344,7 @@ class _EditClientState extends State<EditClient> {
                                 widget.client.numAppointments.toString(),
                             obsecureText: false,
                             icon: Icons.add,
-                            hintText: 'Remaining Sessions',
+                            hintText: LocaleKeys.appointmentsRemaining.tr(),
                             onChanged: (val) {
                               setState(() => numAppointments = int.parse(val));
                             },
@@ -352,15 +353,16 @@ class _EditClientState extends State<EditClient> {
                             initialValue: widget.client.email,
                             obsecureText: false,
                             icon: Icons.email,
-                            hintText: 'Email',
+                            hintText: LocaleKeys.email.tr(),
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            validator: (val) =>
-                                val.isEmpty ? 'Enter an email' : null,
+                            validator: (val) => val.isEmpty
+                                ? LocaleKeys.enterAnEmail.tr()
+                                : null,
                           ),
                           RoundedButton(
-                            text: 'Edit',
+                            text: LocaleKeys.edit.tr(),
                             press: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() {
@@ -414,7 +416,7 @@ class _EditClientState extends State<EditClient> {
                                           height: size.height * 0.05,
                                         ),
                                         Text(
-                                          'Client Edited',
+                                          LocaleKeys.clientEdited.tr(),
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: size.height * 0.04,

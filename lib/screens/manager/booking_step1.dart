@@ -1,10 +1,12 @@
 import 'package:clinic/components/forms/secretary_search_clients.dart';
 import 'package:clinic/components/lists_cards/clients_list_secretary_booking.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BookingStep1 extends StatefulWidget {
   static const id = 'bookingStep1';
@@ -51,7 +53,7 @@ class _BookingStep1State extends State<BookingStep1> {
                   ),
                   SizedBox(width: size.width * 0.1),
                   Text(
-                    'Book Appointment',
+                    LocaleKeys.bookAppointment.tr(),
                     style: TextStyle(
                       fontSize: size.width * 0.06,
                       color: Colors.white,
@@ -62,7 +64,7 @@ class _BookingStep1State extends State<BookingStep1> {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-              'Please select a client',
+              LocaleKeys.selectClient.tr(),
               style: TextStyle(
                 color: kPrimaryTextColor,
                 fontSize: size.width * 0.05,

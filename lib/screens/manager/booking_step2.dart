@@ -1,4 +1,5 @@
 import 'package:clinic/components/lists_cards/doctors_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
@@ -7,6 +8,7 @@ import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BookingStep2 extends StatefulWidget {
   static const id = 'bookingStep2';
@@ -50,7 +52,7 @@ class _BookingStep2State extends State<BookingStep2> {
                           ),
                           SizedBox(width: size.width * 0.1),
                           Text(
-                            'Book Appointment',
+                            LocaleKeys.bookAppointment.tr(),
                             style: TextStyle(
                               fontSize: size.width * 0.06,
                               color: Colors.white,
@@ -61,16 +63,14 @@ class _BookingStep2State extends State<BookingStep2> {
                     ),
                     SizedBox(height: size.height * 0.02),
                     Text(
-                      'Please select a doctor for:',
+                      LocaleKeys.selectDoctorFor.tr(),
                       style: TextStyle(
                         color: kPrimaryTextColor,
                         fontSize: size.width * 0.05,
                       ),
                     ),
                     Text(
-                      client.gender == 'male'
-                          ? 'Mr. ${client.fName} ${client.lName}'
-                          : 'Mrs. ${client.fName} ${client.lName}',
+                      '${client.fName} ${client.lName}',
                       style: TextStyle(
                         color: kPrimaryTextColor,
                         fontSize: size.width * 0.05,

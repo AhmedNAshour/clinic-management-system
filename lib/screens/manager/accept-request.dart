@@ -1,3 +1,4 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AcceptRequest extends StatefulWidget {
   static const id = 'DisableUser';
@@ -64,7 +65,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                   height: size.height * 0.02,
                 ),
                 Text(
-                  'Are you sure you want to accept ${widget.userData.fName} ${widget.userData.lName}\'s request ?',
+                  LocaleKeys.acceptRequestQuestion.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
@@ -88,7 +89,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'CANCEL',
+                          LocaleKeys.no.tr(),
                           style: TextStyle(
                             color: kPrimaryColor,
                             fontSize: size.height * 0.025,
@@ -109,7 +110,6 @@ class _AcceptRequestState extends State<AcceptRequest> {
                               await DatabaseService(uid: widget.userData.uid)
                                   .updateUserStatus(widget.userData.role, 1);
                           if (result == 0) {
-                            print('DIDNT WORK');
                           } else {
                             await notifyClientAboutRequestStatus
                                 .call(<String, dynamic>{
@@ -137,7 +137,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                                       height: size.height * 0.05,
                                     ),
                                     Text(
-                                      'Request Accepted',
+                                      LocaleKeys.requestAccepted.tr(),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: size.height * 0.04,
@@ -151,7 +151,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                           }
                         },
                         child: Text(
-                          'YES',
+                          LocaleKeys.yes.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: size.height * 0.025,

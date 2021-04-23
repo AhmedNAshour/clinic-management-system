@@ -1,6 +1,6 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
-import 'package:clinic/models/customBottomSheets.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/manager/doctorSchedule.dart';
@@ -9,10 +9,10 @@ import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/doctor.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DoctorProfileSec extends StatefulWidget {
   static const id = 'DoctorProfileSec';
@@ -118,35 +118,13 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                   SizedBox(
                     height: size.height * 0.01,
                   ),
-                  // InkWell(
-                  //   onTap: () async {
-                  //     Navigator.pop(context);
-                  //     CustomBottomSheets().showCustomBottomSheet(
-                  //       size,
-                  //       EditDoc(
-                  //         secretary: widget.manager,
-                  //       ),
-                  //       context,
-                  //     );
-                  //   },
-                  //   child: Text(
-                  //     'Edit info',
-                  //     style: TextStyle(
-                  //       color: kPrimaryColor,
-                  //       fontSize: 14,
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: size.height * 0.02,
-                  // ),
                   InkWell(
                     onTap: () async {
                       Navigator.pushNamed(context, DoctorSchedule.id,
                           arguments: widget.doctor);
                     },
                     child: Text(
-                      'Edit Schedule',
+                      LocaleKeys.editSchedule.tr(),
                       style: TextStyle(
                         color: kPrimaryColor,
                         fontSize: 14,
@@ -154,15 +132,15 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                     ),
                   ),
                   InfoCard(
-                    title: 'Doctor name',
+                    title: LocaleKeys.doctorName.tr(),
                     body: '${widget.doctor.fName} ${widget.doctor.lName}',
                   ),
                   InfoCard(
-                    title: 'Phone number',
+                    title: LocaleKeys.phoneNumber.tr(),
                     body: '${widget.doctor.phoneNumber}',
                   ),
                   InfoCard(
-                    title: 'Specialty',
+                    title: LocaleKeys.specialty.tr(),
                     body: '${widget.doctor.proffesion}',
                   ),
                   Container(
@@ -180,7 +158,7 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Bio',
+                          LocaleKeys.about.tr(),
                           style: TextStyle(
                             color: kPrimaryTextColor,
                             fontWeight: FontWeight.bold,
@@ -204,7 +182,7 @@ class _DoctorProfileSecState extends State<DoctorProfileSec> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Doctors notes',
+                      LocaleKeys.doctorNotes.tr(),
                       style: TextStyle(
                         color: kPrimaryTextColor,
                         fontWeight: FontWeight.bold,

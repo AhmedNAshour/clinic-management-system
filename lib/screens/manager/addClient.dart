@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
@@ -14,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../shared/constants.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddClient extends StatefulWidget {
   AddClient();
@@ -74,7 +76,7 @@ class _AddClientState extends State<AddClient> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Add new client',
+                      LocaleKeys.addNewClient.tr(),
                       style: TextStyle(
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),
@@ -146,7 +148,7 @@ class _AddClientState extends State<AddClient> {
                                   width: size.width * 0.02,
                                 ),
                                 Text(
-                                  'Gender',
+                                  LocaleKeys.gender.tr(),
                                   style: TextStyle(
                                     color: kPrimaryTextColor,
                                     fontSize: size.width * 0.06,
@@ -274,7 +276,7 @@ class _AddClientState extends State<AddClient> {
                                       setState(() => phoneNumber = val);
                                     },
                                     validator: (val) => val.isEmpty
-                                        ? 'Enter a valid number'
+                                        ? LocaleKeys.enterAValidNumber.tr()
                                         : null,
                                   ),
                                 ),
@@ -288,35 +290,35 @@ class _AddClientState extends State<AddClient> {
                             initialValue: fName,
                             obsecureText: false,
                             icon: Icons.person_add_alt,
-                            hintText: 'First Name',
+                            hintText: LocaleKeys.firstName.tr(),
                             onChanged: (val) {
                               setState(() => fName = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a name' : null,
+                                val.isEmpty ? LocaleKeys.enterAName.tr() : null,
                           ),
                           RoundedInputField(
                             initialValue: lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
-                            hintText: 'Last Name',
+                            hintText: LocaleKeys.lastName.tr(),
                             onChanged: (val) {
                               setState(() => lName = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a name' : null,
+                                val.isEmpty ? LocaleKeys.enterAName.tr() : null,
                           ),
                           RoundedInputField(
                             inputType: TextInputType.number,
                             initialValue: age != null ? age.toString() : '',
                             obsecureText: false,
                             icon: Icons.calendar_today,
-                            hintText: 'Age',
+                            hintText: LocaleKeys.age.tr(),
                             onChanged: (val) {
                               setState(() => age = int.parse(val));
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter an age' : null,
+                                val.isEmpty ? LocaleKeys.enterAge.tr() : null,
                           ),
                           RoundedInputField(
                             inputType: TextInputType.number,
@@ -325,7 +327,7 @@ class _AddClientState extends State<AddClient> {
                                 : 0.toString(),
                             obsecureText: false,
                             icon: Icons.add,
-                            hintText: 'Remaining Sessions',
+                            hintText: LocaleKeys.appointmentsRemaining.tr(),
                             onChanged: (val) {
                               setState(() => numAppointments = int.parse(val));
                             },
@@ -334,26 +336,27 @@ class _AddClientState extends State<AddClient> {
                             initialValue: email,
                             obsecureText: false,
                             icon: Icons.email,
-                            hintText: 'Email',
+                            hintText: LocaleKeys.email.tr(),
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            validator: (val) =>
-                                val.isEmpty ? 'Enter an email' : null,
+                            validator: (val) => val.isEmpty
+                                ? LocaleKeys.enterAnEmail.tr()
+                                : null,
                           ),
                           RoundedInputField(
                             obsecureText: true,
                             icon: Icons.lock,
-                            hintText: 'Password',
+                            hintText: LocaleKeys.password.tr(),
                             onChanged: (val) {
                               setState(() => password = val);
                             },
                             validator: (val) => val.length < 6
-                                ? ' Enter a password 6+ chars long '
+                                ? LocaleKeys.enterAPassword.tr()
                                 : null,
                           ),
                           RoundedButton(
-                            text: 'Add',
+                            text: LocaleKeys.add.tr(),
                             press: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() {
@@ -366,7 +369,7 @@ class _AddClientState extends State<AddClient> {
                                 );
                                 if (result == null) {
                                   setState(() {
-                                    error = 'invalid email';
+                                    error = LocaleKeys.invalidEmail.tr();
                                     loading = false;
                                   });
                                 } else {
@@ -415,7 +418,7 @@ class _AddClientState extends State<AddClient> {
                                             height: size.height * 0.05,
                                           ),
                                           Text(
-                                            'Client Added',
+                                            LocaleKeys.clientAdded.tr(),
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: size.height * 0.04,
@@ -426,7 +429,7 @@ class _AddClientState extends State<AddClient> {
                                             height: size.height * 0.02,
                                           ),
                                           Text(
-                                            'Client can now sign in',
+                                            LocaleKeys.clientCanSignIn.tr(),
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: size.height * 0.025,

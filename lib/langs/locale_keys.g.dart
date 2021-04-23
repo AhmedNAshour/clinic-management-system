@@ -101,5 +101,16 @@ abstract class  LocaleKeys {
   static const addNote = 'addNote';
   static const note = 'note';
   static const insertANote = 'insertANote';
+  static const acceptRequestQuestion = 'acceptRequestQuestion';
+  static const requestAccepted = 'requestAccepted';
+  static const addNewClient = 'addNewClient';
+  static const clientAdded = 'clientAdded';
+  static const clientCanSignIn = 'clientCanSignIn';
+  static const selectClient = 'selectClient';
+  static const selectDoctorFor = 'selectDoctorFor';
+  static const denyRequest = 'denyRequest';
+  static const requestDenied = 'requestDenied';
+  static const editSchedule = 'editSchedule';
+  static const clientEdited = 'clientEdited';
 
 }

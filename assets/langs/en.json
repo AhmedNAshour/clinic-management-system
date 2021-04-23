@@ -100,5 +100,16 @@
   "signIn": "Sign in",
   "addNote": "Add Note",
   "note": "Note",
-  "insertANote": "Insert a note"
+  "insertANote": "Insert a note",
+  "acceptRequestQuestion": "Are you sure you want to accept this registration request",
+  "requestAccepted": "Request Accepted",
+  "addNewClient": "Add new client",
+  "clientAdded": "Client Added",
+  "clientCanSignIn": "Client can now sign in",
+  "selectClient": "Please select a client",
+  "selectDoctorFor": "Please select a doctor for",
+  "denyRequest": "Are you sure you want to deny this request",
+  "requestDenied": "Request Denied",
+  "editSchedule": "Edit Schedule",
+  "clientEdited": "Client Edited"
 }

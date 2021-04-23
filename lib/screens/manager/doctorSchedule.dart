@@ -1,10 +1,12 @@
 import 'package:clinic/components/lists_cards/workDays_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/workDay.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DoctorSchedule extends StatefulWidget {
   static const id = 'doctorSchedule';
@@ -42,7 +44,7 @@ class _DoctorScheduleState extends State<DoctorSchedule> {
                     ),
                     SizedBox(width: size.width * 0.22),
                     Text(
-                      'Schedule',
+                      LocaleKeys.schedule.tr(),
                       style: TextStyle(
                         fontSize: size.width * 0.06,
                         color: Colors.white,

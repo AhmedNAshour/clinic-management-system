@@ -100,5 +100,16 @@
   "signIn": "تسجيل الدخول",
   "addNote": "اضف ملاحظة",
   "note": "ملاحظة",
-  "insertANote": "أدخل ملاحظة"
+  "insertANote": "أدخل ملاحظة",
+  "acceptRequestQuestion": "هل أنت متأكد أنك تريد قبول طلب التسجيل هذا",
+  "requestAccepted": "تم قبول الطلب",
+  "addNewClient": "إضافة عميل جديد",
+  "clientAdded": "تمت إضافة العميل",
+  "clientCanSignIn": "يمكن للعميل الآن تسجيل الدخول",
+  "selectClient": "الرجاء تحديد عميل",
+  "selectDoctorFor": "الرجاء تحديد طبيب ل",
+  "denyRequest": "هل أنت متأكد أنك تريد رفض هذا الطلب",
+  "requestDenied": "تم رفض الطلب",
+  "editSchedule": "تعديل الجدول",
+  "clientEdited": "تم تعديل العميل"
 }
