@@ -1,13 +1,14 @@
 import 'package:clinic/components/lists_cards/appointments_list_doctor.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DoctorHome extends StatefulWidget {
   @override
@@ -26,6 +27,11 @@ class _DoctorHomeState extends State<DoctorHome> {
     'Upcoming',
     'Past',
     'Canceled',
+  ];
+  List<String> appointmentTypesAR = [
+    'القادم',
+    'السابق',
+    'ملغى',
   ];
   @override
   Widget build(BuildContext context) {
@@ -80,7 +86,7 @@ class _DoctorHomeState extends State<DoctorHome> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Welcome ${user.fName}',
+                                  '${LocaleKeys.welcome.tr()} ${user.fName}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.07,
@@ -131,7 +137,9 @@ class _DoctorHomeState extends State<DoctorHome> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    appointmentTypes[index],
+                                    context.locale.toString() == 'en'
+                                        ? appointmentTypes[index]
+                                        : appointmentTypesAR[index],
                                     style: TextStyle(
                                         color: selectedType == index
                                             ? Colors.white

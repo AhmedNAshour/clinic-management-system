@@ -98,5 +98,8 @@ abstract class  LocaleKeys {
   static const requestSent = 'requestSent';
   static const requestAwaitingApproval = 'requestAwaitingApproval';
   static const signIn = 'signIn';
+  static const addNote = 'addNote';
+  static const note = 'note';
+  static const insertANote = 'insertANote';
 
 }

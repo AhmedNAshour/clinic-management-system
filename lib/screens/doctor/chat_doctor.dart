@@ -1,3 +1,4 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/chat.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/constants.dart';
@@ -6,6 +7,7 @@ import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../components/lists_cards/chat_list.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChatDoctor extends StatefulWidget {
   static final id = 'ChatDoctor';
@@ -28,7 +30,7 @@ class _ChatDoctorState extends State<ChatDoctor> {
           color: kPrimaryColor,
           child: Center(
             child: Text(
-              'Chat',
+              LocaleKeys.chat.tr(),
               style: TextStyle(
                 fontSize: size.width * 0.06,
                 color: Colors.white,

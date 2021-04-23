@@ -97,5 +97,8 @@
   "enterAge": "أدخل العمر",
   "requestSent": "تم ارسال الطلب",
   "requestAwaitingApproval": "تم إرسال طلبك وينتظر الموافقة",
-  "signIn": "تسجيل الدخول"
+  "signIn": "تسجيل الدخول",
+  "addNote": "اضف ملاحظة",
+  "note": "ملاحظة",
+  "insertANote": "أدخل ملاحظة"
 }

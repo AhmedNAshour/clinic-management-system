@@ -2,6 +2,7 @@ import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
@@ -12,6 +13,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../models/client.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ClientProfileDoctor extends StatefulWidget {
   static const id = 'ClientProfile';
@@ -139,7 +141,8 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                                           MainAxisAlignment.end,
                                                       children: [
                                                         Text(
-                                                          'Add Note',
+                                                          LocaleKeys.addNote
+                                                              .tr(),
                                                           style: TextStyle(
                                                               fontSize:
                                                                   size.width *
@@ -174,18 +177,24 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                                     child: Column(
                                                       children: [
                                                         RoundedInputField(
-                                                          labelText: 'Note',
+                                                          labelText: LocaleKeys
+                                                              .note
+                                                              .tr(),
                                                           icon: FontAwesomeIcons
                                                               .notesMedical,
                                                           obsecureText: false,
-                                                          hintText: 'Note',
+                                                          hintText: LocaleKeys
+                                                              .note
+                                                              .tr(),
                                                           onChanged: (val) {
                                                             setState(() =>
                                                                 note = val);
                                                           },
                                                           validator: (val) => val
                                                                   .isEmpty
-                                                              ? 'Insert a note'
+                                                              ? LocaleKeys
+                                                                  .insertANote
+                                                                  .tr()
                                                               : null,
                                                         ),
                                                         Text(
@@ -195,7 +204,8 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                                               fontSize: 14),
                                                         ),
                                                         RoundedButton(
-                                                          text: 'ADD',
+                                                          text: LocaleKeys.add
+                                                              .tr(),
                                                           press: () async {
                                                             if (_formKey
                                                                 .currentState
@@ -207,12 +217,6 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                                                 doctorID:
                                                                     user.uid,
                                                                 body: note,
-                                                                // clientFName: widget
-                                                                //     .appointment
-                                                                //     .clientFName,
-                                                                //   clientLName: widget
-                                                                // .appointment
-                                                                // .clientLName,
                                                                 doctorFName:
                                                                     doctor
                                                                         .fName,
@@ -238,7 +242,7 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                         });
                                   },
                                   child: Text(
-                                    'add diagnosis',
+                                    LocaleKeys.addNote.tr(),
                                     style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 14,
@@ -246,11 +250,11 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                   ),
                                 ),
                                 InfoCard(
-                                  title: 'Client name',
+                                  title: LocaleKeys.clientName.tr(),
                                   body: '${client.fName} ${client.lName}',
                                 ),
                                 InfoCard(
-                                  title: 'Age',
+                                  title: LocaleKeys.age.tr(),
                                   body: '${client.age}',
                                 ),
                                 SizedBox(
@@ -259,7 +263,7 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Doctors notes',
+                                    LocaleKeys.doctorNotes.tr(),
                                     style: TextStyle(
                                       color: kPrimaryTextColor,
                                       fontWeight: FontWeight.bold,

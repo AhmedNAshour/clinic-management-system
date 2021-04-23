@@ -1,4 +1,5 @@
 import 'package:clinic/components/forms/rounded_button..dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/services/auth.dart';
@@ -9,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_select/smart_select.dart';
 import '../shared/constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileDoctor extends StatefulWidget {
   static final id = 'ProfileDoctor';
@@ -54,15 +56,6 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Text(
-                //   LocaleKeys.welcome.tr(),
-                //   style: TextStyle(
-                //     fontSize: size.width * 0.06,
-                //     color: Colors.white,
-                //   ),
-                // ),
-
-                //TODO: Edit profile picture
                 CircleAvatar(
                   radius: size.width * 0.14,
                   backgroundImage: doctor.picURL != '' && doctor.picURL != null
@@ -73,7 +66,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                   height: size.height * 0.015,
                 ),
                 Text(
-                  'Dr. ${doctor.fName}',
+                  '${doctor.fName}',
                   style: TextStyle(
                     fontSize: size.width * 0.07,
                     color: kPrimaryTextColor,
@@ -150,7 +143,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                                           activeColor: kPrimaryColor,
                                           value: bookingNotifs,
                                           title: Text(
-                                            'Booking',
+                                            LocaleKeys.booking.tr(),
                                             style: TextStyle(
                                                 color: kPrimaryTextColor,
                                                 fontSize: size.width * 0.06),
@@ -178,7 +171,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                                           activeColor: kPrimaryColor,
                                           value: cancellingNotifs,
                                           title: Text(
-                                            'Cancelling',
+                                            LocaleKeys.canceling.tr(),
                                             style: TextStyle(
                                                 color: kPrimaryTextColor,
                                                 fontSize: size.width * 0.06),
@@ -208,7 +201,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                                                   cancellingNotifs);
                                           Navigator.pop(context);
                                         },
-                                        text: 'CONFIRM',
+                                        text: LocaleKeys.confirm.tr(),
                                       ),
                                       SizedBox(
                                         height: size.height * 0.02,
@@ -243,7 +236,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                                 height: size.height * 0.02,
                               ),
                               Text(
-                                'Notification Settings',
+                                LocaleKeys.notifcationSettings.tr(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: size.width * 0.042,
@@ -349,7 +342,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                                               .updateUserLang(
                                                   langs[userLang].value);
                                         },
-                                        text: 'CONFIRM',
+                                        text: LocaleKeys.confirm.tr(),
                                       ),
                                       SizedBox(
                                         height: size.height * 0.02,
@@ -384,7 +377,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                                 height: size.height * 0.02,
                               ),
                               Text(
-                                'Language',
+                                LocaleKeys.language.tr(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: size.width * 0.042,
@@ -429,7 +422,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                           height: size.height * 0.02,
                         ),
                         Text(
-                          'Sign out',
+                          LocaleKeys.signOut.tr(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: size.width * 0.042,

@@ -97,5 +97,8 @@
   "enterAge": "Enter an age",
   "requestSent": "Request Sent",
   "requestAwaitingApproval": "Your request is sent and awaiting approval",
-  "signIn": "Sign in"
+  "signIn": "Sign in",
+  "addNote": "Add Note",
+  "note": "Note",
+  "insertANote": "Insert a note"
 }

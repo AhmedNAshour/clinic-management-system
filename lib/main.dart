@@ -40,7 +40,6 @@ import 'models/user.dart';
 import 'screens/admin/edit_branch.dart';
 import './screens/client/booking_step1_client.dart';
 import './screens/client/booking_step2_client.dart';
-import './screens/doctor/notificationSettings_doctor.dart';
 import './langs/codegen_loader.g.dart';
 import './screens/shared/chat_room.dart';
 import 'package:device_preview/device_preview.dart';
@@ -190,8 +189,6 @@ class _MyAppState extends State<MyApp> {
           ChatRoom.id: (context) => ChatRoom(),
           NotificationSettingsManager.id: (context) =>
               NotificationSettingsManager(),
-          NotificationSettingsDoctor.id: (context) =>
-              NotificationSettingsDoctor(),
           AppLanguage.id: (context) => AppLanguage(),
           AppointmentsSearchResults.id: (context) =>
               AppointmentsSearchResults(),
