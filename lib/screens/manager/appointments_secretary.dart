@@ -19,7 +19,7 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
   String day = '';
   // DateFormat("yyyy-MM-dd").format(DateTime.now())
   int selectedType = 0;
-  String status;
+  int status;
   String dateComparison;
   List<String> appointmentTypes = [
     'Today',
@@ -28,10 +28,9 @@ class _AppointmentsSecretaryState extends State<AppointmentsSecretary> {
     'Canceled',
   ];
 
-  String getStatus(int selectedType) {
-    if (selectedType == 0 || selectedType == 1 || selectedType == 2)
-      status = 'active';
-    if (selectedType == 3) status = 'canceled';
+  int getStatus(int selectedType) {
+    if (selectedType == 0 || selectedType == 1 || selectedType == 2) status = 1;
+    if (selectedType == 3) status = 0;
     return status;
   }
 

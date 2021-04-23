@@ -492,7 +492,7 @@ class DatabaseService {
         clientPhoneNumber: doc.data()['clientPhoneNumber'] ?? '',
         doctorFName: doc.data()['doctorFName'] ?? '',
         doctorLName: doc.data()['doctorLName'] ?? '',
-        status: doc.data()['status'] ?? '',
+        status: doc.data()['status'] ?? 1,
         docID: doc.id,
         branch: doc.data()['branch'] ?? '',
         doctorPicURL: doc.data()['doctorPicURL'] ?? '',
@@ -539,7 +539,7 @@ class DatabaseService {
     String clientNumber,
     String clientId,
     String branch,
-    String status,
+    int status,
     String dateComparison,
   }) {
     Query query = appointmentsCollection;
@@ -564,7 +564,7 @@ class DatabaseService {
     if (branch != '') {
       query = query.where('branch', isEqualTo: branch);
     }
-    if (status != '') {
+    if (status != null) {
       query = query.where('status', isEqualTo: status);
     }
     if (dateComparison == 'Today') {
@@ -593,7 +593,7 @@ class DatabaseService {
     String doctorLName,
     String doctorToken,
     String branch,
-    String status,
+    int status,
   }) async {
     return await appointmentsCollection.doc().set({
       'startTime': startTime,
@@ -611,7 +611,7 @@ class DatabaseService {
       'branch': branch,
       'clientPicURL': clientPicURL,
       'doctorPicURL': doctorPicURL,
-      'status': 'active'
+      'status': status,
     });
   }
 
@@ -1183,7 +1183,7 @@ class DatabaseService {
 
   Future updateAppointmentStatus({
     String id,
-    String status,
+    int status,
   }) async {
     try {
       await appointmentsCollection.doc(id).update({

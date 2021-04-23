@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
@@ -16,6 +17,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EditSecretary extends StatefulWidget {
   final Manager manager;
@@ -99,7 +101,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    'Edit ${widget.manager.fName}',
+                                    '${LocaleKeys.edit.tr()} ${widget.manager.fName}',
                                     style: TextStyle(
                                         fontSize: size.width * 0.05,
                                         color: kPrimaryTextColor),
@@ -175,7 +177,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                                 width: size.width * 0.02,
                                               ),
                                               Text(
-                                                'Gender',
+                                                LocaleKeys.gender.tr(),
                                                 style: TextStyle(
                                                   color: kPrimaryTextColor,
                                                   fontSize: size.width * 0.06,
@@ -286,7 +288,7 @@ class _EditSecretaryState extends State<EditSecretary> {
                                               border: InputBorder.none,
                                             ),
                                             hint: Text(
-                                              'Select branch',
+                                              LocaleKeys.selectBranch.tr(),
                                             ),
                                             items: branches.map((branch) {
                                               return DropdownMenuItem(
@@ -340,11 +342,12 @@ class _EditSecretaryState extends State<EditSecretary> {
                                                     setState(() =>
                                                         phoneNumber = val);
                                                   },
-                                                  validator: (val) => val
-                                                              .length !=
-                                                          11
-                                                      ? 'Enter a valid number'
-                                                      : null,
+                                                  validator: (val) =>
+                                                      val.length != 11
+                                                          ? LocaleKeys
+                                                              .enterAValidNumber
+                                                              .tr()
+                                                          : null,
                                                 ),
                                               ),
                                             ],
@@ -357,28 +360,28 @@ class _EditSecretaryState extends State<EditSecretary> {
                                           initialValue: widget.manager.fName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt,
-                                          hintText: 'First Name',
+                                          hintText: LocaleKeys.firstName.tr(),
                                           onChanged: (val) {
                                             setState(() => fName = val);
                                           },
                                           validator: (val) => val.isEmpty
-                                              ? 'Enter a name'
+                                              ? LocaleKeys.enterAName.tr()
                                               : null,
                                         ),
                                         RoundedInputField(
                                           initialValue: widget.manager.lName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt_1,
-                                          hintText: 'Last Name',
+                                          hintText: LocaleKeys.lastName.tr(),
                                           onChanged: (val) {
                                             setState(() => lName = val);
                                           },
                                           validator: (val) => val.isEmpty
-                                              ? 'Enter a name'
+                                              ? LocaleKeys.enterAName.tr()
                                               : null,
                                         ),
                                         RoundedButton(
-                                          text: 'Edit',
+                                          text: LocaleKeys.edit.tr(),
                                           press: () async {
                                             if (_formKey.currentState
                                                 .validate()) {
@@ -443,7 +446,8 @@ class _EditSecretaryState extends State<EditSecretary> {
                                                             size.height * 0.05,
                                                       ),
                                                       Text(
-                                                        'Manager Edited',
+                                                        LocaleKeys.managerEdited
+                                                            .tr(),
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize:

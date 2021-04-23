@@ -1,4 +1,5 @@
 import 'package:clinic/components/info_card.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
@@ -10,6 +11,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../admin/edit_secretary.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ManagerProfileAdmin extends StatefulWidget {
   static const id = 'ManagerProfileAdmin';
@@ -129,7 +131,7 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
                       );
                     },
                     child: Text(
-                      'Edit info',
+                      LocaleKeys.editInfo.tr(),
                       style: TextStyle(
                         color: kPrimaryColor,
                         fontSize: 14,
@@ -137,15 +139,15 @@ class _ManagerProfileAdminState extends State<ManagerProfileAdmin> {
                     ),
                   ),
                   InfoCard(
-                    title: 'Manager name',
+                    title: LocaleKeys.managerName.tr(),
                     body: '${widget.manager.fName} ${widget.manager.lName}',
                   ),
                   InfoCard(
-                    title: 'Phone number',
+                    title: LocaleKeys.phoneNumber.tr(),
                     body: '${widget.manager.phoneNumber}',
                   ),
                   InfoCard(
-                    title: 'Branch',
+                    title: LocaleKeys.branch.tr(),
                     body: '${widget.manager.branch}',
                   ),
                 ],

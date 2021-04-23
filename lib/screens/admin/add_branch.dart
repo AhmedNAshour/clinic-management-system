@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/map.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddBranch extends StatefulWidget {
   static final id = 'AddBranch';
@@ -84,7 +86,7 @@ class _AddBranchState extends State<AddBranch> {
                             ),
                             SizedBox(width: size.width * 0.18),
                             Text(
-                              'Add new branch',
+                              LocaleKeys.add_branch.tr(),
                               style: TextStyle(
                                 fontSize: size.width * 0.06,
                                 color: Colors.white,
@@ -106,12 +108,13 @@ class _AddBranchState extends State<AddBranch> {
                                   RoundedInputField(
                                     obsecureText: false,
                                     icon: Icons.edit,
-                                    hintText: 'Branch Name',
+                                    hintText: LocaleKeys.branch_name.tr(),
                                     onChanged: (val) {
                                       setState(() => name = val);
                                     },
-                                    validator: (val) =>
-                                        val.isEmpty ? 'Enter a name' : null,
+                                    validator: (val) => val.isEmpty
+                                        ? LocaleKeys.enterAName.tr()
+                                        : null,
                                   ),
                                   RoundedInputField(
                                     obsecureText: false,
@@ -120,8 +123,9 @@ class _AddBranchState extends State<AddBranch> {
                                     onChanged: (val) {
                                       setState(() => address = val);
                                     },
-                                    validator: (val) =>
-                                        val.isEmpty ? 'Enter an address' : null,
+                                    validator: (val) => val.isEmpty
+                                        ? LocaleKeys.enterAnAddress.tr()
+                                        : null,
                                   ),
                                   SizedBox(
                                     height: size.height * 0.02,
@@ -160,7 +164,8 @@ class _AddBranchState extends State<AddBranch> {
                                               setState(() => phoneNumber = val);
                                             },
                                             validator: (val) => val.isEmpty
-                                                ? 'Enter a valid number'
+                                                ? LocaleKeys.enterAValidNumber
+                                                    .tr()
                                                 : null,
                                           ),
                                         ),
@@ -171,7 +176,7 @@ class _AddBranchState extends State<AddBranch> {
                                     height: size.height * 0.02,
                                   ),
                                   RoundedButton(
-                                    text: 'Select Location',
+                                    text: LocaleKeys.selectLocation.tr(),
                                     press: () {
                                       if (_formKey.currentState.validate()) {
                                         Navigator.pushNamed(
@@ -184,14 +189,6 @@ class _AddBranchState extends State<AddBranch> {
                                             });
                                       }
                                     },
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.02,
-                                  ),
-                                  Text(
-                                    error,
-                                    style: TextStyle(
-                                        color: Colors.red, fontSize: 14),
                                   ),
                                 ],
                               ),

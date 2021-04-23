@@ -1,3 +1,4 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -6,6 +7,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DisableUser extends StatefulWidget {
   static const id = 'DisableUser';
@@ -61,7 +63,7 @@ class _DisableUserState extends State<DisableUser> {
                   height: size.height * 0.02,
                 ),
                 Text(
-                  'Are you sure you want to disable ${widget.userData.fName} ${widget.userData.lName}\'s account ?',
+                  '${LocaleKeys.diasbleUserWarning} ${widget.userData.fName} ${widget.userData.lName} ?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
@@ -85,7 +87,7 @@ class _DisableUserState extends State<DisableUser> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'CANCEL',
+                          LocaleKeys.no.tr(),
                           style: TextStyle(
                             color: kPrimaryColor,
                             fontSize: size.height * 0.025,
@@ -125,7 +127,7 @@ class _DisableUserState extends State<DisableUser> {
                                     height: size.height * 0.05,
                                   ),
                                   Text(
-                                    'User Disabled',
+                                    LocaleKeys.userDisabled.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: size.height * 0.04,
@@ -138,7 +140,7 @@ class _DisableUserState extends State<DisableUser> {
                           ).show(context);
                         },
                         child: Text(
-                          'YES',
+                          LocaleKeys.yes.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: size.height * 0.025,

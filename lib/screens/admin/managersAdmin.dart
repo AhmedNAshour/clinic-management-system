@@ -1,7 +1,7 @@
 import 'package:clinic/components/lists_cards/secretaries_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/manager.dart';
-import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/add_secretary.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:clinic/services/database.dart';
@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../components/forms/admin_search_managers.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ManagersAdmin extends StatefulWidget {
   static final id = 'ManagersAdmin';
@@ -54,7 +55,7 @@ class _ManagersAdminState extends State<ManagersAdmin> {
                   ),
                   SizedBox(width: size.width * 0.2),
                   Text(
-                    'Managers',
+                    LocaleKeys.managers.tr(),
                     style: TextStyle(
                       fontSize: size.width * 0.06,
                       color: Colors.white,
@@ -98,7 +99,7 @@ class _ManagersAdminState extends State<ManagersAdmin> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'Search',
+                                          LocaleKeys.search.tr(),
                                           style: TextStyle(
                                               fontSize: size.width * 0.05,
                                               color: kPrimaryTextColor),

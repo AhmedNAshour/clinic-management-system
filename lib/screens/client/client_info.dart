@@ -1,5 +1,6 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
@@ -12,6 +13,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/client.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ClientProfile extends StatefulWidget {
   static const id = 'ClientProfile';
@@ -128,7 +130,7 @@ class _ClientProfileState extends State<ClientProfile> {
                           size, EditClient(client: widget.client), context);
                     },
                     child: Text(
-                      'Edit',
+                      LocaleKeys.edit.tr(),
                       style: TextStyle(
                         color: kPrimaryColor,
                         fontSize: 14,
@@ -136,23 +138,23 @@ class _ClientProfileState extends State<ClientProfile> {
                     ),
                   ),
                   InfoCard(
-                    title: 'Client name',
+                    title: LocaleKeys.clientName.tr(),
                     body: '${widget.client.fName} ${widget.client.lName}',
                   ),
                   InfoCard(
-                    title: 'Age',
+                    title: LocaleKeys.age.tr(),
                     body: '${widget.client.age}',
                   ),
                   InfoCard(
-                    title: 'Phone number',
+                    title: LocaleKeys.phoneNumber.tr(),
                     body: '${widget.client.phoneNumber}',
                   ),
                   InfoCard(
-                    title: 'Remaining sessions',
+                    title: LocaleKeys.appointmentsRemaining.tr(),
                     body: '${widget.client.numAppointments}',
                   ),
                   InfoCard(
-                    title: 'Email',
+                    title: LocaleKeys.email.tr(),
                     body: '${widget.client.email}',
                   ),
                   SizedBox(
@@ -161,7 +163,7 @@ class _ClientProfileState extends State<ClientProfile> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Doctors notes',
+                      LocaleKeys.doctorNotes.tr(),
                       style: TextStyle(
                         color: kPrimaryTextColor,
                         fontWeight: FontWeight.bold,

@@ -1,3 +1,4 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
@@ -8,6 +9,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CancelAppointmentClient extends StatefulWidget {
   static const id = 'DisableUser';
@@ -67,7 +69,7 @@ class _CancelAppointmentClientState extends State<CancelAppointmentClient> {
                   height: size.height * 0.02,
                 ),
                 Text(
-                  'Are you sure you want to cancel this appointment ?',
+                  LocaleKeys.cancelAppointmentWarning.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
@@ -91,7 +93,7 @@ class _CancelAppointmentClientState extends State<CancelAppointmentClient> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'CANCEL',
+                          LocaleKeys.no.tr(),
                           style: TextStyle(
                             color: kPrimaryColor,
                             fontSize: size.height * 0.025,
@@ -115,7 +117,7 @@ class _CancelAppointmentClientState extends State<CancelAppointmentClient> {
                               numAppointments: old + 1,
                               documentID: widget.appointment.clientID);
                           await DatabaseService().updateAppointmentStatus(
-                              id: widget.appointment.docID, status: 'canceled');
+                              id: widget.appointment.docID, status: 0);
 
                           await DatabaseService().addAppointmentNotifications(
                             forClient: false,
@@ -154,7 +156,7 @@ class _CancelAppointmentClientState extends State<CancelAppointmentClient> {
                                     height: size.height * 0.05,
                                   ),
                                   Text(
-                                    'Appointment Cancelled',
+                                    LocaleKeys.appointmentCancelled.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: size.height * 0.04,

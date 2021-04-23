@@ -333,6 +333,7 @@ class _BookingStep3State extends State<BookingStep3> {
                                             branch: secretaryBranch,
                                             clientPicURL: client.picURL ?? '',
                                             doctorPicURL: doctor.picURL ?? '',
+                                            status: 1,
                                           );
                                           await DatabaseService(uid: client.uid)
                                               .addAppointmentNotifications(

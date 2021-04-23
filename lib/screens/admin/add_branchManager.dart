@@ -1,14 +1,12 @@
 import 'dart:io';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/admin/branches.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +16,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddBranchManager extends StatefulWidget {
   final Branch branch;
@@ -84,7 +83,7 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'Add branch manager',
+                        LocaleKeys.addBranchManager.tr(),
                         style: TextStyle(
                             fontSize: size.width * 0.05,
                             color: kPrimaryTextColor),
@@ -156,7 +155,7 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                                     width: size.width * 0.02,
                                   ),
                                   Text(
-                                    'Gender',
+                                    LocaleKeys.gender.tr(),
                                     style: TextStyle(
                                       color: kPrimaryTextColor,
                                       fontSize: size.width * 0.06,
@@ -286,7 +285,7 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                                         setState(() => phoneNumber = val);
                                       },
                                       validator: (val) => val.isEmpty
-                                          ? 'Enter a valid number'
+                                          ? LocaleKeys.enterAValidNumber.tr()
                                           : null,
                                     ),
                                   ),
@@ -300,48 +299,51 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                               initialValue: fName,
                               obsecureText: false,
                               icon: Icons.person_add_alt,
-                              hintText: 'First Name',
+                              hintText: LocaleKeys.firstName.tr(),
                               onChanged: (val) {
                                 setState(() => fName = val);
                               },
-                              validator: (val) =>
-                                  val.isEmpty ? 'Enter a name' : null,
+                              validator: (val) => val.isEmpty
+                                  ? LocaleKeys.enterAName.tr()
+                                  : null,
                             ),
                             RoundedInputField(
                               initialValue: lName,
                               obsecureText: false,
                               icon: Icons.person_add_alt_1,
-                              hintText: 'Last Name',
+                              hintText: LocaleKeys.lastName.tr(),
                               onChanged: (val) {
                                 setState(() => lName = val);
                               },
-                              validator: (val) =>
-                                  val.isEmpty ? 'Enter a name' : null,
+                              validator: (val) => val.isEmpty
+                                  ? LocaleKeys.enterAName.tr()
+                                  : null,
                             ),
                             RoundedInputField(
                               initialValue: email,
                               obsecureText: false,
                               icon: Icons.email,
-                              hintText: 'Email',
+                              hintText: LocaleKeys.email.tr(),
                               onChanged: (val) {
                                 setState(() => email = val);
                               },
-                              validator: (val) =>
-                                  val.isEmpty ? 'Enter an email' : null,
+                              validator: (val) => val.isEmpty
+                                  ? LocaleKeys.enterAnEmail.tr()
+                                  : null,
                             ),
                             RoundedInputField(
                               obsecureText: true,
                               icon: Icons.lock,
-                              hintText: 'Password',
+                              hintText: LocaleKeys.password.tr(),
                               onChanged: (val) {
                                 setState(() => password = val);
                               },
                               validator: (val) => val.length < 6
-                                  ? ' Enter a password 6+ chars long '
+                                  ? LocaleKeys.enterAPassword.tr()
                                   : null,
                             ),
                             RoundedButton(
-                              text: 'Add Branch',
+                              text: LocaleKeys.addBranchButton.tr(),
                               press: () async {
                                 if (_formKey.currentState.validate()) {
                                   setState(() {
@@ -354,7 +356,7 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                                   );
                                   if (result == null) {
                                     setState(() {
-                                      error = 'invalid email';
+                                      error = LocaleKeys.invalidEmail.tr();
                                       loading = false;
                                     });
                                   } else {
@@ -413,7 +415,7 @@ class _AddBranchManagerState extends State<AddBranchManager> {
                                               height: size.height * 0.05,
                                             ),
                                             Text(
-                                              'Branch Added',
+                                              LocaleKeys.branchAdded.tr(),
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: size.height * 0.04,

@@ -1,11 +1,8 @@
 import 'dart:io';
-import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
-import 'package:clinic/components/lists_cards/secretary_card.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/manager.dart';
-import 'package:clinic/models/user.dart';
-import 'package:clinic/screens/admin/map.dart';
 import 'package:clinic/screens/admin/mapEdit.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
@@ -14,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EditBranch extends StatefulWidget {
   static final id = 'EditBranch';
@@ -98,23 +95,24 @@ class _EditBranchState extends State<EditBranch> {
                                       initialValue: name,
                                       obsecureText: false,
                                       icon: Icons.edit,
-                                      hintText: 'Branch Name',
+                                      hintText: LocaleKeys.branchName.tr(),
                                       onChanged: (val) {
                                         setState(() => name = val);
                                       },
-                                      validator: (val) =>
-                                          val.isEmpty ? 'Enter a name' : null,
+                                      validator: (val) => val.isEmpty
+                                          ? LocaleKeys.enterAName
+                                          : null,
                                     ),
                                     RoundedInputField(
                                       initialValue: address,
                                       obsecureText: false,
                                       icon: Icons.edit,
-                                      hintText: 'Full Address',
+                                      hintText: LocaleKeys.address.tr(),
                                       onChanged: (val) {
                                         setState(() => address = val);
                                       },
                                       validator: (val) => val.isEmpty
-                                          ? 'Enter an address'
+                                          ? LocaleKeys.enterAnAddress.tr()
                                           : null,
                                     ),
                                     SizedBox(
@@ -127,7 +125,7 @@ class _EditBranchState extends State<EditBranch> {
                                           border: InputBorder.none,
                                         ),
                                         hint: Text(
-                                          'Select Manager',
+                                          LocaleKeys.selectManager.tr(),
                                         ),
                                         value: branch.managerID,
                                         items: managers.map((manager) {
@@ -184,7 +182,8 @@ class _EditBranchState extends State<EditBranch> {
                                                     () => phoneNumber = val);
                                               },
                                               validator: (val) => val.isEmpty
-                                                  ? 'Enter a valid number'
+                                                  ? LocaleKeys.enterAValidNumber
+                                                      .tr()
                                                   : null,
                                             ),
                                           ),
@@ -231,7 +230,7 @@ class _EditBranchState extends State<EditBranch> {
                                                   });
                                             },
                                             child: Text(
-                                              'EDIT ON MAP',
+                                              LocaleKeys.editOnMap.tr(),
                                               style: TextStyle(
                                                 color: kPrimaryColor,
                                                 fontSize: size.height * 0.025,
@@ -316,7 +315,7 @@ class _EditBranchState extends State<EditBranch> {
                                               ).show(context);
                                             },
                                             child: Text(
-                                              'EDIT',
+                                              LocaleKeys.edit.tr(),
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: size.height * 0.025,

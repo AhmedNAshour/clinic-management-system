@@ -1,5 +1,7 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class NotificationsAdmin extends StatefulWidget {
   static final id = 'NotificationsAdmin';
@@ -20,7 +22,7 @@ class _NotificationsAdminState extends State<NotificationsAdmin> {
           color: kPrimaryColor,
           child: Center(
             child: Text(
-              'Notifications',
+              LocaleKeys.notifications.tr(),
               style: TextStyle(
                 fontSize: size.width * 0.06,
                 color: Colors.white,

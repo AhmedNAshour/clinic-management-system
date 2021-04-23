@@ -368,7 +368,7 @@ class _ProfileSecretaryState extends State<ProfileSecretary> {
                           padding: EdgeInsets.all(size.width * 0.03),
                           margin: EdgeInsets.symmetric(
                               vertical: size.height * 0.02),
-                          height: size.height * 0.18,
+                          // height: size.height * 0.18,
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: kPrimaryLightColor,

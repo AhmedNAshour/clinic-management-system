@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/screens/shared/wrapper.dart';
@@ -14,6 +15,7 @@ import 'package:geolocator/geolocator.dart' as go;
 import 'package:ndialog/ndialog.dart';
 import '../shared/constants.dart';
 import 'add_branchManager.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MapEdit extends StatefulWidget {
   static const id = 'MapEdit';
@@ -79,7 +81,7 @@ class _MapEditState extends State<MapEdit> {
                         ),
                         SizedBox(width: size.width * 0.15),
                         Text(
-                          'Location on map',
+                          LocaleKeys.locationOnMap.tr(),
                           style: TextStyle(
                             fontSize: size.width * 0.06,
                             color: Colors.white,
@@ -176,7 +178,7 @@ class _MapEditState extends State<MapEdit> {
                       height: size.height * 0.05,
                     ),
                     Text(
-                      'Branch Edited',
+                      LocaleKeys.branchEdited.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: size.height * 0.04,
@@ -196,7 +198,7 @@ class _MapEditState extends State<MapEdit> {
               color: kPrimaryColor,
               child: Center(
                 child: Text(
-                  'EDIT',
+                  LocaleKeys.edit.tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

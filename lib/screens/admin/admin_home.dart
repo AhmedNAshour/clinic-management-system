@@ -1,10 +1,10 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/add_branch.dart';
 import 'package:clinic/screens/admin/branches.dart';
 import 'package:clinic/screens/shared/loading.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +15,7 @@ import 'clientsAdmin.dart';
 import 'doctorsAdmin.dart';
 import 'managersAdmin.dart';
 import '../shared/constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -91,7 +92,7 @@ class _AdminHomeState extends State<AdminHome> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Welcome ${user.fName}',
+                                  '${LocaleKeys.welcome.tr()} ${user.fName}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.07,
@@ -99,7 +100,7 @@ class _AdminHomeState extends State<AdminHome> {
                                   ),
                                 ),
                                 Text(
-                                  'Admin',
+                                  LocaleKeys.admin.tr(),
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.05,
@@ -118,7 +119,7 @@ class _AdminHomeState extends State<AdminHome> {
                         ),
                         child: Container(
                           padding: EdgeInsets.all(screenWidth * 0.04),
-                          height: screenHeight * 0.18,
+                          // height: screenHeight * 0.18,
                           width: screenWidth * 0.9,
                           child: Column(
                             children: [
@@ -132,7 +133,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     width: screenWidth * 0.04,
                                   ),
                                   Text(
-                                    'Appointments Report',
+                                    LocaleKeys.appointmentsReport.tr(),
                                     style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: screenWidth * 0.06,
@@ -146,19 +147,19 @@ class _AdminHomeState extends State<AdminHome> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   AppointmentsReportItem(
-                                    name: 'Today',
+                                    name: LocaleKeys.today.tr(),
                                     count: todaysAppointments.length,
                                   ),
                                   AppointmentsReportItem(
-                                    name: 'Previous',
+                                    name: LocaleKeys.previous.tr(),
                                     count: pastAppointments.length,
                                   ),
                                   AppointmentsReportItem(
-                                    name: 'Upcoming',
+                                    name: LocaleKeys.upcoming.tr(),
                                     count: upcomingAppointments.length,
                                   ),
                                   AppointmentsReportItem(
-                                    name: 'Cancelled',
+                                    name: LocaleKeys.cancelled.tr(),
                                     count: cancelledAppointments.length,
                                   ),
                                 ],
@@ -207,7 +208,7 @@ class _AdminHomeState extends State<AdminHome> {
                                                             size.height * 0.02,
                                                       ),
                                                       Text(
-                                                        'Clients',
+                                                        LocaleKeys.clients.tr(),
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: TextStyle(
@@ -258,7 +259,7 @@ class _AdminHomeState extends State<AdminHome> {
                                                             size.height * 0.02,
                                                       ),
                                                       Text(
-                                                        'Doctors',
+                                                        LocaleKeys.doctors.tr(),
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: TextStyle(
@@ -313,7 +314,8 @@ class _AdminHomeState extends State<AdminHome> {
                                                             size.height * 0.02,
                                                       ),
                                                       Text(
-                                                        'Managers',
+                                                        LocaleKeys.managers
+                                                            .tr(),
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: TextStyle(
@@ -364,7 +366,8 @@ class _AdminHomeState extends State<AdminHome> {
                                                             size.height * 0.02,
                                                       ),
                                                       Text(
-                                                        'Branches',
+                                                        LocaleKeys.branches
+                                                            .tr(),
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: TextStyle(
@@ -414,7 +417,7 @@ class _AdminHomeState extends State<AdminHome> {
                                         height: size.height * 0.02,
                                       ),
                                       Text(
-                                        'Add Branch',
+                                        LocaleKeys.add_branch.tr(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: size.width * 0.08,

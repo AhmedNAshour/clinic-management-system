@@ -434,7 +434,7 @@ class _SecretaryHomeState extends State<SecretaryHome> {
                     clientName: searchClientNameAppointment,
                     clientNumber: searchClientNumberAppointment,
                     branch: secretary.branch,
-                    status: 'active',
+                    status: 1,
                   ),
                   initialData: [],
                 ),

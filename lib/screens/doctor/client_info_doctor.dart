@@ -98,6 +98,7 @@ class _ClientProfileDoctorState extends State<ClientProfileDoctor> {
                                 InkWell(
                                   onTap: () async {
                                     showModalBottomSheet(
+                                        isScrollControlled: true,
                                         context: context,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(

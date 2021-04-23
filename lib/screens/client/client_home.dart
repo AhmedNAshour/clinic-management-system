@@ -1,8 +1,8 @@
 import 'package:clinic/components/lists_cards/appointments_list_client.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
-import 'package:clinic/services/auth.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'booking_step1_client.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ClientHome extends StatefulWidget {
   @override
@@ -22,13 +23,20 @@ class _ClientHomeState extends State<ClientHome> {
   String search = '';
   bool showCancel = false;
   int selectedType = 0;
-  String status;
+  int status;
   String dateComparison;
   List<String> appointmentTypes = [
     'Upcoming',
     'Past',
     'Canceled',
   ];
+
+  List<String> appointmentTypesAR = [
+    'القادم',
+    'السابق',
+    'ملغى',
+  ];
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -37,9 +45,9 @@ class _ClientHomeState extends State<ClientHome> {
     final user = Provider.of<UserModel>(context);
     final client = Provider.of<Client>(context);
 
-    String getStatus(int selectedType) {
-      if (selectedType == 0 || selectedType == 1) status = 'active';
-      if (selectedType == 2) status = 'canceled';
+    int getStatus(int selectedType) {
+      if (selectedType == 0 || selectedType == 1) status = 1;
+      if (selectedType == 2) status = 0;
       return status;
     }
 
@@ -82,7 +90,7 @@ class _ClientHomeState extends State<ClientHome> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Welcome ${user.fName}',
+                                  '${LocaleKeys.welcome.tr()} ${user.fName}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.07,
@@ -90,7 +98,7 @@ class _ClientHomeState extends State<ClientHome> {
                                   ),
                                 ),
                                 Text(
-                                  '${client.numAppointments} sessions remaining.',
+                                  '${client.numAppointments} ${LocaleKeys.appointmentsRemaining.tr()} ',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.04,
@@ -140,7 +148,9 @@ class _ClientHomeState extends State<ClientHome> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    appointmentTypes[index],
+                                    context.locale.toString() == 'en'
+                                        ? appointmentTypes[index]
+                                        : appointmentTypesAR[index],
                                     style: TextStyle(
                                         color: selectedType == index
                                             ? Colors.white

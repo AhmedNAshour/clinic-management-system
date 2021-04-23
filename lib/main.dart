@@ -3,6 +3,8 @@ import 'package:clinic/screens/admin/branches.dart';
 import 'package:clinic/screens/admin/appointments_admin.dart';
 import 'package:clinic/screens/admin/map.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './screens/admin/mapEdit.dart';
 import 'package:clinic/screens/client/client_home.dart';
@@ -34,7 +36,6 @@ import './screens/admin/clientsAdmin.dart';
 import './screens/admin/doctorsAdmin.dart';
 import './screens/admin/managersAdmin.dart';
 import './screens/admin/add_branch.dart';
-import './screens/admin/notificationSettings_admin.dart';
 import 'models/user.dart';
 import 'screens/admin/edit_branch.dart';
 import './screens/client/booking_step1_client.dart';
@@ -42,6 +43,7 @@ import './screens/client/booking_step2_client.dart';
 import './screens/doctor/notificationSettings_doctor.dart';
 import './langs/codegen_loader.g.dart';
 import './screens/shared/chat_room.dart';
+import 'package:device_preview/device_preview.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -87,7 +89,10 @@ void main() async {
       ],
       fallbackLocale: Locale('en'),
       assetLoader: CodegenLoader(),
-      child: MyApp(),
+      child: DevicePreview(
+        builder: (context) => MyApp(),
+        enabled: !kReleaseMode,
+      ),
     ),
   );
 }
@@ -132,6 +137,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MultiProvider(
       providers: [
         StreamProvider<AuthUser>.value(
@@ -140,9 +149,11 @@ class _MyAppState extends State<MyApp> {
         ),
       ],
       child: MaterialApp(
+        locale: DevicePreview.locale(context), // Add the locale here
+        builder: DevicePreview.appBuilder,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
-        locale: context.locale,
+        // locale: context.locale,
         theme: ThemeData(
           fontFamily: 'Roboto',
         ),
@@ -179,8 +190,6 @@ class _MyAppState extends State<MyApp> {
           ChatRoom.id: (context) => ChatRoom(),
           NotificationSettingsManager.id: (context) =>
               NotificationSettingsManager(),
-          NotificationSettingsAdmin.id: (context) =>
-              NotificationSettingsAdmin(),
           NotificationSettingsDoctor.id: (context) =>
               NotificationSettingsDoctor(),
           AppLanguage.id: (context) => AppLanguage(),

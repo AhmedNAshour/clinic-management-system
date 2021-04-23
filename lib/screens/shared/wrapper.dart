@@ -3,7 +3,7 @@ import 'package:clinic/screens/admin/admin_navigation.dart';
 import 'package:clinic/screens/client/client_navigation.dart';
 import 'package:clinic/screens/manager/secretary_navigation.dart';
 import 'package:clinic/screens/shared/awaitingApproval.dart';
-
+import 'package:clinic/screens/shared/accountDisabled.dart';
 import '../doctor/doctor_navigation.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/screens/shared/login.dart';
@@ -42,12 +42,12 @@ class _WrapperState extends State<Wrapper> {
             stream: DatabaseService(uid: user.uid).userData,
             builder: (context, userData) {
               if (userData.hasData) {
+                context.setLocale(Locale(userData.data.language));
                 if (userData.data.status == 1) {
                   return FutureBuilder(
                     future: DatabaseService(uid: user.uid)
                         .setToken(userData.data.role),
                     builder: (context, role) {
-                      context.setLocale(Locale(userData.data.language));
                       if (role.connectionState != ConnectionState.done) {
                         return Loading();
                       } else {
@@ -100,11 +100,13 @@ class _WrapperState extends State<Wrapper> {
                     },
                   );
                 } else {
-                  if (userData.data.role == 'client') {
+                  if (userData.data.status == 2) {
                     _fcm.subscribeToTopic('${userData.data.uid}requestStatus');
+                    return AwaitingApproval();
+                  } else {
+                    return AccountDisabled();
                   }
                   //TODO: Add account disabled screen.
-                  return AwaitingApproval();
                 }
               } else {
                 return Loading();

@@ -1,4 +1,5 @@
 import 'package:clinic/components/lists_cards/clients_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/screens/manager/addClient.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../components/forms/admin_search_clients.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ClientsAdmin extends StatefulWidget {
   static final id = 'ClientsAdmin';
@@ -52,7 +54,7 @@ class _ClientsAdminState extends State<ClientsAdmin> {
                   ),
                   SizedBox(width: size.width * 0.2),
                   Text(
-                    'Clients',
+                    LocaleKeys.clients.tr(),
                     style: TextStyle(
                       fontSize: size.width * 0.06,
                       color: Colors.white,
@@ -97,7 +99,7 @@ class _ClientsAdminState extends State<ClientsAdmin> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'Search',
+                                          LocaleKeys.search.tr(),
                                           style: TextStyle(
                                               fontSize: size.width * 0.05,
                                               color: kPrimaryTextColor),

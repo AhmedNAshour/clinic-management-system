@@ -150,7 +150,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  widget.appointment.status != 'canceled'
+                  widget.appointment.status != 0
                       ? GestureDetector(
                           onTap: () {
                             CustomBottomSheets().showDynamicCustomBottomSheet(
@@ -166,7 +166,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                           ),
                         )
                       : Container(),
-                  widget.appointment.status != 'canceled'
+                  widget.appointment.status != 0
                       ? SizedBox(
                           height: screenHeight * 0.02,
                         )

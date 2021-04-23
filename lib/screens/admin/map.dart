@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:country_code_picker/country_code.dart';
@@ -11,6 +12,7 @@ import 'package:geolocator/geolocator.dart' as go;
 import 'package:ndialog/ndialog.dart';
 import '../shared/constants.dart';
 import 'add_branchManager.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MapSelect extends StatefulWidget {
   static const id = 'MapSelect';
@@ -81,7 +83,7 @@ class _MapSelectState extends State<MapSelect> {
                         ),
                         SizedBox(width: size.width * 0.15),
                         Text(
-                          'Location on map',
+                          LocaleKeys.locationOnMap.tr(),
                           style: TextStyle(
                             fontSize: size.width * 0.06,
                             color: Colors.white,
@@ -149,7 +151,7 @@ class _MapSelectState extends State<MapSelect> {
                   context);
             } else {
               setState(() {
-                error = 'Please select a location';
+                error = LocaleKeys.pleaseSelectALocation.tr();
               });
             }
           },
@@ -161,7 +163,7 @@ class _MapSelectState extends State<MapSelect> {
               color: kPrimaryColor,
               child: Center(
                 child: Text(
-                  'Add Manager',
+                  LocaleKeys.addManager.tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/info_card.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
@@ -8,6 +9,7 @@ import 'package:clinic/screens/shared/constants.dart';
 import 'package:provider/provider.dart';
 import '../../models/doctor.dart';
 import 'booking_step2_client.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DoctorProfileClientBooking extends StatefulWidget {
   static const id = 'DoctorProfileClientBooking';
@@ -81,20 +83,16 @@ class _DoctorProfileClientBookingState
                       child: Column(
                         children: [
                           InfoCard(
-                            title: 'Doctor name',
+                            title: LocaleKeys.doctorName.tr(),
                             body:
                                 '${widget.doctor.fName} ${widget.doctor.lName}',
                           ),
                           InfoCard(
-                            title: 'Phone number',
-                            body: '${widget.doctor.phoneNumber}',
-                          ),
-                          InfoCard(
-                            title: 'Specialty',
+                            title: LocaleKeys.specialty.tr(),
                             body: '${widget.doctor.proffesion}',
                           ),
                           InfoCard(
-                            title: 'Branch',
+                            title: LocaleKeys.branch.tr(),
                             body: '${widget.doctor.branch}',
                           ),
                           Container(
@@ -115,7 +113,7 @@ class _DoctorProfileClientBookingState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Bio',
+                                    LocaleKeys.about.tr(),
                                     style: TextStyle(
                                       color: kPrimaryTextColor,
                                       fontWeight: FontWeight.bold,
@@ -138,7 +136,7 @@ class _DoctorProfileClientBookingState
                             height: size.height * 0.04,
                           ),
                           RoundedButton(
-                            text: 'Confirm Doctor',
+                            text: LocaleKeys.confirmDoctor.tr(),
                             press: () {
                               Navigator.pushNamed(
                                   context, BookingStep2Client.id,

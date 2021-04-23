@@ -1,22 +1,17 @@
 import 'dart:async';
-
 import 'package:clinic/components/info_card.dart';
-import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/manager.dart';
-import 'package:clinic/models/note.dart';
-import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/admin/edit_branch.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BranchInfo extends StatefulWidget {
   static const id = 'BranchInfo';
@@ -157,19 +152,19 @@ class _BranchInfoState extends State<BranchInfo> {
                             ],
                           ),
                           InfoCard(
-                            title: 'Branch name',
+                            title: LocaleKeys.branchName.tr(),
                             body: '${widget.branch.name}',
                           ),
                           InfoCard(
-                            title: 'Phone number',
+                            title: LocaleKeys.phoneNumber.tr(),
                             body: '${widget.branch.phoneNumber}',
                           ),
                           InfoCard(
-                            title: 'Address',
+                            title: LocaleKeys.address.tr(),
                             body: '${widget.branch.address}',
                           ),
                           InfoCard(
-                            title: 'Manager',
+                            title: LocaleKeys.manager.tr(),
                             body:
                                 '${branchManager.fName} ${branchManager.lName}',
                           ),

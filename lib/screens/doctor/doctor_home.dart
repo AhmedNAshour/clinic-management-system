@@ -20,7 +20,7 @@ class _DoctorHomeState extends State<DoctorHome> {
   String search = '';
   bool showCancel = false;
   int selectedType = 0;
-  String status;
+  int status;
   String dateComparison;
   List<String> appointmentTypes = [
     'Upcoming',
@@ -35,9 +35,9 @@ class _DoctorHomeState extends State<DoctorHome> {
     final user = Provider.of<UserModel>(context);
     final doctor = Provider.of<Doctor>(context);
 
-    String getStatus(int selectedType) {
-      if (selectedType == 0 || selectedType == 1) status = 'active';
-      if (selectedType == 2) status = 'canceled';
+    int getStatus(int selectedType) {
+      if (selectedType == 0 || selectedType == 1) status = 1;
+      if (selectedType == 2) status = 0;
       return status;
     }
 

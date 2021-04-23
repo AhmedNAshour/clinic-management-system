@@ -1,5 +1,6 @@
 import 'package:clinic/components/info_card.dart';
 import 'package:clinic/components/lists_cards/notes_list.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/note.dart';
 import 'package:clinic/models/user.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:clinic/screens/shared/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppointmentInfo extends StatefulWidget {
   static const id = 'ClientProfile';
@@ -77,57 +79,22 @@ class _AppointmentInfoState extends State<AppointmentInfo> {
                         height: size.height * 0.01,
                       ),
                       InfoCard(
-                        title: 'Doctor name',
+                        title: LocaleKeys.doctorName.tr(),
                         body: '${appointment.doctorFName}',
                       ),
                       InfoCard(
-                        title: 'Date',
+                        title: LocaleKeys.date.tr(),
                         body:
                             '${DateFormat("MMM").format(appointment.startTime)} ${DateFormat("d").format(appointment.startTime)}',
                       ),
                       InfoCard(
-                        title: 'Time',
+                        title: LocaleKeys.time.tr(),
                         body:
                             '${DateFormat("jm").format(appointment.startTime)}',
                       ),
                       InfoCard(
-                        title: 'Branch',
+                        title: LocaleKeys.branch.tr(),
                         body: '${appointment.branch}',
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Doctors notes',
-                          style: TextStyle(
-                            color: kPrimaryTextColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: size.width * 0.05,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          width: size.width * 0.9,
-                          child: MultiProvider(
-                            providers: [
-                              StreamProvider<UserModel>.value(
-                                value: DatabaseService(uid: user.uid).userData,
-                              ),
-                              StreamProvider<List<Note>>.value(
-                                value: DatabaseService()
-                                    .getClientNotes(appointment.clientID),
-                              ),
-                            ],
-                            child: NotesList(),
-                          ),
-                        ),
                       ),
                     ],
                   ),

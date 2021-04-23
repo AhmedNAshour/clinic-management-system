@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/doctor.dart';
 import 'package:clinic/screens/shared/loading.dart';
@@ -14,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'dart:io';
 import '../shared/constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EditDoctorAdmin extends StatefulWidget {
   static const id = 'AddDoctorSec';
@@ -101,7 +103,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            'Edit Dr.${widget.doctor.fName}',
+                            '${LocaleKeys.editDoctor.tr()}${widget.doctor.fName}',
                             style: TextStyle(
                                 fontSize: size.width * 0.05,
                                 color: kPrimaryTextColor),
@@ -178,7 +180,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                         width: size.width * 0.02,
                                       ),
                                       Text(
-                                        'Gender',
+                                        LocaleKeys.gender.tr(),
                                         style: TextStyle(
                                           color: kPrimaryTextColor,
                                           fontSize: size.width * 0.06,
@@ -284,7 +286,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                       border: InputBorder.none,
                                     ),
                                     hint: Text(
-                                      'Select branch',
+                                      LocaleKeys.selectBranch.tr(),
                                     ),
                                     items: branches.map((branch) {
                                       return DropdownMenuItem(
@@ -334,8 +336,9 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                           onChanged: (val) {
                                             setState(() => phoneNumber = val);
                                           },
-                                          validator: (val) => val.length != 11
-                                              ? 'Enter a valid number'
+                                          validator: (val) => val.isEmpty
+                                              ? LocaleKeys.enterAValidNumber
+                                                  .tr()
                                               : null,
                                         ),
                                       ),
@@ -349,46 +352,49 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                   initialValue: widget.doctor.fName,
                                   obsecureText: false,
                                   icon: Icons.person_add_alt,
-                                  hintText: 'First Name',
+                                  hintText: LocaleKeys.firstName.tr(),
                                   onChanged: (val) {
                                     setState(() => fName = val);
                                   },
-                                  validator: (val) =>
-                                      val.isEmpty ? 'Enter a name' : null,
+                                  validator: (val) => val.isEmpty
+                                      ? LocaleKeys.enterAName.tr()
+                                      : null,
                                 ),
                                 RoundedInputField(
                                   initialValue: widget.doctor.lName,
                                   obsecureText: false,
                                   icon: Icons.person_add_alt_1,
-                                  hintText: 'Last Name',
+                                  hintText: LocaleKeys.lastName.tr(),
                                   onChanged: (val) {
                                     setState(() => lName = val);
                                   },
-                                  validator: (val) =>
-                                      val.isEmpty ? 'Enter a name' : null,
+                                  validator: (val) => val.isEmpty
+                                      ? LocaleKeys.enterAName.tr()
+                                      : null,
                                 ),
                                 RoundedInputField(
                                   initialValue: widget.doctor.proffesion,
                                   obsecureText: false,
                                   icon: Icons.person,
-                                  hintText: 'Specialty',
+                                  hintText: LocaleKeys.specialty.tr(),
                                   onChanged: (val) {
                                     setState(() => specialty = val);
                                   },
-                                  validator: (val) =>
-                                      val.isEmpty ? 'Enter a specialty' : null,
+                                  validator: (val) => val.isEmpty
+                                      ? LocaleKeys.enterASpecialty.tr()
+                                      : null,
                                 ),
                                 RoundedInputField(
                                   initialValue: widget.doctor.about,
                                   obsecureText: false,
                                   icon: Icons.info,
-                                  hintText: 'Bio',
+                                  hintText: LocaleKeys.about.tr(),
                                   onChanged: (val) {
                                     setState(() => bio = val);
                                   },
                                 ),
                                 RoundedButton(
-                                  text: 'Edit',
+                                  text: LocaleKeys.edit.tr(),
                                   press: () async {
                                     if (_formKey.currentState.validate()) {
                                       setState(() {
@@ -444,7 +450,7 @@ class _EditDoctorAdminState extends State<EditDoctorAdmin> {
                                                 height: size.height * 0.05,
                                               ),
                                               Text(
-                                                'Doctor Edited',
+                                                LocaleKeys.doctorEdited.tr(),
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: size.height * 0.04,

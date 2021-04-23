@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
@@ -15,6 +16,7 @@ import 'dart:io';
 import '../shared/constants.dart';
 import '../../models/workDay.dart';
 import '../../components/lists_cards/workDays_list.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddDoctorAdmin extends StatefulWidget {
   static const id = 'AddDoctorSec';
@@ -160,7 +162,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                             width: size.width * 0.02,
                                           ),
                                           Text(
-                                            'Gender',
+                                            LocaleKeys.gender.tr(),
                                             style: TextStyle(
                                               color: kPrimaryTextColor,
                                               fontSize: size.width * 0.06,
@@ -266,33 +268,11 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           border: InputBorder.none,
                                         ),
                                         hint: Text(
-                                          'Select branch',
+                                          LocaleKeys.selectBranch.tr(),
                                         ),
                                         items: branches.map((branch) {
                                           return DropdownMenuItem(
                                             value: branch.docID,
-                                            child: Text('${branch.name}'),
-                                          );
-                                        }).toList(),
-                                        onChanged: (val) =>
-                                            setState(() => branchID = val),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: size.height * 0.02,
-                                    ),
-                                    Container(
-                                      width: size.width * 0.8,
-                                      child: DropdownButtonFormField(
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        hint: Text(
-                                          'Select branch',
-                                        ),
-                                        items: branches.map((branch) {
-                                          return DropdownMenuItem(
-                                            value: branch.name,
                                             child: Text('${branch.name}'),
                                           );
                                         }).toList(),
@@ -339,7 +319,8 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                                     () => phoneNumber = val);
                                               },
                                               validator: (val) => val.isEmpty
-                                                  ? 'Enter a valid number'
+                                                  ? LocaleKeys.enterAValidNumber
+                                                      .tr()
                                                   : null,
                                             ),
                                           ),
@@ -353,41 +334,43 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                       initialValue: fName,
                                       obsecureText: false,
                                       icon: Icons.person_add_alt,
-                                      hintText: 'First Name',
+                                      hintText: LocaleKeys.firstName.tr(),
                                       onChanged: (val) {
                                         setState(() => fName = val);
                                       },
-                                      validator: (val) =>
-                                          val.isEmpty ? 'Enter a name' : null,
+                                      validator: (val) => val.isEmpty
+                                          ? LocaleKeys.enterAName.tr()
+                                          : null,
                                     ),
                                     RoundedInputField(
                                       initialValue: lName,
                                       obsecureText: false,
                                       icon: Icons.person_add_alt_1,
-                                      hintText: 'Last Name',
+                                      hintText: LocaleKeys.lastName.tr(),
                                       onChanged: (val) {
                                         setState(() => lName = val);
                                       },
-                                      validator: (val) =>
-                                          val.isEmpty ? 'Enter a name' : null,
+                                      validator: (val) => val.isEmpty
+                                          ? LocaleKeys.enterAName.tr()
+                                          : null,
                                     ),
                                     RoundedInputField(
                                       initialValue: specialty,
                                       obsecureText: false,
                                       icon: Icons.person,
-                                      hintText: 'Specialty',
+                                      hintText: LocaleKeys.specialty.tr(),
                                       onChanged: (val) {
                                         setState(() => specialty = val);
                                       },
                                       validator: (val) => val.isEmpty
-                                          ? 'Enter a specialty'
+                                          ? LocaleKeys.enterASpecialty.tr()
                                           : null,
                                     ),
                                     RoundedInputField(
                                       initialValue: bio,
                                       obsecureText: false,
                                       icon: Icons.info,
-                                      hintText: 'Bio',
+                                      hintText: LocaleKeys.about.tr(),
                                       onChanged: (val) {
                                         setState(() => bio = val);
                                       },
@@ -396,26 +379,27 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                       initialValue: email,
                                       obsecureText: false,
                                       icon: Icons.email,
-                                      hintText: 'Email',
+                                      hintText: LocaleKeys.email.tr(),
                                       onChanged: (val) {
                                         setState(() => email = val);
                                       },
-                                      validator: (val) =>
-                                          val.isEmpty ? 'Enter an email' : null,
+                                      validator: (val) => val.isEmpty
+                                          ? LocaleKeys.enterAnEmail.tr()
+                                          : null,
                                     ),
                                     RoundedInputField(
                                       obsecureText: true,
                                       icon: Icons.lock,
-                                      hintText: 'Password',
+                                      hintText: LocaleKeys.password.tr(),
                                       onChanged: (val) {
                                         setState(() => password = val);
                                       },
                                       validator: (val) => val.length < 6
-                                          ? ' Enter a password 6+ chars long '
+                                          ? LocaleKeys.enterAPassword.tr()
                                           : null,
                                     ),
                                     RoundedButton(
-                                      text: 'NEXT',
+                                      text: LocaleKeys.next.tr(),
                                       press: () async {
                                         if (_formKey.currentState.validate()) {
                                           setState(() {
@@ -428,7 +412,8 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                                           );
                                           if (result == null) {
                                             setState(() {
-                                              error = 'invalid credentials';
+                                              error =
+                                                  LocaleKeys.invalidEmail.tr();
                                               loading = false;
                                             });
                                           } else {
@@ -505,7 +490,7 @@ class _AddDoctorAdminState extends State<AddDoctorAdmin> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Schedule',
+                      LocaleKeys.schedule.tr(),
                       style: TextStyle(
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),

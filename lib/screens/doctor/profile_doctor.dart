@@ -411,7 +411,7 @@ class _ProfileDoctorState extends State<ProfileDoctor> {
                     padding: EdgeInsets.all(size.width * 0.03),
                     margin: EdgeInsets.symmetric(vertical: size.height * 0.02),
                     width: size.width * 0.9,
-                    height: size.height * 0.15,
+                    // height: size.height * 0.15,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: kPrimaryLightColor,

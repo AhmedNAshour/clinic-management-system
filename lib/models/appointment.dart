@@ -12,7 +12,7 @@ class Appointment {
   final String doctorLName;
   final String docID;
   final String branch;
-  final String status;
+  final int status;
   final String doctorPicURL;
   final String clientPicURL;
 

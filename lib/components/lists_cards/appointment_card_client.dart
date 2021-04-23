@@ -51,10 +51,7 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
-    HttpsCallable notifyManagersAboutCancellation =
-        FirebaseFunctions.instance.httpsCallable(
-      'secretaryCancellingTrigger',
-    );
+
     return GestureDetector(
       child: Card(
         elevation: 5,
@@ -151,7 +148,7 @@ class _AppointmentCardClientState extends State<AppointmentCardClient> {
                 ),
               ),
               widget.appointment.startTime.isAfter(DateTime.now()) &&
-                      widget.appointment.status != 'canceled'
+                      widget.appointment.status != 0
                   ? GestureDetector(
                       onTap: () {
                         CustomBottomSheets().showDynamicCustomBottomSheet(

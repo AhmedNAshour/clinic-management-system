@@ -1,4 +1,5 @@
 import 'package:clinic/components/forms/rounded_button..dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/appointment.dart';
 import 'package:clinic/models/client.dart';
 import 'package:clinic/models/doctor.dart';
@@ -15,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BookingStep2Client extends StatefulWidget {
   static const id = 'bookingStep2Client';
@@ -145,7 +147,7 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                                     ),
                                     SizedBox(width: size.width * 0.1),
                                     Text(
-                                      'Book Appointment',
+                                      LocaleKeys.bookAppointment.tr(),
                                       style: TextStyle(
                                         fontSize: size.width * 0.06,
                                         color: Colors.white,
@@ -156,7 +158,7 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                               ),
                               SizedBox(height: size.height * 0.02),
                               Text(
-                                'Please select a time slot',
+                                LocaleKeys.selectTimeSlot.tr(),
                                 style: TextStyle(
                                   color: kPrimaryTextColor,
                                   fontSize: size.width * 0.05,
@@ -331,6 +333,7 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                                             branch: doctor.branch,
                                             clientPicURL: client.picURL ?? '',
                                             doctorPicURL: doctor.picURL ?? '',
+                                            status: 1,
                                           );
                                           await DatabaseService(uid: client.uid)
                                               .addAppointmentNotifications(
@@ -393,7 +396,8 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                                                     height: size.height * 0.05,
                                                   ),
                                                   Text(
-                                                    'Appointment Booked',
+                                                    LocaleKeys.appointmentBooked
+                                                        .tr(),
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize:
@@ -408,11 +412,13 @@ class _BookingStep2ClientState extends State<BookingStep2Client> {
                                           ).show(context);
                                         } else {
                                           setState(() {
-                                            error = 'No time slot was selected';
+                                            error = LocaleKeys
+                                                .notifcationSettings
+                                                .tr();
                                           });
                                         }
                                       },
-                                      text: 'BOOK',
+                                      text: LocaleKeys.book.tr(),
                                     ),
                                     SizedBox(height: size.height * 0.02),
                                   ],

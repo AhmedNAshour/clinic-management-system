@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/branch.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
@@ -15,6 +16,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddSecretary extends StatefulWidget {
   @override
@@ -86,7 +88,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    'Add new manager',
+                                    LocaleKeys.addBranchManager.tr(),
                                     style: TextStyle(
                                         fontSize: size.width * 0.05,
                                         color: kPrimaryTextColor),
@@ -158,7 +160,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                 width: size.width * 0.02,
                                               ),
                                               Text(
-                                                'Gender',
+                                                LocaleKeys.gender.tr(),
                                                 style: TextStyle(
                                                   color: kPrimaryTextColor,
                                                   fontSize: size.width * 0.06,
@@ -269,7 +271,7 @@ class _AddSecretaryState extends State<AddSecretary> {
                                               border: InputBorder.none,
                                             ),
                                             hint: Text(
-                                              'Select branch',
+                                              LocaleKeys.selectBranch.tr(),
                                             ),
                                             items: branches.map((branch) {
                                               return DropdownMenuItem(
@@ -321,10 +323,12 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                     setState(() =>
                                                         phoneNumber = val);
                                                   },
-                                                  validator: (val) => val
-                                                          .isEmpty
-                                                      ? 'Enter a valid number'
-                                                      : null,
+                                                  validator: (val) =>
+                                                      val.isEmpty
+                                                          ? LocaleKeys
+                                                              .enterAValidNumber
+                                                              .tr()
+                                                          : null,
                                                 ),
                                               ),
                                             ],
@@ -337,51 +341,51 @@ class _AddSecretaryState extends State<AddSecretary> {
                                           initialValue: fName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt,
-                                          hintText: 'First Name',
+                                          hintText: LocaleKeys.firstName.tr(),
                                           onChanged: (val) {
                                             setState(() => fName = val);
                                           },
                                           validator: (val) => val.isEmpty
-                                              ? 'Enter a name'
+                                              ? LocaleKeys.enterAName.tr()
                                               : null,
                                         ),
                                         RoundedInputField(
                                           initialValue: lName,
                                           obsecureText: false,
                                           icon: Icons.person_add_alt_1,
-                                          hintText: 'Last Name',
+                                          hintText: LocaleKeys.lastName.tr(),
                                           onChanged: (val) {
                                             setState(() => lName = val);
                                           },
                                           validator: (val) => val.isEmpty
-                                              ? 'Enter a name'
+                                              ? LocaleKeys.enterAName.tr()
                                               : null,
                                         ),
                                         RoundedInputField(
                                           initialValue: email,
                                           obsecureText: false,
                                           icon: Icons.email,
-                                          hintText: 'Email',
+                                          hintText: LocaleKeys.email.tr(),
                                           onChanged: (val) {
                                             setState(() => email = val);
                                           },
                                           validator: (val) => val.isEmpty
-                                              ? 'Enter an email'
+                                              ? LocaleKeys.enterAnEmail.tr()
                                               : null,
                                         ),
                                         RoundedInputField(
                                           obsecureText: true,
                                           icon: Icons.lock,
-                                          hintText: 'Password',
+                                          hintText: LocaleKeys.password.tr(),
                                           onChanged: (val) {
                                             setState(() => password = val);
                                           },
                                           validator: (val) => val.length < 6
-                                              ? ' Enter a password 6+ chars long '
+                                              ? LocaleKeys.enterAPassword.tr()
                                               : null,
                                         ),
                                         RoundedButton(
-                                          text: 'Add',
+                                          text: LocaleKeys.add.tr(),
                                           press: () async {
                                             if (_formKey.currentState
                                                 .validate()) {
@@ -395,7 +399,9 @@ class _AddSecretaryState extends State<AddSecretary> {
                                               );
                                               if (result == null) {
                                                 setState(() {
-                                                  error = 'invalid email';
+                                                  error = LocaleKeys
+                                                      .invalidEmail
+                                                      .tr();
                                                   loading = false;
                                                 });
                                               } else {
@@ -456,7 +462,9 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                               0.05,
                                                         ),
                                                         Text(
-                                                          'Manager Added',
+                                                          LocaleKeys
+                                                              .managerAdded
+                                                              .tr(),
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize:
@@ -471,7 +479,9 @@ class _AddSecretaryState extends State<AddSecretary> {
                                                               0.02,
                                                         ),
                                                         Text(
-                                                          'Manager can now sign in',
+                                                          LocaleKeys
+                                                              .managerCanSignIn
+                                                              .tr(),
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize:

@@ -1,5 +1,6 @@
 import 'package:clinic/components/forms/rounded_button..dart';
 import 'package:clinic/components/forms/rounded_input_field.dart';
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/user.dart';
 import 'package:clinic/screens/shared/loading.dart';
 import 'package:clinic/services/auth.dart';
@@ -15,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../shared/constants.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class RegistrationRequest extends StatefulWidget {
   RegistrationRequest();
@@ -75,7 +77,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Registration Request',
+                      LocaleKeys.registrationRequest.tr(),
                       style: TextStyle(
                           fontSize: size.width * 0.05,
                           color: kPrimaryTextColor),
@@ -147,7 +149,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                   width: size.width * 0.02,
                                 ),
                                 Text(
-                                  'Gender',
+                                  LocaleKeys.gender.tr(),
                                   style: TextStyle(
                                     color: kPrimaryTextColor,
                                     fontSize: size.width * 0.06,
@@ -275,7 +277,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                       setState(() => phoneNumber = val);
                                     },
                                     validator: (val) => val.isEmpty
-                                        ? 'Enter a valid number'
+                                        ? LocaleKeys.enterAValidNumber.tr()
                                         : null,
                                   ),
                                 ),
@@ -286,75 +288,68 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                             initialValue: fName,
                             obsecureText: false,
                             icon: Icons.person_add_alt,
-                            hintText: 'First Name',
+                            hintText: LocaleKeys.firstName.tr(),
                             onChanged: (val) {
                               setState(() => fName = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a name' : null,
+                                val.isEmpty ? LocaleKeys.enterAName.tr() : null,
                           ),
                           RoundedInputField(
                             initialValue: lName,
                             obsecureText: false,
                             icon: Icons.person_add_alt_1,
-                            hintText: 'Last Name',
+                            hintText: LocaleKeys.lastName.tr(),
                             onChanged: (val) {
                               setState(() => lName = val);
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter a name' : null,
+                                val.isEmpty ? LocaleKeys.enterAName.tr() : null,
                           ),
                           RoundedInputField(
                             initialValue: age != null ? age.toString() : '',
                             inputType: TextInputType.number,
                             obsecureText: false,
                             icon: Icons.calendar_today,
-                            hintText: 'Age',
+                            hintText: LocaleKeys.age.tr(),
                             onChanged: (val) {
                               setState(() => age = int.parse(val));
                             },
                             validator: (val) =>
-                                val.isEmpty ? 'Enter an age' : null,
+                                val.isEmpty ? LocaleKeys.enterAge.tr() : null,
                           ),
 
                           RoundedInputField(
                             initialValue: email,
                             obsecureText: false,
                             icon: Icons.email,
-                            hintText: 'Email',
+                            hintText: LocaleKeys.email.tr(),
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            validator: (val) =>
-                                val.isEmpty ? 'Enter an email' : null,
+                            validator: (val) => val.isEmpty
+                                ? LocaleKeys.enterAnEmail.tr()
+                                : null,
                           ),
                           RoundedInputField(
                             obsecureText: true,
                             icon: Icons.lock,
-                            hintText: 'Password',
+                            hintText: LocaleKeys.password.tr(),
                             onChanged: (val) {
                               setState(() => password = val);
                             },
                             validator: (val) => val.length < 6
-                                ? ' Enter a password 6+ chars long '
+                                ? LocaleKeys.enterAPassword.tr()
                                 : null,
                           ),
 
                           RoundedButton(
-                            text: 'Add',
+                            text: LocaleKeys.add.tr(),
                             press: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() {
                                   loading = true;
                                 });
-                                // HttpsCallable addUserFunction =
-                                //     FirebaseFunctions.instance
-                                //         .httpsCallable('addUser');
-                                // dynamic userID = await addUserFunction
-                                //     .call(<String, dynamic>{
-                                //   'email': email,
-                                //   'password': password,
-                                // });
 
                                 AuthUser result =
                                     await _auth.createUserWithEmailAndPasword(
@@ -364,7 +359,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
 
                                 if (result == null) {
                                   setState(() {
-                                    error = 'invalid email';
+                                    error = LocaleKeys.invalidEmail.tr();
                                     loading = false;
                                   });
                                 } else {
@@ -412,7 +407,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                             height: size.height * 0.05,
                                           ),
                                           Text(
-                                            'Request Sent',
+                                            LocaleKeys.requestSent.tr(),
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: size.height * 0.04,
@@ -423,7 +418,8 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                             height: size.height * 0.02,
                                           ),
                                           Text(
-                                            'Your request is sent and awaiting approval.',
+                                            LocaleKeys.requestAwaitingApproval
+                                                .tr(),
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: size.height * 0.025,
@@ -446,7 +442,7 @@ class _RegistrationRequestState extends State<RegistrationRequest> {
                                                 child: Container(
                                                   child: Center(
                                                     child: Text(
-                                                      'SIGN IN',
+                                                      LocaleKeys.signIn.tr(),
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize:
