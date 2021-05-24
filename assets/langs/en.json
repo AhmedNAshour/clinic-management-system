@@ -111,5 +111,8 @@
   "denyRequest": "Are you sure you want to deny this request",
   "requestDenied": "Request Denied",
   "editSchedule": "Edit Schedule",
-  "clientEdited": "Client Edited"
+  "clientEdited": "Client Edited",
+  "chatWithbranch": "Chat with a branch manager",
+  "cantDeactivateManager": "Can't Deactivate Manager",
+  "assignNewBoss": "Please assign a new branch manager before deactivating this one."
 }

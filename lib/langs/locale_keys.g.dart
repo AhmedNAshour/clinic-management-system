@@ -112,5 +112,8 @@ abstract class  LocaleKeys {
   static const requestDenied = 'requestDenied';
   static const editSchedule = 'editSchedule';
   static const clientEdited = 'clientEdited';
+  static const chatWithbranch = 'chatWithbranch';
+  static const cantDeactivateManager = 'cantDeactivateManager';
+  static const assignNewBoss = 'assignNewBoss';
 
 }

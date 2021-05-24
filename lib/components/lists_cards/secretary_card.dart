@@ -1,3 +1,4 @@
+import 'package:clinic/langs/locale_keys.g.dart';
 import 'package:clinic/models/customBottomSheets.dart';
 import 'package:clinic/models/manager.dart';
 import 'package:clinic/models/user.dart';
@@ -8,10 +9,12 @@ import 'package:clinic/services/database.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../screens/admin/manager_info.dart';
 import '../../screens/admin/edit_secretary.dart';
 import '../../screens/admin/disable_user.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SecretaryCard extends StatelessWidget {
   const SecretaryCard({
@@ -23,9 +26,6 @@ class SecretaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HttpsCallable deleteUserFunction = FirebaseFunctions.instance.httpsCallable(
-      'deleteUser',
-    );
     Size size = MediaQuery.of(context).size;
     double screenHeight = size.height;
     double screenWidth = size.width;
@@ -170,15 +170,51 @@ class SecretaryCard extends StatelessWidget {
                   manager.status == 1
                       ? GestureDetector(
                           onTap: () async {
-                            CustomBottomSheets().showDynamicCustomBottomSheet(
-                                size,
-                                DisableUser(UserModel(
-                                  fName: manager.fName,
-                                  lName: manager.lName,
-                                  uid: manager.uid,
-                                  role: 'secretary',
-                                )),
-                                context);
+                            !manager.isBoss
+                                ? CustomBottomSheets()
+                                    .showDynamicCustomBottomSheet(
+                                        size,
+                                        DisableUser(UserModel(
+                                          fName: manager.fName,
+                                          lName: manager.lName,
+                                          uid: manager.uid,
+                                          role: 'secretary',
+                                        )),
+                                        context)
+                                : await NDialog(
+                                    dialogStyle: DialogStyle(
+                                      backgroundColor: Color(0xFFB5020B),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    content: Container(
+                                      height: size.height * 0.5,
+                                      width: size.width * 0.8,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.white,
+                                            size: size.height * 0.125,
+                                          ),
+                                          SizedBox(
+                                            height: size.height * 0.05,
+                                          ),
+                                          Text(
+                                            LocaleKeys.assignNewBoss.tr(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: size.height * 0.04,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ).show(context);
+                            ;
                           },
                           child: Icon(
                             Icons.cancel,

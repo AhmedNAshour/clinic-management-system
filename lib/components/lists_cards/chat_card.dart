@@ -126,7 +126,80 @@ class _ChatCardState extends State<ChatCard> {
             ),
           );
         } else {
-          return Container();
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, ChatRoom.id, arguments: {
+                'otherUser': widget.otherUser,
+              });
+            },
+            child: Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Container(
+                // height: screenHeight * 0.18,
+                width: screenWidth * 0.9,
+                // margin: EdgeInsets.only(bottom: 15),
+                padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.02,
+                    vertical: screenHeight * 0.02),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: screenWidth * 0.10,
+                      backgroundImage: widget.otherUser.picURL != ''
+                          ? NetworkImage(widget.otherUser.picURL)
+                          : AssetImage('assets/images/userPlaceholder.png'),
+                    ),
+                    SizedBox(
+                      width: screenWidth * 0.02,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    color: kPrimaryTextColor,
+                                    fontSize: screenWidth * 0.05,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: widget.otherUser.role == 'doctor'
+                                          ? 'Dr. ${widget.otherUser.fName}'
+                                          : widget.otherUser.fName,
+                                    ),
+                                    TextSpan(
+                                      text: ' ${widget.otherUser.role}',
+                                      style: TextStyle(
+                                        color: kPrimaryLightColor,
+                                        fontSize: screenHeight * 0.02,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
         }
       },
     );

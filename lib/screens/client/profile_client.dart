@@ -358,7 +358,7 @@ class _ProfileClientState extends State<ProfileClient> {
                           padding: EdgeInsets.all(size.width * 0.03),
                           margin: EdgeInsets.symmetric(
                               vertical: size.height * 0.02),
-                          // height: size.height * 0.18,
+                          height: size.height * 0.18,
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: kPrimaryLightColor,
@@ -404,7 +404,7 @@ class _ProfileClientState extends State<ProfileClient> {
                     padding: EdgeInsets.all(size.width * 0.03),
                     margin: EdgeInsets.symmetric(vertical: size.height * 0.02),
                     width: size.width * 0.9,
-                    height: size.height * 0.15,
+                    height: size.height * 0.16,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: kPrimaryLightColor,

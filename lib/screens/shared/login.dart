@@ -36,24 +36,12 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    // configureCallbacks();
     Size size = MediaQuery.of(context).size;
-    // Color kPrimaryColor =
-    //     Provider.of<DesignElements>(context, listen: false).primaryColor ??
-    //         Color(0xFF0060AD);
-    // Color kPrimaryLightColor =
-    //     Provider.of<DesignElements>(context, listen: false).primaryLightColor ??
-    //         Color(0xFFBEBEBE);
-    // Color kPrimaryTextColor =
-    //     Provider.of<DesignElements>(context, listen: false).primaryTextColor ??
-    //         Color(0xFF212121);
 
     return loading
         ? Loading()
         : SafeArea(
             child: Scaffold(
-              // resizeToAvoidBottomInset: false,
-              // resizeToAvoidBottomPadding: false,
               body: Center(
                 child: SingleChildScrollView(
                   child: Column(

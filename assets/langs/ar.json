@@ -111,5 +111,8 @@
   "denyRequest": "هل أنت متأكد أنك تريد رفض هذا الطلب",
   "requestDenied": "تم رفض الطلب",
   "editSchedule": "تعديل الجدول",
-  "clientEdited": "تم تعديل العميل"
+  "clientEdited": "تم تعديل العميل",
+  "chatWithbranch": "تحدث مع مدير فرع",
+  "cantDeactivateManager": "لا يمكن تعطيل حساب المدير",
+  "assignNewBoss": "يرجى تعيين مدير فرع جديد قبل تعطيل هذا"
 }

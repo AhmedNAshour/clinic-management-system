@@ -929,7 +929,7 @@ class DatabaseService {
   }
 
   Stream<List<Manager>> getManagers(
-      {String managerName, String managerNumber, String branch}) {
+      {String managerName, String managerNumber, String branch, bool isBoss}) {
     Query query = usersCollection.where('role', isEqualTo: 'manager');
     if (managerName != '') {
       query = query.where(
@@ -943,6 +943,10 @@ class DatabaseService {
 
     if (branch != '') {
       query = query.where('branch', isEqualTo: branch);
+    }
+
+    if (isBoss != null) {
+      query = query.where('isBoss', isEqualTo: isBoss);
     }
 
     return query.snapshots().map(_managersListFromSnapshot);

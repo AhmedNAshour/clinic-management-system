@@ -98,7 +98,7 @@ class _ClientHomeState extends State<ClientHome> {
                                   ),
                                 ),
                                 Text(
-                                  '${client.numAppointments} ${LocaleKeys.appointmentsRemaining.tr()} ',
+                                  '${client.numAppointments} ${LocaleKeys.appointmentsRemaining.tr()}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.04,
